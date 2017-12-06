@@ -10,8 +10,9 @@ class Application extends React.Component {
   getDefaultState() {
     return {
       time: 0,
-      o2: 10,
-      co2: 10,
+      o2: 30,
+      co2: 30,
+      light: true,
       plants: {
         organismType: Organism.PLANT, numOrganisms: 0, storedFood: 100
       },
@@ -22,7 +23,7 @@ class Application extends React.Component {
   }
 
   step(organismInfoKeys) {
-    let { co2, o2 } = this.state
+    let { co2, o2, light } = this.state
     let newState = {}
 
     organismInfoKeys.forEach(organismInfoKey => {
@@ -35,10 +36,12 @@ class Application extends React.Component {
       let { photosynthesisRate, respirationRate } = Organism.properties[organismType]
 
       let photosynthesisConversion = numOrganisms * photosynthesisRate
-      if (photosynthesisConversion > co2) {
+      if (!light) {
+        photosynthesisConversion = 0
+      } else if (photosynthesisConversion > co2) {
         photosynthesisConversion = co2
       } else {
-        storedFood += 3
+        storedFood += 6
       }
       o2 += photosynthesisConversion
       co2 -= photosynthesisConversion
@@ -47,6 +50,7 @@ class Application extends React.Component {
       if (respirationConversion > o2 || storedFood <= 0) {
         respirationConversion = o2
         numOrganisms = 0
+        storedFood = 100
       } else {
         // Assume that organisms that can't photosynthesize are auto-fed
         if (photosynthesisRate > 0) {
@@ -69,7 +73,7 @@ class Application extends React.Component {
   }
  
   render() {
-    const { time, o2, co2, plants, snails } = this.state
+    const { time, o2, co2, plants, snails, light } = this.state
     return (
       <div>
         <button
@@ -79,6 +83,13 @@ class Application extends React.Component {
           }}
         >
         Wait 1 Hour
+        </button>
+        <button
+          onClick={() => {
+            this.setState({light: !light})
+          }}
+        >
+        Toggle light
         </button>
         <button
           onClick={() => {
@@ -104,9 +115,10 @@ class Application extends React.Component {
         <br/>
         <OrganismGroup organismInfo={plants} />
         <OrganismGroup organismInfo={snails} />
-        Time: {this.state.time}<br/>
-        O2: {this.state.o2}<br/>
-        CO2: {this.state.co2}
+        Hour: {this.state.time}<br/>
+        O2: {this.state.o2} mL<br/>
+        CO2: {this.state.co2} mL<br/>
+        Light: {light ? "On" : "Off"}
       </div>
     );
   }
