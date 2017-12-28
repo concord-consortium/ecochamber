@@ -1,10 +1,13 @@
 import React from 'react';
+import Blockly from 'node-blockly/browser';
 import OrganismGroup, { Organism } from './organism-group';
 
 class Application extends React.Component {
   constructor() {
     super()
     this.state = this.getDefaultState()
+    this.workspace = Blockly.inject('blocklyDiv',
+      {toolbox: document.getElementById('toolbox')});
   }
 
   getDefaultState() {
@@ -48,7 +51,7 @@ class Application extends React.Component {
 
       let respirationConversion = numOrganisms * respirationRate
       if (respirationConversion > o2 || storedFood <= 0) {
-        respirationConversion = o2
+        respirationConversion = 0
         numOrganisms = 0
         storedFood = 100
       } else {
@@ -119,6 +122,15 @@ class Application extends React.Component {
         O2: {this.state.o2} mL<br/>
         CO2: {this.state.co2} mL<br/>
         Light: {light ? "On" : "Off"}
+        <br/>
+        <button
+          onClick={() => {
+            let code = Blockly.JavaScript.workspaceToCode(this.workspace)
+            eval(code)
+          }}
+        >
+        Run Blockly code
+        </button>
       </div>
     );
   }
