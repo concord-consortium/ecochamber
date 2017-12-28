@@ -16,21 +16,20 @@ class Application extends React.Component {
       o2: 30,
       co2: 30,
       light: true,
-      plants: {
-        organismType: Organism.PLANT, numOrganisms: 0, storedFood: 100
-      },
-      snails: {
-        organismType: Organism.SNAIL, numOrganisms: 0, storedFood: 100
-      }
+      plantsNumber: 0,
+      plantsStoredFood: 100,
+      snailsNumber: 0,
+      snailsStoredFood: 100
     }
   }
 
-  step(organismInfoKeys) {
+  step(organismInfos) {
     let { co2, o2, light } = this.state
-    let newState = {}
 
-    organismInfoKeys.forEach(organismInfoKey => {
-      let {organismType, numOrganisms, storedFood} = this.state[organismInfoKey]
+    organismInfos.forEach(organismInfo => {
+      let {organismType, numberKey, foodKey} = organismInfo
+      let numOrganisms = this.state[numberKey]
+      let storedFood = this.state[foodKey]
 
       if (numOrganisms === 0) {
         return
@@ -43,7 +42,7 @@ class Application extends React.Component {
         photosynthesisConversion = 0
       } else if (photosynthesisConversion > co2) {
         photosynthesisConversion = co2
-      } else {
+      } else if (photosynthesisConversion > 0) {
         storedFood += 6
       }
       o2 += photosynthesisConversion
@@ -63,16 +62,16 @@ class Application extends React.Component {
       o2 -= respirationConversion
       co2 += respirationConversion
 
-      newState[organismInfoKey] = {
-        organismType, 
-        numOrganisms, 
-        storedFood: Math.max(Math.min(storedFood, 100), 0)
-      }
+      let newState = {}
+      newState[foodKey] = Math.max(storedFood, 0)
+      newState[numberKey] = numOrganisms
+      this.setState(newState)
     })
     
-    newState.o2 = o2
-    newState.co2 = co2
-    this.setState(newState)
+    this.setState({
+      o2,
+      co2
+    })
   }
 
   evalInContext(script) {
@@ -85,7 +84,10 @@ class Application extends React.Component {
       <div>
         <button
           onClick={() => {
-            this.step(["plants", "snails"])
+            this.step([
+              {organismType: Organism.PLANT, numberKey: "plantsNumber", foodKey: "plantsStoredFood"}, 
+              {organismType: Organism.SNAIL, numberKey: "snailsNumber", foodKey: "snailsStoredFood"}
+            ])
             this.setState({time: time + 1})
           }}
         >
@@ -100,14 +102,14 @@ class Application extends React.Component {
         </button>
         <button
           onClick={() => {
-            this.setState(Object.assign(plants, {numOrganisms: plants.numOrganisms + 1}))
+            this.setState({plantsNumber: this.state.plantsNumber + 1})
           }}
         >
         Add plant
         </button>
         <button
           onClick={() => {
-            this.setState(Object.assign(snails, {numOrganisms: snails.numOrganisms + 1}))
+            this.setState({snailsNumber: this.state.snailsNumber + 1})
           }}
         >
         Add snail
@@ -120,8 +122,8 @@ class Application extends React.Component {
         Reset simulation
         </button>
         <br/>
-        <OrganismGroup organismInfo={plants} />
-        <OrganismGroup organismInfo={snails} />
+        <OrganismGroup organismType={Organism.PLANT} numOrganisms={this.state.plantsNumber} storedFood={this.state.plantsStoredFood} />
+        <OrganismGroup organismType={Organism.SNAIL} numOrganisms={this.state.snailsNumber} storedFood={this.state.snailsStoredFood} />
         Hour: {this.state.time}<br/>
         O2: {this.state.o2} mL<br/>
         CO2: {this.state.co2} mL<br/>

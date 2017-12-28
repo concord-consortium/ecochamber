@@ -11,7 +11,7 @@ export const Organism = {
 
 class OrganismGroup extends React.Component {
   render() {
-    const { organismType, numOrganisms, storedFood } = this.props.organismInfo
+    const { organismType, numOrganisms, storedFood } = this.props
     const { label } = Organism.properties[organismType]
     return (
       <div>
