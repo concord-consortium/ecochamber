@@ -74,6 +74,10 @@ class Application extends React.Component {
     newState.co2 = co2
     this.setState(newState)
   }
+
+  evalInContext(script) {
+    eval(script)
+  }
  
   render() {
     const { time, o2, co2, plants, snails, light } = this.state
@@ -126,7 +130,7 @@ class Application extends React.Component {
         <button
           onClick={() => {
             let code = Blockly.JavaScript.workspaceToCode(this.workspace)
-            eval(code)
+            this.evalInContext(code)
           }}
         >
         Run Blockly code
