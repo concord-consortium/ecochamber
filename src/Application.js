@@ -1,13 +1,17 @@
 import React from 'react';
 import Blockly from 'node-blockly/browser';
 import OrganismGroup, { Organism } from './organism-group';
+import { initCodap, sendItems } from './codap-utils';
 
 class Application extends React.Component {
   constructor() {
     super()
     this.state = this.getDefaultState()
+    this.experiment = 0
     this.workspace = Blockly.inject('blocklyDiv',
       {toolbox: document.getElementById('toolbox')});
+
+    initCodap()
   }
 
   getDefaultState() {
@@ -24,15 +28,18 @@ class Application extends React.Component {
   }
 
   wait() {
+    let { co2, o2, time } = this.state
     this.step([
       {organismType: Organism.PLANT, numberKey: "plantsNumber", foodKey: "plantsStoredFood"}, 
       {organismType: Organism.SNAIL, numberKey: "snailsNumber", foodKey: "snailsStoredFood"}
     ])
     this.setState({time: this.state.time + 1})
+    sendItems({experiment_number: this.experiment, hour: time, CO2: co2, O2: o2});
   }
 
   reset() {
     this.setState(this.getDefaultState())
+    this.experiment++
   }
 
   step(organismInfos) {
