@@ -37,7 +37,7 @@ export function configureBlocks() {
           {
             "type": "field_dropdown",
             "name": "VAR",
-            "options": [["hour", "time"], ["plants", "plantsNumber"], ["snails", "snailsNumber"]]
+            "options": [["plants", "plantsNumber"], ["snails", "snailsNumber"]]
           },
           {
             "type": "input_value",
@@ -67,15 +67,27 @@ export function configureBlocks() {
         "previousStatement": null,
         "nextStatement": null,
         "colour": "%{BKY_VARIABLES_HUE}",
-        "tooltip": "%{BKY_VARIABLES_SET_TOOLTIP}",
       })
     }
   };
 
   Blockly.JavaScript['wait'] = function(block) {
-    var argument0 = Blockly.JavaScript.valueToCode(block, 'VALUE',
-        Blockly.JavaScript.ORDER_ASSIGNMENT) || '0';
-    var varName = block.getFieldValue('VAR');
-    return 'this.setState({' + varName + ': ' + argument0 + '});\n'
+    return 'wait();\n'
+  };
+
+  // Reset block
+  Blockly.Blocks['reset'] = {
+    init: function() {
+      this.jsonInit({
+        "message0": "Reset simulation",
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": "%{BKY_VARIABLES_HUE}",
+      })
+    }
+  };
+
+  Blockly.JavaScript['reset'] = function(block) {
+    return 'reset();\n'
   };
 }

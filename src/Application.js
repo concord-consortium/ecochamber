@@ -23,6 +23,18 @@ class Application extends React.Component {
     }
   }
 
+  wait() {
+    this.step([
+      {organismType: Organism.PLANT, numberKey: "plantsNumber", foodKey: "plantsStoredFood"}, 
+      {organismType: Organism.SNAIL, numberKey: "snailsNumber", foodKey: "snailsStoredFood"}
+    ])
+    this.setState({time: this.state.time + 1})
+  }
+
+  reset() {
+    this.setState(this.getDefaultState())
+  }
+
   step(organismInfos) {
     let { co2, o2, light } = this.state
 
@@ -109,8 +121,22 @@ class Application extends React.Component {
     interpreter.setProperty(scope, 'setVar',
       interpreter.createNativeFunction(wrapper));
 
+    // Add an API function for the wait() block.
+    wrapper = function() {
+      _this.wait()
+    }
+    interpreter.setProperty(scope, 'wait',
+      interpreter.createNativeFunction(wrapper));
+
+    // Add an API function for the reset() block.
+    wrapper = function() {
+      _this.reset()
+    }
+    interpreter.setProperty(scope, 'reset',
+      interpreter.createNativeFunction(wrapper));
+
     // Add an API function for highlighting blocks
-    var wrapper = function(id) {
+    wrapper = function(id) {
       id = id ? id.toString() : '';
       return interpreter.createPrimitive(_this.workspace.highlightBlock(id));
     };
@@ -124,11 +150,7 @@ class Application extends React.Component {
       <div>
         <button
           onClick={() => {
-            this.step([
-              {organismType: Organism.PLANT, numberKey: "plantsNumber", foodKey: "plantsStoredFood"}, 
-              {organismType: Organism.SNAIL, numberKey: "snailsNumber", foodKey: "snailsStoredFood"}
-            ])
-            this.setState({time: time + 1})
+            this.wait()
           }}
         >
         Wait 1 Hour
@@ -156,7 +178,7 @@ class Application extends React.Component {
         </button>
         <button
           onClick={() => {
-            this.setState(this.getDefaultState())
+            this.reset()
           }}
         >
         Reset simulation
