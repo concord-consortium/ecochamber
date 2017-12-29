@@ -108,6 +108,14 @@ class Application extends React.Component {
     }
     interpreter.setProperty(scope, 'setVar',
       interpreter.createNativeFunction(wrapper));
+
+    // Add an API function for highlighting blocks
+    var wrapper = function(id) {
+      id = id ? id.toString() : '';
+      return interpreter.createPrimitive(_this.workspace.highlightBlock(id));
+    };
+    interpreter.setProperty(scope, 'highlightBlock',
+      interpreter.createNativeFunction(wrapper));
   }
  
   render() {
@@ -163,11 +171,14 @@ class Application extends React.Component {
         <br/>
         <button
           onClick={() => {
-            var code = Blockly.JavaScript.workspaceToCode(this.workspace);
-            var myInterpreter = new Interpreter(code, this.initApi.bind(this));
+            var _this = this
+            var code = Blockly.JavaScript.workspaceToCode(_this.workspace);
+            var myInterpreter = new Interpreter(code, _this.initApi.bind(_this));
             function nextStep() {
               if (myInterpreter.step()) {
                 window.setTimeout(nextStep, 10);
+              } else {
+                _this.workspace.highlightBlock(null)
               }
             }
             nextStep();

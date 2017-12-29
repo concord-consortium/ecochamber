@@ -1,6 +1,10 @@
 import Blockly from 'node-blockly/browser';
 
 export function configureBlocks() {
+  Blockly.JavaScript.STATEMENT_PREFIX = "highlightBlock(%1);\n"
+  Blockly.JavaScript.addReservedWords('highlightBlock')
+
+  // Variable getter
   Blockly.Blocks['get_experiment_var'] = {
     init: function() {
       this.jsonInit({
@@ -20,12 +24,11 @@ export function configureBlocks() {
   };
 
   Blockly.JavaScript['get_experiment_var'] = function(block) {
-    // Variable getter.
     var varName = block.getFieldValue('VAR');
     return ['getVar("' + varName + '")', Blockly.JavaScript.ORDER_ATOMIC];
   };
 
-
+  // Variable setter
   Blockly.Blocks['set_experiment_var'] = {
     init: function() {
       this.jsonInit({
@@ -50,13 +53,13 @@ export function configureBlocks() {
   };
 
   Blockly.JavaScript['set_experiment_var'] = function(block) {
-    // Variable setter.
     var argument0 = Blockly.JavaScript.valueToCode(block, 'VALUE',
         Blockly.JavaScript.ORDER_ASSIGNMENT) || '0';
     var varName = block.getFieldValue('VAR');
     return 'setVar("' + varName + '", ' + argument0 + ');\n'
   };
 
+  // Wait block
   Blockly.Blocks['wait'] = {
     init: function() {
       this.jsonInit({
@@ -70,7 +73,6 @@ export function configureBlocks() {
   };
 
   Blockly.JavaScript['wait'] = function(block) {
-    // Variable setter.
     var argument0 = Blockly.JavaScript.valueToCode(block, 'VALUE',
         Blockly.JavaScript.ORDER_ASSIGNMENT) || '0';
     var varName = block.getFieldValue('VAR');
