@@ -21031,6 +21031,17 @@ var Application = function (_React$Component) {
       };
     }
   }, {
+    key: 'wait',
+    value: function wait() {
+      this.step([{ organismType: _organismGroup.Organism.PLANT, numberKey: "plantsNumber", foodKey: "plantsStoredFood" }, { organismType: _organismGroup.Organism.SNAIL, numberKey: "snailsNumber", foodKey: "snailsStoredFood" }]);
+      this.setState({ time: this.state.time + 1 });
+    }
+  }, {
+    key: 'reset',
+    value: function reset() {
+      this.setState(this.getDefaultState());
+    }
+  }, {
     key: 'step',
     value: function step(organismInfos) {
       var _this3 = this;
@@ -21127,8 +21138,20 @@ var Application = function (_React$Component) {
       };
       interpreter.setProperty(scope, 'setVar', interpreter.createNativeFunction(wrapper));
 
+      // Add an API function for the wait() block.
+      wrapper = function wrapper() {
+        _this.wait();
+      };
+      interpreter.setProperty(scope, 'wait', interpreter.createNativeFunction(wrapper));
+
+      // Add an API function for the reset() block.
+      wrapper = function wrapper() {
+        _this.reset();
+      };
+      interpreter.setProperty(scope, 'reset', interpreter.createNativeFunction(wrapper));
+
       // Add an API function for highlighting blocks
-      var wrapper = function wrapper(id) {
+      wrapper = function wrapper(id) {
         id = id ? id.toString() : '';
         return interpreter.createPrimitive(_this.workspace.highlightBlock(id));
       };
@@ -21154,8 +21177,7 @@ var Application = function (_React$Component) {
           'button',
           {
             onClick: function onClick() {
-              _this4.step([{ organismType: _organismGroup.Organism.PLANT, numberKey: "plantsNumber", foodKey: "plantsStoredFood" }, { organismType: _organismGroup.Organism.SNAIL, numberKey: "snailsNumber", foodKey: "snailsStoredFood" }]);
-              _this4.setState({ time: time + 1 });
+              _this4.wait();
             }
           },
           'Wait 1 Hour'
@@ -21191,7 +21213,7 @@ var Application = function (_React$Component) {
           'button',
           {
             onClick: function onClick() {
-              _this4.setState(_this4.getDefaultState());
+              _this4.reset();
             }
           },
           'Reset simulation'
@@ -21364,7 +21386,7 @@ function configureBlocks() {
         "args0": [{
           "type": "field_dropdown",
           "name": "VAR",
-          "options": [["hour", "time"], ["plants", "plantsNumber"], ["snails", "snailsNumber"]]
+          "options": [["plants", "plantsNumber"], ["snails", "snailsNumber"]]
         }, {
           "type": "input_value",
           "name": "VALUE"
@@ -21390,16 +21412,29 @@ function configureBlocks() {
         "message0": "Wait 1 hr",
         "previousStatement": null,
         "nextStatement": null,
-        "colour": "%{BKY_VARIABLES_HUE}",
-        "tooltip": "%{BKY_VARIABLES_SET_TOOLTIP}"
+        "colour": "%{BKY_VARIABLES_HUE}"
       });
     }
   };
 
   _browser2.default.JavaScript['wait'] = function (block) {
-    var argument0 = _browser2.default.JavaScript.valueToCode(block, 'VALUE', _browser2.default.JavaScript.ORDER_ASSIGNMENT) || '0';
-    var varName = block.getFieldValue('VAR');
-    return 'this.setState({' + varName + ': ' + argument0 + '});\n';
+    return 'wait();\n';
+  };
+
+  // Reset block
+  _browser2.default.Blocks['reset'] = {
+    init: function init() {
+      this.jsonInit({
+        "message0": "Reset simulation",
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": "%{BKY_VARIABLES_HUE}"
+      });
+    }
+  };
+
+  _browser2.default.JavaScript['reset'] = function (block) {
+    return 'reset();\n';
   };
 }
 
