@@ -74,8 +74,40 @@ class Application extends React.Component {
     })
   }
 
-  evalInContext(script) {
-    eval(script)
+  initApi(interpreter, scope) {
+    var _this = this
+
+    // Add an API function for the alert() block.
+    var wrapper = function(text) {
+      text = text != null ? text.toString() : '';
+      return interpreter.createPrimitive(alert(text));
+    };
+    interpreter.setProperty(scope, 'alert',
+      interpreter.createNativeFunction(wrapper));
+
+    // Add an API function for the prompt() block.
+    wrapper = function(text) {
+      text = text != null ? text.toString() : '';
+      return interpreter.createPrimitive(prompt(text));
+    };
+    interpreter.setProperty(scope, 'prompt',
+      interpreter.createNativeFunction(wrapper));
+
+    // Add an API function for the getExpVar() block.
+    wrapper = function(varName) {
+      return _this.state[varName]
+    }
+    interpreter.setProperty(scope, 'getVar',
+      interpreter.createNativeFunction(wrapper));
+
+    // Add an API function for the setExpVar() block.
+    wrapper = function(varName, varValue) {
+      let newState = []
+      newState[varName] = varValue
+      _this.setState(newState)
+    }
+    interpreter.setProperty(scope, 'setVar',
+      interpreter.createNativeFunction(wrapper));
   }
  
   render() {
@@ -131,8 +163,14 @@ class Application extends React.Component {
         <br/>
         <button
           onClick={() => {
-            let code = Blockly.JavaScript.workspaceToCode(this.workspace)
-            this.evalInContext(code)
+            var code = Blockly.JavaScript.workspaceToCode(this.workspace);
+            var myInterpreter = new Interpreter(code, this.initApi.bind(this));
+            function nextStep() {
+              if (myInterpreter.step()) {
+                window.setTimeout(nextStep, 10);
+              }
+            }
+            nextStep();
           }}
         >
         Run Blockly code

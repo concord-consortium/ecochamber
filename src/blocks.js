@@ -22,7 +22,7 @@ export function configureBlocks() {
   Blockly.JavaScript['get_experiment_var'] = function(block) {
     // Variable getter.
     var varName = block.getFieldValue('VAR');
-    return ['this.state.' + varName, Blockly.JavaScript.ORDER_ATOMIC];
+    return ['getVar("' + varName + '")', Blockly.JavaScript.ORDER_ATOMIC];
   };
 
 
@@ -54,7 +54,7 @@ export function configureBlocks() {
     var argument0 = Blockly.JavaScript.valueToCode(block, 'VALUE',
         Blockly.JavaScript.ORDER_ASSIGNMENT) || '0';
     var varName = block.getFieldValue('VAR');
-    return 'yield this.setState({' + varName + ': ' + argument0 + '});\n'
+    return 'setVar("' + varName + '", ' + argument0 + ');\n'
   };
 
   Blockly.Blocks['wait'] = {
