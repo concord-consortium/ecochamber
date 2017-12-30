@@ -25,6 +25,18 @@ const kDataSetName = 'Experimental Output',
                            ]
                          }
 
+export function extendDataSet(newAttr) {
+  codapInterface.sendRequest({
+    action: 'create',
+    resource: "dataContext[Experimental Output].collection[experimental_output].attribute",
+    "values": [{
+      name: newAttr,
+      type: "numeric",
+      precision: 1
+    }]
+  })
+}
+
 export function initCodap() {
   let requestDataContext = (name) => {
     return codapInterface.sendRequest({

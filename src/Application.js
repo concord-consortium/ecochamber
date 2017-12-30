@@ -1,20 +1,33 @@
 import React from 'react';
 import Blockly from 'node-blockly/browser';
 import OrganismGroup, { Organism } from './organism-group';
-import { initCodap, sendItems } from './codap-utils';
+import { initCodap, sendItems, extendDataSet } from './codap-utils';
 
 class Application extends React.Component {
   constructor() {
     super()
-    this.state = this.getDefaultState()
-    this.experiment = 0
+    let defaultState = this.getDefaultExperimentState()
+    defaultState.experiment = 0
+    defaultState.trackedVars = {
+      time: true,
+      o2: true,
+      co2: true,
+      plantsNumber: false,
+      snailsNumber: false,
+      plantsStoredFood: false,
+      snailsStoredFood: false,
+      light: false
+    }
+    this.state = defaultState
     this.workspace = Blockly.inject('blocklyDiv',
       {toolbox: document.getElementById('toolbox')});
+
+    this.handleChange = this.handleChange.bind(this)
 
     initCodap()
   }
 
-  getDefaultState() {
+  getDefaultExperimentState() {
     return {
       time: 0,
       o2: 30,
@@ -34,12 +47,48 @@ class Application extends React.Component {
       {organismType: Organism.SNAIL, numberKey: "snailsNumber", foodKey: "snailsStoredFood"}
     ])
     this.setState({time: this.state.time + 1})
-    sendItems({experiment_number: this.experiment, hour: time, CO2: co2, O2: o2});
+    sendItems(this.createDataPoint());
+  }
+
+  createDataPoint() {
+    let { trackedVars, experiment, time, co2, o2, light, 
+      plantsNumber, snailsNumber, plantsStoredFood, snailsStoredFood } = this.state
+    let dataPoint = {experiment_number: experiment}
+    if (trackedVars.time) {
+      dataPoint.hour = time
+    }
+    if (trackedVars.o2) {
+      dataPoint.O2 = o2
+    }
+    if (trackedVars.co2) {
+      dataPoint.CO2 = co2
+    }
+    if (trackedVars.light) {
+      extendDataSet("light")
+      dataPoint.light = light ? 1 : 0
+    }
+    if (trackedVars.plantsNumber) {
+      extendDataSet("num_plants")
+      dataPoint.num_plants = plantsNumber 
+    }
+    if (trackedVars.snailsNumber) {
+      extendDataSet("num_snails")
+      dataPoint.num_snails = snailsNumber
+    }
+    if (trackedVars.plantsStoredFood) {
+      extendDataSet("plants_stored_food")
+      dataPoint.plants_stored_food = plantsStoredFood
+    }
+    if (trackedVars.snailsStoredFood) {
+      extendDataSet("snails_stored_food")
+      dataPoint.snails_stored_food = snailsStoredFood
+    }
+    return dataPoint
   }
 
   reset() {
-    this.setState(this.getDefaultState())
-    this.experiment++
+    this.setState(this.getDefaultExperimentState())
+    this.setState({experiment: this.state.experiment + 1})
   }
 
   step(organismInfos) {
@@ -150,6 +199,12 @@ class Application extends React.Component {
     interpreter.setProperty(scope, 'highlightBlock',
       interpreter.createNativeFunction(wrapper));
   }
+
+  handleChange(event) {
+    let trackedVars = Object.assign({}, this.state.trackedVars)
+    trackedVars[event.target.name] = event.target.checked
+    this.setState({trackedVars})
+  }
  
   render() {
     const { time, o2, co2, plants, snails, light } = this.state
@@ -197,6 +252,15 @@ class Application extends React.Component {
         O2: {this.state.o2} mL<br/>
         CO2: {this.state.co2} mL<br/>
         Light: {light ? "On" : "Off"}
+        <br/>
+        <input type="checkbox" name="time" checked={this.state.trackedVars.time} onChange={this.handleChange}/>Track Time
+        <input type="checkbox" name="o2" checked={this.state.trackedVars.o2} onChange={this.handleChange}/>Track O2
+        <input type="checkbox" name="co2" checked={this.state.trackedVars.co2} onChange={this.handleChange}/>Track CO2
+        <input type="checkbox" name="light" checked={this.state.trackedVars.light} onChange={this.handleChange}/>Track Light
+        <input type="checkbox" name="plantsNumber" checked={this.state.trackedVars.plantsNumber} onChange={this.handleChange}/>Track Plant Population
+        <input type="checkbox" name="snailsNumber" checked={this.state.trackedVars.snailsNumber} onChange={this.handleChange}/>Track Snail Population
+        <input type="checkbox" name="plantsStoredFood" checked={this.state.trackedVars.plantsStoredFood} onChange={this.handleChange}/>Track Plant Stored Food
+        <input type="checkbox" name="snailsStoredFood" checked={this.state.trackedVars.snailsStoredFood} onChange={this.handleChange}/>Track Snail Stored Food
         <br/>
         <button
           onClick={() => {
