@@ -990,7 +990,7 @@ var _application = __webpack_require__(37);
 
 var _application2 = _interopRequireDefault(_application);
 
-var _blocks = __webpack_require__(39);
+var _blocks = __webpack_require__(40);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -20995,6 +20995,8 @@ var _organismGroup = __webpack_require__(38);
 
 var _organismGroup2 = _interopRequireDefault(_organismGroup);
 
+var _codapUtils = __webpack_require__(39);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -21011,14 +21013,30 @@ var Application = function (_React$Component) {
 
     var _this2 = _possibleConstructorReturn(this, (Application.__proto__ || Object.getPrototypeOf(Application)).call(this));
 
-    _this2.state = _this2.getDefaultState();
+    var defaultState = _this2.getDefaultExperimentState();
+    defaultState.experiment = 0;
+    defaultState.trackedVars = {
+      time: true,
+      o2: true,
+      co2: true,
+      plantsNumber: false,
+      snailsNumber: false,
+      plantsStoredFood: false,
+      snailsStoredFood: false,
+      light: false
+    };
+    _this2.state = defaultState;
     _this2.workspace = _browser2.default.inject('blocklyDiv', { toolbox: document.getElementById('toolbox') });
+
+    _this2.handleChange = _this2.handleChange.bind(_this2);
+
+    (0, _codapUtils.initCodap)();
     return _this2;
   }
 
   _createClass(Application, [{
-    key: 'getDefaultState',
-    value: function getDefaultState() {
+    key: 'getDefaultExperimentState',
+    value: function getDefaultExperimentState() {
       return {
         time: 0,
         o2: 30,
@@ -21033,23 +21051,77 @@ var Application = function (_React$Component) {
   }, {
     key: 'wait',
     value: function wait() {
+      var _state = this.state,
+          co2 = _state.co2,
+          o2 = _state.o2,
+          time = _state.time;
+
       this.step([{ organismType: _organismGroup.Organism.PLANT, numberKey: "plantsNumber", foodKey: "plantsStoredFood" }, { organismType: _organismGroup.Organism.SNAIL, numberKey: "snailsNumber", foodKey: "snailsStoredFood" }]);
       this.setState({ time: this.state.time + 1 });
+      (0, _codapUtils.sendItems)(this.createDataPoint());
+    }
+  }, {
+    key: 'createDataPoint',
+    value: function createDataPoint() {
+      var _state2 = this.state,
+          trackedVars = _state2.trackedVars,
+          experiment = _state2.experiment,
+          time = _state2.time,
+          co2 = _state2.co2,
+          o2 = _state2.o2,
+          light = _state2.light,
+          plantsNumber = _state2.plantsNumber,
+          snailsNumber = _state2.snailsNumber,
+          plantsStoredFood = _state2.plantsStoredFood,
+          snailsStoredFood = _state2.snailsStoredFood;
+
+      var dataPoint = { experiment_number: experiment };
+      if (trackedVars.time) {
+        dataPoint.hour = time;
+      }
+      if (trackedVars.o2) {
+        dataPoint.O2 = o2;
+      }
+      if (trackedVars.co2) {
+        dataPoint.CO2 = co2;
+      }
+      if (trackedVars.light) {
+        (0, _codapUtils.extendDataSet)("light");
+        dataPoint.light = light ? 1 : 0;
+      }
+      if (trackedVars.plantsNumber) {
+        (0, _codapUtils.extendDataSet)("num_plants");
+        dataPoint.num_plants = plantsNumber;
+      }
+      if (trackedVars.snailsNumber) {
+        (0, _codapUtils.extendDataSet)("num_snails");
+        dataPoint.num_snails = snailsNumber;
+      }
+      if (trackedVars.plantsStoredFood) {
+        (0, _codapUtils.extendDataSet)("plants_stored_food");
+        dataPoint.plants_stored_food = plantsStoredFood;
+      }
+      if (trackedVars.snailsStoredFood) {
+        (0, _codapUtils.extendDataSet)("snails_stored_food");
+        dataPoint.snails_stored_food = snailsStoredFood;
+      }
+      return dataPoint;
     }
   }, {
     key: 'reset',
     value: function reset() {
-      this.setState(this.getDefaultState());
+      this.setState(this.getDefaultExperimentState());
+      this.setState({ experiment: this.state.experiment + 1 });
     }
   }, {
     key: 'step',
     value: function step(organismInfos) {
       var _this3 = this;
 
-      var _state = this.state,
-          co2 = _state.co2,
-          o2 = _state.o2,
-          light = _state.light;
+      var _state3 = this.state,
+          co2 = _state3.co2,
+          o2 = _state3.o2,
+          light = _state3.light;
 
 
       organismInfos.forEach(function (organismInfo) {
@@ -21158,17 +21230,24 @@ var Application = function (_React$Component) {
       interpreter.setProperty(scope, 'highlightBlock', interpreter.createNativeFunction(wrapper));
     }
   }, {
+    key: 'handleChange',
+    value: function handleChange(event) {
+      var trackedVars = Object.assign({}, this.state.trackedVars);
+      trackedVars[event.target.name] = event.target.checked;
+      this.setState({ trackedVars: trackedVars });
+    }
+  }, {
     key: 'render',
     value: function render() {
       var _this4 = this;
 
-      var _state2 = this.state,
-          time = _state2.time,
-          o2 = _state2.o2,
-          co2 = _state2.co2,
-          plants = _state2.plants,
-          snails = _state2.snails,
-          light = _state2.light;
+      var _state4 = this.state,
+          time = _state4.time,
+          o2 = _state4.o2,
+          co2 = _state4.co2,
+          plants = _state4.plants,
+          snails = _state4.snails,
+          light = _state4.light;
 
       return _react2.default.createElement(
         'div',
@@ -21234,6 +21313,23 @@ var Application = function (_React$Component) {
         _react2.default.createElement('br', null),
         'Light: ',
         light ? "On" : "Off",
+        _react2.default.createElement('br', null),
+        _react2.default.createElement('input', { type: 'checkbox', name: 'time', checked: this.state.trackedVars.time, onChange: this.handleChange }),
+        'Track Time',
+        _react2.default.createElement('input', { type: 'checkbox', name: 'o2', checked: this.state.trackedVars.o2, onChange: this.handleChange }),
+        'Track O2',
+        _react2.default.createElement('input', { type: 'checkbox', name: 'co2', checked: this.state.trackedVars.co2, onChange: this.handleChange }),
+        'Track CO2',
+        _react2.default.createElement('input', { type: 'checkbox', name: 'light', checked: this.state.trackedVars.light, onChange: this.handleChange }),
+        'Track Light',
+        _react2.default.createElement('input', { type: 'checkbox', name: 'plantsNumber', checked: this.state.trackedVars.plantsNumber, onChange: this.handleChange }),
+        'Track Plant Population',
+        _react2.default.createElement('input', { type: 'checkbox', name: 'snailsNumber', checked: this.state.trackedVars.snailsNumber, onChange: this.handleChange }),
+        'Track Snail Population',
+        _react2.default.createElement('input', { type: 'checkbox', name: 'plantsStoredFood', checked: this.state.trackedVars.plantsStoredFood, onChange: this.handleChange }),
+        'Track Plant Stored Food',
+        _react2.default.createElement('input', { type: 'checkbox', name: 'snailsStoredFood', checked: this.state.trackedVars.snailsStoredFood, onChange: this.handleChange }),
+        'Track Snail Stored Food',
         _react2.default.createElement('br', null),
         _react2.default.createElement(
           'button',
@@ -21336,6 +21432,133 @@ exports.default = OrganismGroup;
 
 /***/ }),
 /* 39 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.extendDataSet = extendDataSet;
+exports.initCodap = initCodap;
+exports.sendItems = sendItems;
+exports.sendLog = sendLog;
+var kDataSetName = 'Experimental Output',
+    kAppName = "Ecochamber Experiment",
+    kDataSetTemplate = {
+  name: "{name}",
+  collections: [{
+    name: "experiment_runs",
+    attrs: [{ name: "experiment_number", type: "categorical" }]
+  }, {
+    name: 'experimental_output',
+    parent: 'experiment_runs',
+    labels: {
+      pluralCase: "experimental_outputs",
+      setOfCasesWithArticle: "a sample"
+    },
+    attrs: [{ name: "hour", type: 'numeric', precision: 1 }, { name: "CO2", unit: "mL", type: 'numeric', precision: 2 }, { name: "O2", unit: "mL", type: 'numeric', precision: 2 }]
+  }]
+};
+
+function extendDataSet(newAttr) {
+  codapInterface.sendRequest({
+    action: 'create',
+    resource: "dataContext[Experimental Output].collection[experimental_output].attribute",
+    "values": [{
+      name: newAttr,
+      type: "numeric",
+      precision: 1
+    }]
+  });
+}
+
+function initCodap() {
+  var requestDataContext = function requestDataContext(name) {
+    return codapInterface.sendRequest({
+      action: 'get',
+      resource: 'dataContext[' + name + ']'
+    });
+  };
+  var requestCreateDataSet = function requestCreateDataSet(name, template) {
+    var dataSetDef = Object.assign({}, template);
+    dataSetDef.name = name;
+    return codapInterface.sendRequest({
+      action: 'create',
+      resource: 'dataContext',
+      values: dataSetDef
+    });
+  };
+  codapInterface.init({
+    name: kDataSetName,
+    title: kAppName,
+    dimensions: { width: 870, height: 540 },
+    version: '0.1'
+  }).then(function (iResult) {
+    return requestDataContext(kDataSetName);
+  }).then(function (iResult) {
+    // if we did not find a data set, make one
+    if (iResult && !iResult.success) {
+      // If not not found, create it.
+      return requestCreateDataSet(kDataSetName, kDataSetTemplate);
+    } else {
+      // else we are fine as we are, so return a resolved promise.
+      return Promise.resolve(iResult);
+    }
+  }).catch(function (msg) {
+    // handle errors
+    console.log(msg);
+  });
+}
+
+function sendItems(items) {
+  var promise = codapInterface.sendRequest({
+    action: 'create',
+    resource: 'dataContext[' + kDataSetName + '].item',
+    values: items
+  });
+  guaranteeCaseTable();
+  return promise;
+}
+
+function sendLog(formatStr, replaceArgs) {
+  return codapInterface.sendRequest({
+    action: 'notify',
+    resource: 'logMessage',
+    values: { formatStr: formatStr, replaceArgs: replaceArgs }
+  });
+}
+
+function guaranteeCaseTable() {
+  return new Promise(function (resolve, reject) {
+    codapInterface.sendRequest({
+      action: 'get',
+      resource: 'componentList'
+    }).then(function (iResult) {
+      if (iResult.success) {
+        // look for a case table in the list of components.
+        if (iResult.values && iResult.values.some(function (component) {
+          return component.type === 'caseTable';
+        })) {
+          resolve(iResult);
+        } else {
+          codapInterface.sendRequest({ action: 'create', resource: 'component', values: {
+              type: 'caseTable',
+              dataContext: kDataSetName
+            } }).then(function (result) {
+            resolve(result);
+          });
+        }
+      } else {
+        reject('api error');
+      }
+    });
+  });
+}
+
+/***/ }),
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
