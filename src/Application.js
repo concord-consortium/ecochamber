@@ -279,6 +279,24 @@ class Application extends React.Component {
         >
         Run Blockly code
         </button>
+        <button
+          onClick={() => {
+            var xml = Blockly.Xml.workspaceToDom(this.workspace);
+            var xml_text = Blockly.Xml.domToText(xml);
+            alert(xml_text)
+          }}
+        >
+        Save Blockly Code
+        </button>
+        <button
+          onClick={() => {
+            var xml_text = prompt("Paste your saved program:")
+            var xml = Blockly.Xml.textToDom(xml_text);
+            Blockly.Xml.domToWorkspace(xml, this.workspace);
+          }}
+        >
+        Load Blockly Code
+        </button>
       </div>
     );
   }
