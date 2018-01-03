@@ -435,6 +435,33 @@ module.exports = emptyObject;
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var Blockly = __webpack_require__(29);
+
+Blockly.setLocale = function(locale) {
+  Blockly.Msg = Object.assign(locale, Blockly.Msg);
+  Blockly.Msg = Blockly.Msg();
+}
+
+Blockly.utils.getMessageArray_ = function () {
+  return Blockly.Msg
+}
+
+Blockly.setLocale(__webpack_require__(30))
+
+Blockly.Blocks = Object.assign(Blockly.Blocks, __webpack_require__(31)(Blockly));
+
+Blockly.JavaScript = __webpack_require__(32)(Blockly);
+Blockly.Lua = __webpack_require__(33)(Blockly);
+Blockly.Dart = __webpack_require__(34)(Blockly);
+Blockly.PHP = __webpack_require__(35)(Blockly);
+Blockly.Python = __webpack_require__(36)(Blockly);
+
+module.exports = Blockly;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {/**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -492,7 +519,7 @@ module.exports = invariant;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -561,33 +588,6 @@ module.exports = warning;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Blockly = __webpack_require__(29);
-
-Blockly.setLocale = function(locale) {
-  Blockly.Msg = Object.assign(locale, Blockly.Msg);
-  Blockly.Msg = Blockly.Msg();
-}
-
-Blockly.utils.getMessageArray_ = function () {
-  return Blockly.Msg
-}
-
-Blockly.setLocale(__webpack_require__(30))
-
-Blockly.Blocks = Object.assign(Blockly.Blocks, __webpack_require__(31)(Blockly));
-
-Blockly.JavaScript = __webpack_require__(32)(Blockly);
-Blockly.Lua = __webpack_require__(33)(Blockly);
-Blockly.Dart = __webpack_require__(34)(Blockly);
-Blockly.PHP = __webpack_require__(35)(Blockly);
-Blockly.Python = __webpack_require__(36)(Blockly);
-
-module.exports = Blockly;
-
-/***/ }),
 /* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -602,8 +602,8 @@ module.exports = Blockly;
 
 
 if (process.env.NODE_ENV !== 'production') {
-  var invariant = __webpack_require__(5);
-  var warning = __webpack_require__(6);
+  var invariant = __webpack_require__(6);
+  var warning = __webpack_require__(7);
   var ReactPropTypesSecret = __webpack_require__(19);
   var loggedTypeFailures = {};
 }
@@ -982,7 +982,7 @@ var _reactDom = __webpack_require__(20);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _browser = __webpack_require__(7);
+var _browser = __webpack_require__(5);
 
 var _browser2 = _interopRequireDefault(_browser);
 
@@ -990,7 +990,7 @@ var _application = __webpack_require__(37);
 
 var _application2 = _interopRequireDefault(_application);
 
-var _blocks = __webpack_require__(40);
+var _blocks = __webpack_require__(41);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1052,8 +1052,8 @@ if (process.env.NODE_ENV !== "production") {
 
 var _assign = __webpack_require__(3);
 var emptyObject = __webpack_require__(4);
-var invariant = __webpack_require__(5);
-var warning = __webpack_require__(6);
+var invariant = __webpack_require__(6);
+var warning = __webpack_require__(7);
 var emptyFunction = __webpack_require__(1);
 var checkPropTypes = __webpack_require__(8);
 
@@ -2773,8 +2773,8 @@ if (process.env.NODE_ENV !== "production") {
 'use strict';
 
 var React = __webpack_require__(2);
-var invariant = __webpack_require__(5);
-var warning = __webpack_require__(6);
+var invariant = __webpack_require__(6);
+var warning = __webpack_require__(7);
 var ExecutionEnvironment = __webpack_require__(9);
 var _assign = __webpack_require__(3);
 var emptyFunction = __webpack_require__(1);
@@ -20987,7 +20987,7 @@ var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _browser = __webpack_require__(7);
+var _browser = __webpack_require__(5);
 
 var _browser2 = _interopRequireDefault(_browser);
 
@@ -20996,6 +20996,8 @@ var _organismGroup = __webpack_require__(38);
 var _organismGroup2 = _interopRequireDefault(_organismGroup);
 
 var _codapUtils = __webpack_require__(39);
+
+var _presets = __webpack_require__(40);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21204,7 +21206,7 @@ var Application = function (_React$Component) {
 
       // Add an API function for the setExpVar() block.
       wrapper = function wrapper(varName, varValue) {
-        var newState = [];
+        var newState = {};
         newState[varName] = varValue;
         _this.setState(newState);
       };
@@ -21327,9 +21329,9 @@ var Application = function (_React$Component) {
         _react2.default.createElement('input', { type: 'checkbox', name: 'snailsNumber', checked: this.state.trackedVars.snailsNumber, onChange: this.handleChange }),
         'Track Snail Population',
         _react2.default.createElement('input', { type: 'checkbox', name: 'plantsStoredFood', checked: this.state.trackedVars.plantsStoredFood, onChange: this.handleChange }),
-        'Track Plant Stored Food',
+        'Track Stored Plant Food',
         _react2.default.createElement('input', { type: 'checkbox', name: 'snailsStoredFood', checked: this.state.trackedVars.snailsStoredFood, onChange: this.handleChange }),
-        'Track Snail Stored Food',
+        'Track Stored Snail Food',
         _react2.default.createElement('br', null),
         _react2.default.createElement(
           'button',
@@ -21349,6 +21351,83 @@ var Application = function (_React$Component) {
             }
           },
           'Run Blockly code'
+        ),
+        _react2.default.createElement(
+          'button',
+          {
+            onClick: function onClick() {
+              (0, _presets.loadPreset)(1, _this4.workspace);
+            }
+          },
+          'Preset 1'
+        ),
+        _react2.default.createElement(
+          'button',
+          {
+            onClick: function onClick() {
+              (0, _presets.loadPreset)(2, _this4.workspace);
+            }
+          },
+          'Preset 2'
+        ),
+        _react2.default.createElement(
+          'button',
+          {
+            onClick: function onClick() {
+              (0, _presets.loadPreset)(3, _this4.workspace);
+            }
+          },
+          'Preset 3'
+        ),
+        _react2.default.createElement(
+          'button',
+          {
+            onClick: function onClick() {
+              (0, _presets.loadPreset)(5, _this4.workspace);
+            }
+          },
+          'Preset 4'
+        ),
+        _react2.default.createElement(
+          'button',
+          {
+            onClick: function onClick() {
+              (0, _presets.loadPreset)(6, _this4.workspace);
+            }
+          },
+          'Preset 5'
+        ),
+        _react2.default.createElement(
+          'button',
+          {
+            onClick: function onClick() {
+              var xml = _browser2.default.Xml.workspaceToDom(_this4.workspace);
+              var xml_text = _browser2.default.Xml.domToText(xml);
+              console.log(xml_text);
+              alert(xml_text);
+            }
+          },
+          'Save Blockly Code'
+        ),
+        _react2.default.createElement(
+          'button',
+          {
+            onClick: function onClick() {
+              var xml_text = prompt("Paste your saved program:");
+              var xml = _browser2.default.Xml.textToDom(xml_text);
+              _browser2.default.Xml.domToWorkspace(xml, _this4.workspace);
+            }
+          },
+          'Load Blockly Code'
+        ),
+        _react2.default.createElement(
+          'button',
+          {
+            onClick: function onClick() {
+              _this4.workspace.clear();
+            }
+          },
+          'Clear Blockly Code'
         )
       );
     }
@@ -21567,9 +21646,51 @@ function guaranteeCaseTable() {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.loadPreset = loadPreset;
+
+var _browser = __webpack_require__(5);
+
+var _browser2 = _interopRequireDefault(_browser);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function loadPreset(presetNum, workspace) {
+  workspace.clear();
+  var xmlText = getPreset(presetNum);
+  var xml = _browser2.default.Xml.textToDom(xmlText);
+  _browser2.default.Xml.domToWorkspace(xml, workspace);
+}
+
+function getPreset(presetNum) {
+  switch (presetNum) {
+    case 1:
+      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id="@/(C}pI$Qqk3xOnPB?c!" x="42" y="42"><next><block type="set_experiment_num" id="2Bp|6$LCx%K{A#x=hWzm"><field name="VAR">plantsNumber</field><value name="VALUE"><block type="math_number" id="JKf%Oc:b#A_`s[,t_:2c"><field name="NUM">1</field></block></value><next><block type="wait" id=",m]=e:02!$L}G`[@2ot1"><next><block type="wait" id="xlf(ecX5jBW)t=w*xPhO"><next><block type="wait" id="TfnVg9exe~vBafmC/+/%"><next><block type="wait" id="[Ci#WIP1H$DcW/+CJK/G"><next><block type="wait" id="_xH{hk)?{!DN@3kP8=Rq"></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>';
+    case 2:
+      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id="@/(C}pI$Qqk3xOnPB?c!" x="39" y="49"><next><block type="set_experiment_num" id="2Bp|6$LCx%K{A#x=hWzm"><field name="VAR">plantsNumber</field><value name="VALUE"><block type="math_number" id="JKf%Oc:b#A_`s[,t_:2c"><field name="NUM">1</field></block></value><next><block type="controls_repeat_ext" id="pshQ9!1ly1bT7JuQQ;8O"><value name="TIMES"><block type="math_number" id="#B{t1LkJ~Z.e2fwz%~gh"><field name="NUM">20</field></block></value><statement name="DO"><block type="wait" id="_xH{hk)?{!DN@3kP8=Rq"></block></statement></block></next></block></next></block></xml>';
+    case 3:
+      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id="@/(C}pI$Qqk3xOnPB?c!" x="39" y="49"><next><block type="set_experiment_num" id="2Bp|6$LCx%K{A#x=hWzm"><field name="VAR">plantsNumber</field><value name="VALUE"><block type="math_number" id="JKf%Oc:b#A_`s[,t_:2c"><field name="NUM">1</field></block></value><next><block type="controls_repeat_ext" id="pshQ9!1ly1bT7JuQQ;8O"><value name="TIMES"><block type="math_number" id="#B{t1LkJ~Z.e2fwz%~gh"><field name="NUM">20</field></block></value><statement name="DO"><block type="wait" id="_xH{hk)?{!DN@3kP8=Rq"></block></statement><next><block type="reset" id="]M*@@x8-/+fD4qFE]m1:"><next><block type="set_experiment_num" id="B*32~U9]ep)$PMJca-wn"><field name="VAR">plantsNumber</field><value name="VALUE"><block type="math_number" id="GTlr2d4*bgUq#/xqg{#f"><field name="NUM">1</field></block></value><next><block type="set_experiment_num" id=",fqIyDR^LdawQVbCr`a?"><field name="VAR">snailsNumber</field><value name="VALUE"><block type="math_number" id="3?p#;_AS0qTv+^vX]m_*"><field name="NUM">1</field></block></value><next><block type="controls_repeat_ext" id="6)c(X*V{K()$crqC0R;q" inline="true"><value name="TIMES"><block type="math_number" id="j9}IG;zo/qK6GK%^E:?F"><field name="NUM">20</field></block></value><statement name="DO"><block type="wait" id="oacur$j,t[3HuO%5_VPa"></block></statement></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>';
+    case 4:
+      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id=";XQ{a~0`^LpFmcfO.VT|" x="26" y="54"><next><block type="set_experiment_num" id="19Mv%m,usC77p7m)2gp_"><field name="VAR">plantsNumber</field><value name="VALUE"><block type="math_number" id="3,T64KF5ElLVvLc5$M^8"><field name="NUM">1</field></block></value><next><block type="controls_repeat_ext" id="uo%/H9{g:Zi65*9_ry{p"><value name="TIMES"><block type="math_number" id=";YQk1@JB.Y^uj=_SEMIB"><field name="NUM">20</field></block></value><statement name="DO"><block type="wait" id="u1s7M29@Hmtgbw/*E.^U"><next><block type="controls_if" id="r7BI,a0e`5];)Q{.wZ=h"><value name="IF0"><block type="logic_compare" id="x-_60oo.KA9Yf:4~[tJZ"><field name="OP">EQ</field><value name="A"><block type="get_experiment_num" id=":,^r{hi*`:q+zFFbJWU6"><field name="VAR">time</field></block></value><value name="B"><block type="math_number" id="D[``^5b;:tL0b@Pv(;6q"><field name="NUM">5</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="`!u/_p+G}[Jdwx:[u*oY"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="Zj%(yWD{H@#[TFcV#/A]"><field name="BOOL">FALSE</field></block></value></block></statement><next><block type="controls_if" id="`ovRngMMC(d${8yd#2QF"><value name="IF0"><block type="logic_compare" id="not~OvNp^y#7^6e_eYjy"><field name="OP">EQ</field><value name="A"><block type="get_experiment_num" id="mu7mhc9ad5aU`lLiAX*S"><field name="VAR">time</field></block></value><value name="B"><block type="math_number" id="*g$Zw5Yu3PCab;~*7~r+"><field name="NUM">10</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="=5eM%$B(7PEdLI2_561-"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="cuZi6$QID~)!]W(S#32K"><field name="BOOL">TRUE</field></block></value></block></statement><next><block type="controls_if" id="qYoz7oKaZBCqFrqPx@Fe"><value name="IF0"><block type="logic_compare" id="S:SO2.(Lv-u%9+|v!+|C"><field name="OP">EQ</field><value name="A"><block type="get_experiment_num" id="|LS3cPNW5)=dm8iM#(e*"><field name="VAR">time</field></block></value><value name="B"><block type="math_number" id="fQ@q=nX36k:ru;j$.1)q"><field name="NUM">15</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="*Lf~y,=A:|$k#LckbX*9"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="Zd:v)xx%+WM}*ATDz=nw"><field name="BOOL">FALSE</field></block></value></block></statement><next><block type="controls_if" id="W1mj@p#Lk1hW!U4%|XFN"><value name="IF0"><block type="logic_compare" id="^)t,tjq5^w}CmzZc968k"><field name="OP">EQ</field><value name="A"><block type="get_experiment_num" id="$%7[iJwUV~~Dy2u+c4w_"><field name="VAR">time</field></block></value><value name="B"><block type="math_number" id="%6D3+}CnKq^,TDvZScL_"><field name="NUM">20</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="7Sjmxff0Z^jGpY5O6ohx"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="?18Y]ZUf^S6=JGrtaOfU"><field name="BOOL">TRUE</field></block></value></block></statement></block></next></block></next></block></next></block></next></block></statement></block></next></block></next></block></xml>';
+    case 5:
+      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id=";XQ{a~0`^LpFmcfO.VT|" x="32" y="45"><next><block type="set_experiment_num" id="19Mv%m,usC77p7m)2gp_"><field name="VAR">plantsNumber</field><value name="VALUE"><block type="math_number" id="3,T64KF5ElLVvLc5$M^8"><field name="NUM">1</field></block></value><next><block type="controls_repeat_ext" id="uo%/H9{g:Zi65*9_ry{p"><value name="TIMES"><block type="math_number" id=";YQk1@JB.Y^uj=_SEMIB"><field name="NUM">5</field></block></value><statement name="DO"><block type="controls_repeat_ext" id="zNjQltD%[G68;dbnfYM;"><value name="TIMES"><block type="math_number" id="D[``^5b;:tL0b@Pv(;6q"><field name="NUM">5</field></block></value><statement name="DO"><block type="wait" id="6dEr]g3lvpj5am^C!,-P"></block></statement><next><block type="controls_if" id="r7BI,a0e`5];)Q{.wZ=h"><mutation else="1"></mutation><value name="IF0"><block type="get_experiment_bool" id="P+6[]3%pz*1ky6$kRCz:"><field name="VAL">light</field><value name="BOOL"><block type="on_off_bool" id="Zj%(yWD{H@#[TFcV#/A]"><field name="BOOL">TRUE</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="`!u/_p+G}[Jdwx:[u*oY"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="WG+^s{a]A|]LpYIwbm(Y"><field name="BOOL">FALSE</field></block></value></block></statement><statement name="ELSE"><block type="set_experiment_bool" id="r_[0yd$mu]ITYw,^[Y=;"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="#2D9ddCUffN-YX~R@c{z"><field name="BOOL">TRUE</field></block></value></block></statement></block></next></block></statement></block></next></block></next></block></xml>';
+    case 6:
+      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id=";XQ{a~0`^LpFmcfO.VT|" x="41" y="60"><next><block type="set_experiment_num" id="19Mv%m,usC77p7m)2gp_"><field name="VAR">plantsNumber</field><value name="VALUE"><block type="math_number" id="3,T64KF5ElLVvLc5$M^8"><field name="NUM">1</field></block></value><next><block type="controls_repeat_ext" id="uo%/H9{g:Zi65*9_ry{p"><value name="TIMES"><block type="math_number" id=";YQk1@JB.Y^uj=_SEMIB"><field name="NUM">30</field></block></value><statement name="DO"><block type="wait" id="u1s7M29@Hmtgbw/*E.^U"><next><block type="controls_if" id="NX9+S`%{cQLO2/;Zg4#h"><value name="IF0"><block type="logic_compare" id="urVA]gzjYJ6R?~:7}E?R"><field name="OP">LT</field><value name="A"><block type="get_experiment_num" id="_M/8;Po|Zx5kL0F@_pb-"><field name="VAR">co2</field></block></value><value name="B"><block type="math_number" id=";x/;_%:yTO084[%]}C:F"><field name="NUM">20</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="_JWR5,H08(m?xKkC(Pt|"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="f!WS!:gl/!NY9rt#qMAM"><field name="BOOL">FALSE</field></block></value></block></statement><next><block type="controls_if" id="G`#52tv]qdEZaC0.tw0y"><value name="IF0"><block type="logic_compare" id="?hX.J#ZEb#Q,4)$d4RFm"><field name="OP">GT</field><value name="A"><block type="get_experiment_num" id="HA_k=d^$HEw/OR}}uQi]"><field name="VAR">co2</field></block></value><value name="B"><block type="math_number" id="xY^kZ[3?Si=,kZF(1s)Q"><field name="NUM">20</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="Hh6d}WN14N6wvvlxFW4Y"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="2Ou=Te^OcW-Z?!dD3@.9"><field name="BOOL">TRUE</field></block></value></block></statement></block></next></block></next></block></statement></block></next></block></next></block></xml>';
+  }
+}
+
+/***/ }),
+/* 41 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.configureBlocks = configureBlocks;
 
-var _browser = __webpack_require__(7);
+var _browser = __webpack_require__(5);
 
 var _browser2 = _interopRequireDefault(_browser);
 
@@ -21579,30 +21700,79 @@ function configureBlocks() {
   _browser2.default.JavaScript.STATEMENT_PREFIX = "highlightBlock(%1);\n";
   _browser2.default.JavaScript.addReservedWords('highlightBlock');
 
-  // Variable getter
-  _browser2.default.Blocks['get_experiment_var'] = {
+  // Number variable getter
+  _browser2.default.Blocks['get_experiment_num'] = {
     init: function init() {
       this.jsonInit({
         "message0": "%1",
         "args0": [{
           "type": "field_dropdown",
           "name": "VAR",
-          "options": [["hour", "time"], ["plants", "plantsNumber"], ["snails", "snailsNumber"]]
+          "options": [["hour", "time"], ["plants", "plantsNumber"], ["snails", "snailsNumber"], ["O2", "o2"], ["CO2", "co2"]]
         }],
-        "output": null,
-        "colour": "%{BKY_VARIABLES_HUE}",
+        "output": "Number",
+        "colour": "%{BKY_MATH_HUE}",
         "tooltip": "%{BKY_VARIABLES_GET_TOOLTIP}"
       });
     }
   };
 
-  _browser2.default.JavaScript['get_experiment_var'] = function (block) {
+  _browser2.default.JavaScript['get_experiment_num'] = function (block) {
     var varName = block.getFieldValue('VAR');
     return ['getVar("' + varName + '")', _browser2.default.JavaScript.ORDER_ATOMIC];
   };
 
-  // Variable setter
-  _browser2.default.Blocks['set_experiment_var'] = {
+  // Boolean variable getter
+  _browser2.default.Blocks['get_experiment_bool'] = {
+    init: function init() {
+      this.jsonInit({
+        "message0": "%1 is %2?",
+        "args0": [{
+          "type": "field_dropdown",
+          "name": "VAL",
+          "options": [["light", "light"]]
+        }, {
+          "type": "input_value",
+          "name": "BOOL",
+          "check": "Boolean"
+        }],
+        "output": "Boolean",
+        "colour": "%{BKY_LOGIC_HUE}",
+        "tooltip": "%{BKY_VARIABLES_GET_TOOLTIP}"
+      });
+    }
+  };
+
+  _browser2.default.JavaScript['get_experiment_bool'] = function (block) {
+    var varName = block.getFieldValue('VAL');
+    var targetVal = _browser2.default.JavaScript.valueToCode(block, 'BOOL', _browser2.default.JavaScript.ORDER_ASSIGNMENT) || '0';
+    return ['getVar("' + varName + '") === ' + targetVal, _browser2.default.JavaScript.ORDER_ATOMIC];
+  };
+
+  // Logic boolean (with student-readable labels)
+  _browser2.default.Blocks['on_off_bool'] = {
+    init: function init() {
+      this.jsonInit({
+        "message0": "%1",
+        "args0": [{
+          "type": "field_dropdown",
+          "name": "BOOL",
+          "options": [["on", "TRUE"], ["off", "FALSE"]]
+        }],
+        "output": "Boolean",
+        "colour": "%{BKY_LOGIC_HUE}",
+        "tooltip": "%{BKY_VARIABLES_GET_TOOLTIP}"
+      });
+    }
+  };
+
+  _browser2.default.JavaScript['on_off_bool'] = function (block) {
+    var code = block.getFieldValue('BOOL') == 'TRUE' ? 'true' : 'false';
+    return [code, _browser2.default.JavaScript.ORDER_ATOMIC];
+  };
+
+  // Number variable setter
+  _browser2.default.Blocks['set_experiment_num'] = {
     init: function init() {
       this.jsonInit({
         "message0": "%{BKY_VARIABLES_SET}",
@@ -21612,7 +21782,8 @@ function configureBlocks() {
           "options": [["plants", "plantsNumber"], ["snails", "snailsNumber"]]
         }, {
           "type": "input_value",
-          "name": "VALUE"
+          "name": "VALUE",
+          "check": "Number"
         }],
         "previousStatement": null,
         "nextStatement": null,
@@ -21622,7 +21793,35 @@ function configureBlocks() {
     }
   };
 
-  _browser2.default.JavaScript['set_experiment_var'] = function (block) {
+  _browser2.default.JavaScript['set_experiment_num'] = function (block) {
+    var argument0 = _browser2.default.JavaScript.valueToCode(block, 'VALUE', _browser2.default.JavaScript.ORDER_ASSIGNMENT) || '0';
+    var varName = block.getFieldValue('VAR');
+    return 'setVar("' + varName + '", ' + argument0 + ');\n';
+  };
+
+  // Boolean variable setter
+  _browser2.default.Blocks['set_experiment_bool'] = {
+    init: function init() {
+      this.jsonInit({
+        "message0": "%{BKY_VARIABLES_SET}",
+        "args0": [{
+          "type": "field_dropdown",
+          "name": "VAR",
+          "options": [["light", "light"]]
+        }, {
+          "type": "input_value",
+          "name": "VALUE",
+          "check": "Boolean"
+        }],
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": "%{BKY_VARIABLES_HUE}",
+        "tooltip": "%{BKY_VARIABLES_SET_TOOLTIP}"
+      });
+    }
+  };
+
+  _browser2.default.JavaScript['set_experiment_bool'] = function (block) {
     var argument0 = _browser2.default.JavaScript.valueToCode(block, 'VALUE', _browser2.default.JavaScript.ORDER_ASSIGNMENT) || '0';
     var varName = block.getFieldValue('VAR');
     return 'setVar("' + varName + '", ' + argument0 + ');\n';
