@@ -170,7 +170,7 @@ class Application extends React.Component {
 
     // Add an API function for the setExpVar() block.
     wrapper = function(varName, varValue) {
-      let newState = []
+      let newState = {}
       newState[varName] = varValue
       _this.setState(newState)
     }
