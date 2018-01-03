@@ -17,7 +17,7 @@ export function configureBlocks() {
           }
         ],
         "output": "Number",
-        "colour": "%{BKY_VARIABLES_HUE}",
+        "colour": "%{BKY_MATH_HUE}",
         "tooltip": "%{BKY_VARIABLES_GET_TOOLTIP}",
       })
     }
@@ -32,24 +32,31 @@ export function configureBlocks() {
   Blockly.Blocks['get_experiment_bool'] = {
     init: function() {
       this.jsonInit({
-        "message0": "%1 is on?",
+        "message0": "%1 is %2?",
         "args0": [
           {
             "type": "field_dropdown",
-            "name": "BOOL",
+            "name": "VAL",
             "options": [["light", "light"]]
+          },
+          {
+            "type": "input_value",
+            "name": "BOOL",
+            "check": "Boolean"
           }
         ],
         "output": "Boolean",
-        "colour": "%{BKY_VARIABLES_HUE}",
+        "colour": "%{BKY_LOGIC_HUE}",
         "tooltip": "%{BKY_VARIABLES_GET_TOOLTIP}",
       })
     }
   };
 
   Blockly.JavaScript['get_experiment_bool'] = function(block) {
-    var varName = block.getFieldValue('BOOL');
-    return ['getVar("' + varName + '")', Blockly.JavaScript.ORDER_ATOMIC];
+    var varName = block.getFieldValue('VAL')
+    var targetVal = Blockly.JavaScript.valueToCode(block, 'BOOL',
+        Blockly.JavaScript.ORDER_ASSIGNMENT) || '0';
+    return ['getVar("' + varName + '") === ' + targetVal, Blockly.JavaScript.ORDER_ATOMIC];
   };
 
   // Logic boolean (with student-readable labels)
@@ -68,7 +75,7 @@ export function configureBlocks() {
           }
         ],
         "output": "Boolean",
-        "colour": "%{BKY_VARIABLES_HUE}",
+        "colour": "%{BKY_LOGIC_HUE}",
         "tooltip": "%{BKY_VARIABLES_GET_TOOLTIP}",
       })
     }
