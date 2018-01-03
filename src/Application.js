@@ -2,6 +2,7 @@ import React from 'react';
 import Blockly from 'node-blockly/browser';
 import OrganismGroup, { Organism } from './organism-group';
 import { initCodap, sendItems, extendDataSet } from './codap-utils';
+import { loadPreset } from './presets';
 
 class Application extends React.Component {
   constructor() {
@@ -259,8 +260,8 @@ class Application extends React.Component {
         <input type="checkbox" name="light" checked={this.state.trackedVars.light} onChange={this.handleChange}/>Track Light
         <input type="checkbox" name="plantsNumber" checked={this.state.trackedVars.plantsNumber} onChange={this.handleChange}/>Track Plant Population
         <input type="checkbox" name="snailsNumber" checked={this.state.trackedVars.snailsNumber} onChange={this.handleChange}/>Track Snail Population
-        <input type="checkbox" name="plantsStoredFood" checked={this.state.trackedVars.plantsStoredFood} onChange={this.handleChange}/>Track Plant Stored Food
-        <input type="checkbox" name="snailsStoredFood" checked={this.state.trackedVars.snailsStoredFood} onChange={this.handleChange}/>Track Snail Stored Food
+        <input type="checkbox" name="plantsStoredFood" checked={this.state.trackedVars.plantsStoredFood} onChange={this.handleChange}/>Track Stored Plant Food
+        <input type="checkbox" name="snailsStoredFood" checked={this.state.trackedVars.snailsStoredFood} onChange={this.handleChange}/>Track Stored Snail Food
         <br/>
         <button
           onClick={() => {
@@ -281,8 +282,51 @@ class Application extends React.Component {
         </button>
         <button
           onClick={() => {
-            var xml = Blockly.Xml.workspaceToDom(this.workspace);
-            var xml_text = Blockly.Xml.domToText(xml);
+            loadPreset(1, this.workspace)
+          }}
+        >
+        Preset 1
+        </button>
+        <button
+          onClick={() => {
+            loadPreset(2, this.workspace)
+          }}
+        >
+        Preset 2
+        </button>
+        <button
+          onClick={() => {
+            loadPreset(3, this.workspace)
+          }}
+        >
+        Preset 3
+        </button>
+        {/*<button
+          onClick={() => {
+            loadPreset(4, this.workspace)
+          }}
+        >
+        Preset 4
+        </button>*/}
+        <button
+          onClick={() => {
+            loadPreset(5, this.workspace)
+          }}
+        >
+        Preset 4
+        </button>
+        <button
+          onClick={() => {
+            loadPreset(6, this.workspace)
+          }}
+        >
+        Preset 5
+        </button>
+        <button
+          onClick={() => {
+            var xml = Blockly.Xml.workspaceToDom(this.workspace)
+            var xml_text = Blockly.Xml.domToText(xml)
+            console.log(xml_text)
             alert(xml_text)
           }}
         >
@@ -291,11 +335,18 @@ class Application extends React.Component {
         <button
           onClick={() => {
             var xml_text = prompt("Paste your saved program:")
-            var xml = Blockly.Xml.textToDom(xml_text);
-            Blockly.Xml.domToWorkspace(xml, this.workspace);
+            var xml = Blockly.Xml.textToDom(xml_text)
+            Blockly.Xml.domToWorkspace(xml, this.workspace)
           }}
         >
         Load Blockly Code
+        </button>
+        <button
+          onClick={() => {
+            this.workspace.clear()
+          }}
+        >
+        Clear Blockly Code
         </button>
       </div>
     );

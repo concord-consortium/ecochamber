@@ -13,7 +13,13 @@ export function configureBlocks() {
           {
             "type": "field_dropdown",
             "name": "VAR",
-            "options": [["hour", "time"], ["plants", "plantsNumber"], ["snails", "snailsNumber"]]
+            "options": [
+                         ["hour", "time"], 
+                         ["plants", "plantsNumber"], 
+                         ["snails", "snailsNumber"],
+                         ["O2", "o2"],
+                         ["CO2", "co2"],
+                       ]
           }
         ],
         "output": "Number",
