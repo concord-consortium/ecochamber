@@ -4,6 +4,8 @@ import OrganismGroup, { Organism } from './organism-group';
 import { initCodap, sendItems, extendDataSet } from './codap-utils';
 import { loadPreset } from './presets';
 
+require('../assets/css/Application.css');
+
 class Application extends React.Component {
   constructor() {
     super()
