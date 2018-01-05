@@ -34,3 +34,21 @@
   margin-top: 325px;
   z-index: 6;
 }
+
+.bulb {
+  width: 155px;
+  height: 239px;
+  background-image: url("../bulb_on.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  transform: rotate(40deg);
+  margin-left: 275px;
+}
+
+.bulb.off {
+  background-image: url("../bulb_off.png");
+  margin-top: -2px;
+  margin-left: 273px;
+}
+

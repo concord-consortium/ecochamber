@@ -250,7 +250,7 @@ class Application extends React.Component {
         Reset simulation
         </button>
         <br/>
-        <Experiment numPlants={this.state.plantsNumber} numSnails={this.state.snailsNumber} />
+        <Experiment numPlants={this.state.plantsNumber} numSnails={this.state.snailsNumber} light={this.state.light}/>
         <OrganismGroup organismType={Organism.PLANT} numOrganisms={this.state.plantsNumber} storedFood={this.state.plantsStoredFood} />
         <OrganismGroup organismType={Organism.SNAIL} numOrganisms={this.state.snailsNumber} storedFood={this.state.snailsStoredFood} />
         Hour: {this.state.time}<br/>
