@@ -1,0 +1,36 @@
+.jar {
+  height: 403px;
+  width: 236px;
+  background-image: url("../jar.jpg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: flex;
+  justify-content: center;
+  z-index: 7;
+}
+
+.jar-contents {
+  width: 90%;
+}
+
+.leaf {
+  width: 100px;
+  height: 124px;
+  background-image: url("../leaf.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  margin-top: 250px;
+  z-index: 6;
+}
+
+.snail {
+  width: 77px;
+  height: 42px;
+  background-image: url("../snail.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  margin-top: 325px;
+  z-index: 6;
+}

@@ -1,6 +1,7 @@
 import React from 'react';
 import Blockly from 'node-blockly/browser';
 import OrganismGroup, { Organism } from './organism-group';
+import Experiment from './Experiment';
 import { initCodap, sendItems, extendDataSet } from './codap-utils';
 import { loadPreset } from './presets';
 
@@ -249,6 +250,7 @@ class Application extends React.Component {
         Reset simulation
         </button>
         <br/>
+        <Experiment numPlants={this.state.plantsNumber} numSnails={this.state.snailsNumber} />
         <OrganismGroup organismType={Organism.PLANT} numOrganisms={this.state.plantsNumber} storedFood={this.state.plantsStoredFood} />
         <OrganismGroup organismType={Organism.SNAIL} numOrganisms={this.state.snailsNumber} storedFood={this.state.snailsStoredFood} />
         Hour: {this.state.time}<br/>
