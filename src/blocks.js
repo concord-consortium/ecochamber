@@ -124,11 +124,36 @@ export function configureBlocks() {
     return 'setVar("' + varName + '", ' + argument0 + ');\n'
   };
 
+  // Number variable incrementer
+  Blockly.Blocks['inc_experiment_num'] = {
+    init: function() {
+      this.jsonInit({
+        "message0": "Add %1",
+        "args0": [
+          {
+            "type": "field_dropdown",
+            "name": "VAR",
+            "options": [["plant", "plantsNumber"], ["snail", "snailsNumber"]]
+          }
+        ],
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": "%{BKY_VARIABLES_HUE}",
+        "tooltip": "%{BKY_VARIABLES_SET_TOOLTIP}",
+      })
+    }
+  };
+
+  Blockly.JavaScript['inc_experiment_num'] = function(block) {
+    var varName = block.getFieldValue('VAR');
+    return 'incVar("' + varName + '");\n'
+  };
+
   // Boolean variable setter
   Blockly.Blocks['set_experiment_bool'] = {
     init: function() {
       this.jsonInit({
-        "message0": "%{BKY_VARIABLES_SET}",
+        "message0": "Turn %1 %2",
         "args0": [
           {
             "type": "field_dropdown",

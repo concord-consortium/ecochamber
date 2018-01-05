@@ -181,6 +181,15 @@ class Application extends React.Component {
     interpreter.setProperty(scope, 'setVar',
       interpreter.createNativeFunction(wrapper));
 
+    // Add an API function for the incExpVar() block.
+    wrapper = function(varName) {
+      let newState = {}
+      newState[varName] = _this.state[varName] + 1
+      _this.setState(newState)
+    }
+    interpreter.setProperty(scope, 'incVar',
+      interpreter.createNativeFunction(wrapper));
+
     // Add an API function for the wait() block.
     wrapper = function() {
       _this.wait()
@@ -226,7 +235,7 @@ class Application extends React.Component {
             this.setState({light: !light})
           }}
         >
-        Toggle light
+        Turn light {light ? "off" : "on"}
         </button>
         <button
           onClick={() => {
@@ -330,8 +339,8 @@ class Application extends React.Component {
           onClick={() => {
             var xml = Blockly.Xml.workspaceToDom(this.workspace)
             var xml_text = Blockly.Xml.domToText(xml)
+            console.clear()
             console.log(xml_text)
-            alert(xml_text)
           }}
         >
         Save Blockly Code
