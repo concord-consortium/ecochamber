@@ -2,6 +2,7 @@ import React from 'react';
 import Blockly from 'node-blockly/browser';
 import OrganismGroup, { Organism } from './organism-group';
 import Experiment from './Experiment';
+import ExperimentHUD from './ExperimentHUD';
 import { initCodap, sendItems, extendDataSet } from './codap-utils';
 import { loadPreset } from './presets';
 
@@ -211,9 +212,22 @@ class Application extends React.Component {
   }
  
   render() {
-    const { time, o2, co2, plants, snails, light } = this.state
+    const { time, o2, co2, plantsNumber, snailsNumber, light } = this.state
     return (
       <div>
+        <ExperimentHUD colInfos={[
+          [
+            { label: "Hour", value: time},
+            { label: "O2", value: Math.round(o2), unit: "ppm"},
+            { label: "CO2", value: Math.round(co2), unit: "ppm"}
+          ],
+          [
+            { label: "Plant population", value: plantsNumber},
+            { label: "Snail population", value: snailsNumber},
+            { label: "Light", value: light ? "On" : "Off"}
+          ]
+        ]}/>
+        <Experiment numPlants={this.state.plantsNumber} numSnails={this.state.snailsNumber} light={this.state.light}/>
         <button
           onClick={() => {
             this.wait(1)
@@ -256,14 +270,6 @@ class Application extends React.Component {
         >
         Reset simulation
         </button>
-        <br/>
-        <Experiment numPlants={this.state.plantsNumber} numSnails={this.state.snailsNumber} light={this.state.light}/>
-        <OrganismGroup organismType={Organism.PLANT} numOrganisms={this.state.plantsNumber} storedFood={this.state.plantsStoredFood} />
-        <OrganismGroup organismType={Organism.SNAIL} numOrganisms={this.state.snailsNumber} storedFood={this.state.snailsStoredFood} />
-        Hour: {this.state.time}<br/>
-        O2: {Math.round(this.state.o2)} ppm<br/>
-        CO2: {Math.round(this.state.co2)} ppm<br/>
-        Light: {light ? "On" : "Off"}
         <br/>
         <input type="checkbox" name="time" checked={this.state.trackedVars.time} onChange={this.handleChange}/>Track Time
         <input type="checkbox" name="o2" checked={this.state.trackedVars.o2} onChange={this.handleChange}/>Track O2

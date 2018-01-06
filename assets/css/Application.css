@@ -3,3 +3,8 @@ body {
   font-family: Verdana;
   font-size: 1em;
 }
+
+button {
+  font-size: 1em;
+  margin: 5px;
+}

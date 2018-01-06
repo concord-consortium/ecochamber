@@ -1,0 +1,17 @@
+table {
+  border-collapse: separate;
+  border-spacing: 15px 5px;
+}
+
+table, td, th {
+  text-align: right;
+}
+
+.experiment-hud {
+  display: flex;
+  flex-direction: row;
+}
+
+.value-display .value {
+  text-align: right;
+}
