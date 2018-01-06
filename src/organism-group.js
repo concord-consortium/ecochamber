@@ -4,8 +4,8 @@ export const Organism = {
   PLANT: "PLANT",
   SNAIL: "SNAIL",
   properties: {
-    "PLANT": { label: "Plants", photosynthesisRate: 5, respirationRate: 1.25 },
-    "SNAIL": { label: "Snails", photosynthesisRate: 0, respirationRate: 1.25 }
+    "PLANT": { label: "Plants", photosynthesizes: true, respirationRate: 1 },
+    "SNAIL": { label: "Snails", photosynthesizes: false, respirationRate: 2 }
   }
 }
 

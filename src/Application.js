@@ -34,8 +34,8 @@ class Application extends React.Component {
   getDefaultExperimentState() {
     return {
       time: 0,
-      o2: 30,
-      co2: 30,
+      o2: 200000,
+      co2: 400,
       light: true,
       plantsNumber: 0,
       plantsStoredFood: 100,
@@ -44,14 +44,15 @@ class Application extends React.Component {
     }
   }
 
-  wait() {
+  wait(numSteps) {
     let { co2, o2, time } = this.state
     this.step([
-      {organismType: Organism.PLANT, numberKey: "plantsNumber", foodKey: "plantsStoredFood"}, 
-      {organismType: Organism.SNAIL, numberKey: "snailsNumber", foodKey: "snailsStoredFood"}
-    ])
-    this.setState({time: this.state.time + 1})
-    sendItems(this.createDataPoint());
+      {organismType: Organism.SNAIL, numberKey: "snailsNumber", foodKey: "snailsStoredFood"},
+      {organismType: Organism.PLANT, numberKey: "plantsNumber", foodKey: "plantsStoredFood"}
+    ], numSteps)
+    this.setState({time: this.state.time + numSteps}, () => {
+      sendItems(this.createDataPoint())
+    })
   }
 
   createDataPoint() {
@@ -62,10 +63,10 @@ class Application extends React.Component {
       dataPoint.hour = time
     }
     if (trackedVars.o2) {
-      dataPoint.O2 = o2
+      dataPoint.O2 = Math.round(o2)
     }
     if (trackedVars.co2) {
-      dataPoint.CO2 = co2
+      dataPoint.CO2 = Math.round(co2)
     }
     if (trackedVars.light) {
       extendDataSet("light")
@@ -91,59 +92,49 @@ class Application extends React.Component {
   }
 
   reset() {
-    this.setState(this.getDefaultExperimentState())
-    this.setState({experiment: this.state.experiment + 1})
+    let newState = this.getDefaultExperimentState()
+    newState.experiment = this.state.experiment + 1
+    this.setState(newState, () => {
+      sendItems(this.createDataPoint())
+    })
   }
 
-  step(organismInfos) {
-    let { co2, o2, light } = this.state
+  step(organismInfos, numSteps) {
+    let newState = Object.assign({}, this.state)
 
-    organismInfos.forEach(organismInfo => {
-      let {organismType, numberKey, foodKey} = organismInfo
-      let numOrganisms = this.state[numberKey]
-      let storedFood = this.state[foodKey]
+    for (let i = 0; i < numSteps; i++) {
+      organismInfos.forEach(organismInfo => {
+        let {organismType, numberKey} = organismInfo
 
-      if (numOrganisms === 0) {
-        return
-      }
-
-      let { photosynthesisRate, respirationRate } = Organism.properties[organismType]
-
-      let photosynthesisConversion = numOrganisms * photosynthesisRate
-      if (!light) {
-        photosynthesisConversion = 0
-      } else if (photosynthesisConversion > co2) {
-        photosynthesisConversion = co2
-      } else if (photosynthesisConversion > 0) {
-        storedFood += 6
-      }
-      o2 += photosynthesisConversion
-      co2 -= photosynthesisConversion
-
-      let respirationConversion = numOrganisms * respirationRate
-      if (respirationConversion > o2 || storedFood <= 0) {
-        respirationConversion = 0
-        numOrganisms = 0
-        storedFood = 100
-      } else {
-        // Assume that organisms that can't photosynthesize are auto-fed
-        if (photosynthesisRate > 0) {
-          storedFood -= 2
+        if (newState[numberKey] === 0) {
+          return
         }
-      }
-      o2 -= respirationConversion
-      co2 += respirationConversion
 
-      let newState = {}
-      newState[foodKey] = Math.max(storedFood, 0)
-      newState[numberKey] = numOrganisms
-      this.setState(newState)
-    })
+        let { respirationRate, photosynthesizes } = Organism.properties[organismType]
+
+        let respirationConversion = newState[numberKey] * respirationRate
+        if (respirationConversion > newState.o2) {
+          respirationConversion = newState.o2
+          newState[numberKey] = 0
+        }
+        newState.o2 -= respirationConversion
+        newState.co2 += respirationConversion
+
+        if (photosynthesizes) {
+          let photosynthesisRate = Math.max(Math.min((.02 * newState.co2) - 1, 7), 1)
+          let photosynthesisConversion = newState[numberKey] * photosynthesisRate
+          if (!newState.light) {
+            photosynthesisConversion = 0
+          } else if (photosynthesisConversion > newState.co2) {
+            photosynthesisConversion = newState.co2
+          }
+          newState.o2 += photosynthesisConversion
+          newState.co2 -= photosynthesisConversion
+        }
+      })
+    }
     
-    this.setState({
-      o2,
-      co2
-    })
+    this.setState(newState)
   }
 
   initApi(interpreter, scope) {
@@ -191,8 +182,8 @@ class Application extends React.Component {
       interpreter.createNativeFunction(wrapper));
 
     // Add an API function for the wait() block.
-    wrapper = function() {
-      _this.wait()
+    wrapper = function(numSteps) {
+      _this.wait(numSteps)
     }
     interpreter.setProperty(scope, 'wait',
       interpreter.createNativeFunction(wrapper));
@@ -225,7 +216,14 @@ class Application extends React.Component {
       <div>
         <button
           onClick={() => {
-            this.wait()
+            this.wait(1)
+          }}
+        >
+        Wait 1 Minute
+        </button>
+        <button
+          onClick={() => {
+            this.wait(60)
           }}
         >
         Wait 1 Hour
@@ -263,8 +261,8 @@ class Application extends React.Component {
         <OrganismGroup organismType={Organism.PLANT} numOrganisms={this.state.plantsNumber} storedFood={this.state.plantsStoredFood} />
         <OrganismGroup organismType={Organism.SNAIL} numOrganisms={this.state.snailsNumber} storedFood={this.state.snailsStoredFood} />
         Hour: {this.state.time}<br/>
-        O2: {this.state.o2} mL<br/>
-        CO2: {this.state.co2} mL<br/>
+        O2: {Math.round(this.state.o2)} ppm<br/>
+        CO2: {Math.round(this.state.co2)} ppm<br/>
         Light: {light ? "On" : "Off"}
         <br/>
         <input type="checkbox" name="time" checked={this.state.trackedVars.time} onChange={this.handleChange}/>Track Time

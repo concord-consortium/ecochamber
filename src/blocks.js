@@ -181,11 +181,11 @@ export function configureBlocks() {
     return 'setVar("' + varName + '", ' + argument0 + ');\n'
   };
 
-  // Wait block
-  Blockly.Blocks['wait'] = {
+  // Short wait block
+  Blockly.Blocks['waitMin'] = {
     init: function() {
       this.jsonInit({
-        "message0": "Wait 1 hr",
+        "message0": "Wait 1 Minute",
         "previousStatement": null,
         "nextStatement": null,
         "colour": "%{BKY_VARIABLES_HUE}",
@@ -193,8 +193,24 @@ export function configureBlocks() {
     }
   };
 
-  Blockly.JavaScript['wait'] = function(block) {
-    return 'wait();\n'
+  Blockly.JavaScript['waitMin'] = function(block) {
+    return 'wait(1);\n'
+  };
+
+  // Long wait block
+  Blockly.Blocks['waitHr'] = {
+    init: function() {
+      this.jsonInit({
+        "message0": "Wait 1 Hour",
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": "%{BKY_VARIABLES_HUE}",
+      })
+    }
+  };
+
+  Blockly.JavaScript['waitHr'] = function(block) {
+    return 'wait(60);\n'
   };
 
   // Reset block
