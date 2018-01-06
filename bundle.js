@@ -258,6 +258,21 @@ process.umask = function() { return 0; };
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+
+if (process.env.NODE_ENV === 'production') {
+  module.exports = __webpack_require__(17);
+} else {
+  module.exports = __webpack_require__(18);
+}
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 
 
 /**
@@ -294,21 +309,6 @@ emptyFunction.thatReturnsArgument = function (arg) {
 };
 
 module.exports = emptyFunction;
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {
-
-if (process.env.NODE_ENV === 'production') {
-  module.exports = __webpack_require__(17);
-} else {
-  module.exports = __webpack_require__(18);
-}
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
 /* 3 */
@@ -533,7 +533,7 @@ module.exports = invariant;
 
 
 
-var emptyFunction = __webpack_require__(1);
+var emptyFunction = __webpack_require__(2);
 
 /**
  * Similar to invariant but only logs a warning if the condition is not met.
@@ -709,7 +709,7 @@ module.exports = ExecutionEnvironment;
  * @typechecks
  */
 
-var emptyFunction = __webpack_require__(1);
+var emptyFunction = __webpack_require__(2);
 
 /**
  * Upstream version of event listener. Does not take into account specific
@@ -974,7 +974,7 @@ module.exports = __webpack_require__(16);
 "use strict";
 
 
-var _react = __webpack_require__(2);
+var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -990,7 +990,7 @@ var _application = __webpack_require__(37);
 
 var _application2 = _interopRequireDefault(_application);
 
-var _blocks = __webpack_require__(41);
+var _blocks = __webpack_require__(44);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1014,7 +1014,7 @@ document.addEventListener('DOMContentLoaded', function () {
  * LICENSE file in the root directory of this source tree.
  */
 
-var m=__webpack_require__(3),n=__webpack_require__(4),p=__webpack_require__(1),q="function"===typeof Symbol&&Symbol["for"],r=q?Symbol["for"]("react.element"):60103,t=q?Symbol["for"]("react.call"):60104,u=q?Symbol["for"]("react.return"):60105,v=q?Symbol["for"]("react.portal"):60106,w=q?Symbol["for"]("react.fragment"):60107,x="function"===typeof Symbol&&Symbol.iterator;
+var m=__webpack_require__(3),n=__webpack_require__(4),p=__webpack_require__(2),q="function"===typeof Symbol&&Symbol["for"],r=q?Symbol["for"]("react.element"):60103,t=q?Symbol["for"]("react.call"):60104,u=q?Symbol["for"]("react.return"):60105,v=q?Symbol["for"]("react.portal"):60106,w=q?Symbol["for"]("react.fragment"):60107,x="function"===typeof Symbol&&Symbol.iterator;
 function y(a){for(var b=arguments.length-1,e="Minified React error #"+a+"; visit http://facebook.github.io/react/docs/error-decoder.html?invariant\x3d"+a,c=0;c<b;c++)e+="\x26args[]\x3d"+encodeURIComponent(arguments[c+1]);b=Error(e+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings.");b.name="Invariant Violation";b.framesToPop=1;throw b;}
 var z={isMounted:function(){return!1},enqueueForceUpdate:function(){},enqueueReplaceState:function(){},enqueueSetState:function(){}};function A(a,b,e){this.props=a;this.context=b;this.refs=n;this.updater=e||z}A.prototype.isReactComponent={};A.prototype.setState=function(a,b){"object"!==typeof a&&"function"!==typeof a&&null!=a?y("85"):void 0;this.updater.enqueueSetState(this,a,b,"setState")};A.prototype.forceUpdate=function(a){this.updater.enqueueForceUpdate(this,a,"forceUpdate")};
 function B(a,b,e){this.props=a;this.context=b;this.refs=n;this.updater=e||z}function C(){}C.prototype=A.prototype;var D=B.prototype=new C;D.constructor=B;m(D,A.prototype);D.isPureReactComponent=!0;function E(a,b,e){this.props=a;this.context=b;this.refs=n;this.updater=e||z}var F=E.prototype=new C;F.constructor=E;m(F,A.prototype);F.unstable_isAsyncReactComponent=!0;F.render=function(){return this.props.children};var G={current:null},H=Object.prototype.hasOwnProperty,I={key:!0,ref:!0,__self:!0,__source:!0};
@@ -1054,7 +1054,7 @@ var _assign = __webpack_require__(3);
 var emptyObject = __webpack_require__(4);
 var invariant = __webpack_require__(6);
 var warning = __webpack_require__(7);
-var emptyFunction = __webpack_require__(1);
+var emptyFunction = __webpack_require__(2);
 var checkPropTypes = __webpack_require__(8);
 
 // TODO: this is special because it gets imported during build.
@@ -2475,7 +2475,7 @@ if (process.env.NODE_ENV === 'production') {
 /*
  Modernizr 3.0.0pre (Custom Build) | MIT
 */
-var aa=__webpack_require__(2),l=__webpack_require__(9),B=__webpack_require__(3),C=__webpack_require__(1),ba=__webpack_require__(10),da=__webpack_require__(11),ea=__webpack_require__(12),fa=__webpack_require__(13),ia=__webpack_require__(14),D=__webpack_require__(4);
+var aa=__webpack_require__(1),l=__webpack_require__(9),B=__webpack_require__(3),C=__webpack_require__(2),ba=__webpack_require__(10),da=__webpack_require__(11),ea=__webpack_require__(12),fa=__webpack_require__(13),ia=__webpack_require__(14),D=__webpack_require__(4);
 function E(a){for(var b=arguments.length-1,c="Minified React error #"+a+"; visit http://facebook.github.io/react/docs/error-decoder.html?invariant\x3d"+a,d=0;d<b;d++)c+="\x26args[]\x3d"+encodeURIComponent(arguments[d+1]);b=Error(c+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings.");b.name="Invariant Violation";b.framesToPop=1;throw b;}aa?void 0:E("227");
 var oa={children:!0,dangerouslySetInnerHTML:!0,defaultValue:!0,defaultChecked:!0,innerHTML:!0,suppressContentEditableWarning:!0,suppressHydrationWarning:!0,style:!0};function pa(a,b){return(a&b)===b}
 var ta={MUST_USE_PROPERTY:1,HAS_BOOLEAN_VALUE:4,HAS_NUMERIC_VALUE:8,HAS_POSITIVE_NUMERIC_VALUE:24,HAS_OVERLOADED_BOOLEAN_VALUE:32,HAS_STRING_BOOLEAN_VALUE:64,injectDOMPropertyConfig:function(a){var b=ta,c=a.Properties||{},d=a.DOMAttributeNamespaces||{},e=a.DOMAttributeNames||{};a=a.DOMMutationMethods||{};for(var f in c){ua.hasOwnProperty(f)?E("48",f):void 0;var g=f.toLowerCase(),h=c[f];g={attributeName:g,attributeNamespace:null,propertyName:f,mutationMethod:null,mustUseProperty:pa(h,b.MUST_USE_PROPERTY),
@@ -2772,12 +2772,12 @@ if (process.env.NODE_ENV !== "production") {
   (function() {
 'use strict';
 
-var React = __webpack_require__(2);
+var React = __webpack_require__(1);
 var invariant = __webpack_require__(6);
 var warning = __webpack_require__(7);
 var ExecutionEnvironment = __webpack_require__(9);
 var _assign = __webpack_require__(3);
-var emptyFunction = __webpack_require__(1);
+var emptyFunction = __webpack_require__(2);
 var EventListener = __webpack_require__(10);
 var getActiveElement = __webpack_require__(11);
 var shallowEqual = __webpack_require__(12);
@@ -20983,7 +20983,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(2);
+var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -20995,9 +20995,13 @@ var _organismGroup = __webpack_require__(38);
 
 var _organismGroup2 = _interopRequireDefault(_organismGroup);
 
-var _codapUtils = __webpack_require__(39);
+var _Experiment = __webpack_require__(39);
 
-var _presets = __webpack_require__(40);
+var _Experiment2 = _interopRequireDefault(_Experiment);
+
+var _codapUtils = __webpack_require__(41);
+
+var _presets = __webpack_require__(42);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21006,6 +21010,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+__webpack_require__(43);
 
 var Application = function (_React$Component) {
   _inherits(Application, _React$Component);
@@ -21041,8 +21047,8 @@ var Application = function (_React$Component) {
     value: function getDefaultExperimentState() {
       return {
         time: 0,
-        o2: 30,
-        co2: 30,
+        o2: 200000,
+        co2: 400,
         light: true,
         plantsNumber: 0,
         plantsStoredFood: 100,
@@ -21052,15 +21058,18 @@ var Application = function (_React$Component) {
     }
   }, {
     key: 'wait',
-    value: function wait() {
+    value: function wait(numSteps) {
+      var _this3 = this;
+
       var _state = this.state,
           co2 = _state.co2,
           o2 = _state.o2,
           time = _state.time;
 
-      this.step([{ organismType: _organismGroup.Organism.PLANT, numberKey: "plantsNumber", foodKey: "plantsStoredFood" }, { organismType: _organismGroup.Organism.SNAIL, numberKey: "snailsNumber", foodKey: "snailsStoredFood" }]);
-      this.setState({ time: this.state.time + 1 });
-      (0, _codapUtils.sendItems)(this.createDataPoint());
+      this.step([{ organismType: _organismGroup.Organism.SNAIL, numberKey: "snailsNumber", foodKey: "snailsStoredFood" }, { organismType: _organismGroup.Organism.PLANT, numberKey: "plantsNumber", foodKey: "plantsStoredFood" }], numSteps);
+      this.setState({ time: this.state.time + numSteps }, function () {
+        (0, _codapUtils.sendItems)(_this3.createDataPoint());
+      });
     }
   }, {
     key: 'createDataPoint',
@@ -21082,10 +21091,10 @@ var Application = function (_React$Component) {
         dataPoint.hour = time;
       }
       if (trackedVars.o2) {
-        dataPoint.O2 = o2;
+        dataPoint.O2 = Math.round(o2);
       }
       if (trackedVars.co2) {
-        dataPoint.CO2 = co2;
+        dataPoint.CO2 = Math.round(co2);
       }
       if (trackedVars.light) {
         (0, _codapUtils.extendDataSet)("light");
@@ -21112,72 +21121,57 @@ var Application = function (_React$Component) {
   }, {
     key: 'reset',
     value: function reset() {
-      this.setState(this.getDefaultExperimentState());
-      this.setState({ experiment: this.state.experiment + 1 });
+      var _this4 = this;
+
+      var newState = this.getDefaultExperimentState();
+      newState.experiment = this.state.experiment + 1;
+      this.setState(newState, function () {
+        (0, _codapUtils.sendItems)(_this4.createDataPoint());
+      });
     }
   }, {
     key: 'step',
-    value: function step(organismInfos) {
-      var _this3 = this;
+    value: function step(organismInfos, numSteps) {
+      var newState = Object.assign({}, this.state);
 
-      var _state3 = this.state,
-          co2 = _state3.co2,
-          o2 = _state3.o2,
-          light = _state3.light;
-
-
-      organismInfos.forEach(function (organismInfo) {
-        var organismType = organismInfo.organismType,
-            numberKey = organismInfo.numberKey,
-            foodKey = organismInfo.foodKey;
-
-        var numOrganisms = _this3.state[numberKey];
-        var storedFood = _this3.state[foodKey];
-
-        if (numOrganisms === 0) {
-          return;
-        }
-
-        var _Organism$properties$ = _organismGroup.Organism.properties[organismType],
-            photosynthesisRate = _Organism$properties$.photosynthesisRate,
-            respirationRate = _Organism$properties$.respirationRate;
+      for (var i = 0; i < numSteps; i++) {
+        organismInfos.forEach(function (organismInfo) {
+          var organismType = organismInfo.organismType,
+              numberKey = organismInfo.numberKey;
 
 
-        var photosynthesisConversion = numOrganisms * photosynthesisRate;
-        if (!light) {
-          photosynthesisConversion = 0;
-        } else if (photosynthesisConversion > co2) {
-          photosynthesisConversion = co2;
-        } else if (photosynthesisConversion > 0) {
-          storedFood += 6;
-        }
-        o2 += photosynthesisConversion;
-        co2 -= photosynthesisConversion;
-
-        var respirationConversion = numOrganisms * respirationRate;
-        if (respirationConversion > o2 || storedFood <= 0) {
-          respirationConversion = 0;
-          numOrganisms = 0;
-          storedFood = 100;
-        } else {
-          // Assume that organisms that can't photosynthesize are auto-fed
-          if (photosynthesisRate > 0) {
-            storedFood -= 2;
+          if (newState[numberKey] === 0) {
+            return;
           }
-        }
-        o2 -= respirationConversion;
-        co2 += respirationConversion;
 
-        var newState = {};
-        newState[foodKey] = Math.max(storedFood, 0);
-        newState[numberKey] = numOrganisms;
-        _this3.setState(newState);
-      });
+          var _Organism$properties$ = _organismGroup.Organism.properties[organismType],
+              respirationRate = _Organism$properties$.respirationRate,
+              photosynthesizes = _Organism$properties$.photosynthesizes;
 
-      this.setState({
-        o2: o2,
-        co2: co2
-      });
+
+          var respirationConversion = newState[numberKey] * respirationRate;
+          if (respirationConversion > newState.o2) {
+            respirationConversion = newState.o2;
+            newState[numberKey] = 0;
+          }
+          newState.o2 -= respirationConversion;
+          newState.co2 += respirationConversion;
+
+          if (photosynthesizes) {
+            var photosynthesisRate = Math.max(Math.min(.02 * newState.co2 - 1, 7), 1);
+            var photosynthesisConversion = newState[numberKey] * photosynthesisRate;
+            if (!newState.light) {
+              photosynthesisConversion = 0;
+            } else if (photosynthesisConversion > newState.co2) {
+              photosynthesisConversion = newState.co2;
+            }
+            newState.o2 += photosynthesisConversion;
+            newState.co2 -= photosynthesisConversion;
+          }
+        });
+      }
+
+      this.setState(newState);
     }
   }, {
     key: 'initApi',
@@ -21212,9 +21206,17 @@ var Application = function (_React$Component) {
       };
       interpreter.setProperty(scope, 'setVar', interpreter.createNativeFunction(wrapper));
 
+      // Add an API function for the incExpVar() block.
+      wrapper = function wrapper(varName) {
+        var newState = {};
+        newState[varName] = _this.state[varName] + 1;
+        _this.setState(newState);
+      };
+      interpreter.setProperty(scope, 'incVar', interpreter.createNativeFunction(wrapper));
+
       // Add an API function for the wait() block.
-      wrapper = function wrapper() {
-        _this.wait();
+      wrapper = function wrapper(numSteps) {
+        _this.wait(numSteps);
       };
       interpreter.setProperty(scope, 'wait', interpreter.createNativeFunction(wrapper));
 
@@ -21241,15 +21243,15 @@ var Application = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _this4 = this;
+      var _this5 = this;
 
-      var _state4 = this.state,
-          time = _state4.time,
-          o2 = _state4.o2,
-          co2 = _state4.co2,
-          plants = _state4.plants,
-          snails = _state4.snails,
-          light = _state4.light;
+      var _state3 = this.state,
+          time = _state3.time,
+          o2 = _state3.o2,
+          co2 = _state3.co2,
+          plants = _state3.plants,
+          snails = _state3.snails,
+          light = _state3.light;
 
       return _react2.default.createElement(
         'div',
@@ -21258,7 +21260,16 @@ var Application = function (_React$Component) {
           'button',
           {
             onClick: function onClick() {
-              _this4.wait();
+              _this5.wait(1);
+            }
+          },
+          'Wait 1 Minute'
+        ),
+        _react2.default.createElement(
+          'button',
+          {
+            onClick: function onClick() {
+              _this5.wait(60);
             }
           },
           'Wait 1 Hour'
@@ -21267,16 +21278,17 @@ var Application = function (_React$Component) {
           'button',
           {
             onClick: function onClick() {
-              _this4.setState({ light: !light });
+              _this5.setState({ light: !light });
             }
           },
-          'Toggle light'
+          'Turn light ',
+          light ? "off" : "on"
         ),
         _react2.default.createElement(
           'button',
           {
             onClick: function onClick() {
-              _this4.setState({ plantsNumber: _this4.state.plantsNumber + 1 });
+              _this5.setState({ plantsNumber: _this5.state.plantsNumber + 1 });
             }
           },
           'Add plant'
@@ -21285,7 +21297,7 @@ var Application = function (_React$Component) {
           'button',
           {
             onClick: function onClick() {
-              _this4.setState({ snailsNumber: _this4.state.snailsNumber + 1 });
+              _this5.setState({ snailsNumber: _this5.state.snailsNumber + 1 });
             }
           },
           'Add snail'
@@ -21294,24 +21306,25 @@ var Application = function (_React$Component) {
           'button',
           {
             onClick: function onClick() {
-              _this4.reset();
+              _this5.reset();
             }
           },
           'Reset simulation'
         ),
         _react2.default.createElement('br', null),
+        _react2.default.createElement(_Experiment2.default, { numPlants: this.state.plantsNumber, numSnails: this.state.snailsNumber, light: this.state.light }),
         _react2.default.createElement(_organismGroup2.default, { organismType: _organismGroup.Organism.PLANT, numOrganisms: this.state.plantsNumber, storedFood: this.state.plantsStoredFood }),
         _react2.default.createElement(_organismGroup2.default, { organismType: _organismGroup.Organism.SNAIL, numOrganisms: this.state.snailsNumber, storedFood: this.state.snailsStoredFood }),
         'Hour: ',
         this.state.time,
         _react2.default.createElement('br', null),
         'O2: ',
-        this.state.o2,
-        ' mL',
+        Math.round(this.state.o2),
+        ' ppm',
         _react2.default.createElement('br', null),
         'CO2: ',
-        this.state.co2,
-        ' mL',
+        Math.round(this.state.co2),
+        ' ppm',
         _react2.default.createElement('br', null),
         'Light: ',
         light ? "On" : "Off",
@@ -21337,7 +21350,7 @@ var Application = function (_React$Component) {
           'button',
           {
             onClick: function onClick() {
-              var _this = _this4;
+              var _this = _this5;
               var code = _browser2.default.JavaScript.workspaceToCode(_this.workspace);
               var myInterpreter = new Interpreter(code, _this.initApi.bind(_this));
               function nextStep() {
@@ -21356,7 +21369,7 @@ var Application = function (_React$Component) {
           'button',
           {
             onClick: function onClick() {
-              (0, _presets.loadPreset)(1, _this4.workspace);
+              (0, _presets.loadPreset)(1, _this5.workspace);
             }
           },
           'Preset 1'
@@ -21365,7 +21378,7 @@ var Application = function (_React$Component) {
           'button',
           {
             onClick: function onClick() {
-              (0, _presets.loadPreset)(2, _this4.workspace);
+              (0, _presets.loadPreset)(2, _this5.workspace);
             }
           },
           'Preset 2'
@@ -21374,7 +21387,7 @@ var Application = function (_React$Component) {
           'button',
           {
             onClick: function onClick() {
-              (0, _presets.loadPreset)(3, _this4.workspace);
+              (0, _presets.loadPreset)(3, _this5.workspace);
             }
           },
           'Preset 3'
@@ -21383,7 +21396,7 @@ var Application = function (_React$Component) {
           'button',
           {
             onClick: function onClick() {
-              (0, _presets.loadPreset)(5, _this4.workspace);
+              (0, _presets.loadPreset)(5, _this5.workspace);
             }
           },
           'Preset 4'
@@ -21392,7 +21405,7 @@ var Application = function (_React$Component) {
           'button',
           {
             onClick: function onClick() {
-              (0, _presets.loadPreset)(6, _this4.workspace);
+              (0, _presets.loadPreset)(6, _this5.workspace);
             }
           },
           'Preset 5'
@@ -21401,10 +21414,10 @@ var Application = function (_React$Component) {
           'button',
           {
             onClick: function onClick() {
-              var xml = _browser2.default.Xml.workspaceToDom(_this4.workspace);
+              var xml = _browser2.default.Xml.workspaceToDom(_this5.workspace);
               var xml_text = _browser2.default.Xml.domToText(xml);
+              console.clear();
               console.log(xml_text);
-              alert(xml_text);
             }
           },
           'Save Blockly Code'
@@ -21415,7 +21428,7 @@ var Application = function (_React$Component) {
             onClick: function onClick() {
               var xml_text = prompt("Paste your saved program:");
               var xml = _browser2.default.Xml.textToDom(xml_text);
-              _browser2.default.Xml.domToWorkspace(xml, _this4.workspace);
+              _browser2.default.Xml.domToWorkspace(xml, _this5.workspace);
             }
           },
           'Load Blockly Code'
@@ -21424,7 +21437,7 @@ var Application = function (_React$Component) {
           'button',
           {
             onClick: function onClick() {
-              _this4.workspace.clear();
+              _this5.workspace.clear();
             }
           },
           'Clear Blockly Code'
@@ -21452,7 +21465,7 @@ exports.Organism = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(2);
+var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -21468,8 +21481,8 @@ var Organism = exports.Organism = {
   PLANT: "PLANT",
   SNAIL: "SNAIL",
   properties: {
-    "PLANT": { label: "Plants", photosynthesisRate: 5, respirationRate: 1.25 },
-    "SNAIL": { label: "Snails", photosynthesisRate: 0, respirationRate: 1.25 }
+    "PLANT": { label: "Plants", photosynthesizes: true, respirationRate: 1 },
+    "SNAIL": { label: "Snails", photosynthesizes: false, respirationRate: 2 }
   }
 };
 
@@ -21511,6 +21524,68 @@ exports.default = OrganismGroup;
 
 /***/ }),
 /* 39 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+__webpack_require__(40);
+
+function getEvenlySpacedDivs(className, containerWidth, divWidth, numDivs) {
+  if (numDivs === 1) {
+    return [_react2.default.createElement('div', { className: className, key: className, style: { marginLeft: (containerWidth - divWidth) / 2 } })];
+  }
+
+  var divs = [];
+  for (var i = 0; i < numDivs; i++) {
+    var spacing = (containerWidth - divWidth) / (numDivs - 1);
+    divs.push(_react2.default.createElement('div', { className: className, key: className + "-" + i, style: { marginLeft: i * spacing } }));
+  }
+  return divs;
+}
+
+var Experiment = function Experiment(_ref) {
+  var numPlants = _ref.numPlants,
+      numSnails = _ref.numSnails,
+      light = _ref.light;
+
+  return _react2.default.createElement(
+    'div',
+    { className: 'experiment-container' },
+    _react2.default.createElement('div', { className: "bulb " + (light ? "" : "off") }),
+    _react2.default.createElement(
+      'div',
+      { className: 'jar' },
+      _react2.default.createElement(
+        'div',
+        { className: 'jar-contents' },
+        getEvenlySpacedDivs("leaf", 212, 100, numPlants),
+        getEvenlySpacedDivs("snail", 212, 77, numSnails)
+      )
+    )
+  );
+};
+
+exports.default = Experiment;
+
+/***/ }),
+/* 40 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21637,7 +21712,7 @@ function guaranteeCaseTable() {
 }
 
 /***/ }),
-/* 40 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21664,22 +21739,28 @@ function loadPreset(presetNum, workspace) {
 function getPreset(presetNum) {
   switch (presetNum) {
     case 1:
-      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id="@/(C}pI$Qqk3xOnPB?c!" x="42" y="42"><next><block type="set_experiment_num" id="2Bp|6$LCx%K{A#x=hWzm"><field name="VAR">plantsNumber</field><value name="VALUE"><block type="math_number" id="JKf%Oc:b#A_`s[,t_:2c"><field name="NUM">1</field></block></value><next><block type="wait" id=",m]=e:02!$L}G`[@2ot1"><next><block type="wait" id="xlf(ecX5jBW)t=w*xPhO"><next><block type="wait" id="TfnVg9exe~vBafmC/+/%"><next><block type="wait" id="[Ci#WIP1H$DcW/+CJK/G"><next><block type="wait" id="_xH{hk)?{!DN@3kP8=Rq"></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>';
+      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id="@/(C}pI$Qqk3xOnPB?c!" x="42" y="42"><next><block type="inc_experiment_num" id="GDu6Uw_dmdC$%0[-+35$"><field name="VAR">plantsNumber</field><next><block type="wait" id=",m]=e:02!$L}G`[@2ot1"><next><block type="wait" id="xlf(ecX5jBW)t=w*xPhO"><next><block type="wait" id="TfnVg9exe~vBafmC/+/%"><next><block type="wait" id="[Ci#WIP1H$DcW/+CJK/G"><next><block type="wait" id="_xH{hk)?{!DN@3kP8=Rq"></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>';
     case 2:
-      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id="@/(C}pI$Qqk3xOnPB?c!" x="39" y="49"><next><block type="set_experiment_num" id="2Bp|6$LCx%K{A#x=hWzm"><field name="VAR">plantsNumber</field><value name="VALUE"><block type="math_number" id="JKf%Oc:b#A_`s[,t_:2c"><field name="NUM">1</field></block></value><next><block type="controls_repeat_ext" id="pshQ9!1ly1bT7JuQQ;8O"><value name="TIMES"><block type="math_number" id="#B{t1LkJ~Z.e2fwz%~gh"><field name="NUM">20</field></block></value><statement name="DO"><block type="wait" id="_xH{hk)?{!DN@3kP8=Rq"></block></statement></block></next></block></next></block></xml>';
+      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id="@/(C}pI$Qqk3xOnPB?c!" x="39" y="49"><next><block type="inc_experiment_num" id="/(JOZM~{j2=F0q4G3aTL"><field name="VAR">plantsNumber</field><next><block type="controls_repeat_ext" id="pshQ9!1ly1bT7JuQQ;8O"><value name="TIMES"><block type="math_number" id="#B{t1LkJ~Z.e2fwz%~gh"><field name="NUM">20</field></block></value><statement name="DO"><block type="wait" id="_xH{hk)?{!DN@3kP8=Rq"></block></statement></block></next></block></next></block></xml>';
     case 3:
-      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id="@/(C}pI$Qqk3xOnPB?c!" x="39" y="49"><next><block type="set_experiment_num" id="2Bp|6$LCx%K{A#x=hWzm"><field name="VAR">plantsNumber</field><value name="VALUE"><block type="math_number" id="JKf%Oc:b#A_`s[,t_:2c"><field name="NUM">1</field></block></value><next><block type="controls_repeat_ext" id="pshQ9!1ly1bT7JuQQ;8O"><value name="TIMES"><block type="math_number" id="#B{t1LkJ~Z.e2fwz%~gh"><field name="NUM">20</field></block></value><statement name="DO"><block type="wait" id="_xH{hk)?{!DN@3kP8=Rq"></block></statement><next><block type="reset" id="]M*@@x8-/+fD4qFE]m1:"><next><block type="set_experiment_num" id="B*32~U9]ep)$PMJca-wn"><field name="VAR">plantsNumber</field><value name="VALUE"><block type="math_number" id="GTlr2d4*bgUq#/xqg{#f"><field name="NUM">1</field></block></value><next><block type="set_experiment_num" id=",fqIyDR^LdawQVbCr`a?"><field name="VAR">snailsNumber</field><value name="VALUE"><block type="math_number" id="3?p#;_AS0qTv+^vX]m_*"><field name="NUM">1</field></block></value><next><block type="controls_repeat_ext" id="6)c(X*V{K()$crqC0R;q" inline="true"><value name="TIMES"><block type="math_number" id="j9}IG;zo/qK6GK%^E:?F"><field name="NUM">20</field></block></value><statement name="DO"><block type="wait" id="oacur$j,t[3HuO%5_VPa"></block></statement></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>';
+      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id="@/(C}pI$Qqk3xOnPB?c!" x="39" y="49"><next><block type="inc_experiment_num" id="lPd[LaXUaFtj:nAH3@CS"><field name="VAR">plantsNumber</field><next><block type="controls_repeat_ext" id="pshQ9!1ly1bT7JuQQ;8O"><value name="TIMES"><block type="math_number" id="#B{t1LkJ~Z.e2fwz%~gh"><field name="NUM">20</field></block></value><statement name="DO"><block type="wait" id="_xH{hk)?{!DN@3kP8=Rq"></block></statement><next><block type="reset" id="]M*@@x8-/+fD4qFE]m1:"><next><block type="inc_experiment_num" id="-O+so/X8VdwnK=/q_cKk"><field name="VAR">plantsNumber</field><next><block type="inc_experiment_num" id="3@M(~zTq8.iR*}:^34r*"><field name="VAR">snailsNumber</field><next><block type="controls_repeat_ext" id="6)c(X*V{K()$crqC0R;q" inline="true"><value name="TIMES"><block type="math_number" id="j9}IG;zo/qK6GK%^E:?F"><field name="NUM">20</field></block></value><statement name="DO"><block type="wait" id="oacur$j,t[3HuO%5_VPa"></block></statement></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>';
     case 4:
       return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id=";XQ{a~0`^LpFmcfO.VT|" x="26" y="54"><next><block type="set_experiment_num" id="19Mv%m,usC77p7m)2gp_"><field name="VAR">plantsNumber</field><value name="VALUE"><block type="math_number" id="3,T64KF5ElLVvLc5$M^8"><field name="NUM">1</field></block></value><next><block type="controls_repeat_ext" id="uo%/H9{g:Zi65*9_ry{p"><value name="TIMES"><block type="math_number" id=";YQk1@JB.Y^uj=_SEMIB"><field name="NUM">20</field></block></value><statement name="DO"><block type="wait" id="u1s7M29@Hmtgbw/*E.^U"><next><block type="controls_if" id="r7BI,a0e`5];)Q{.wZ=h"><value name="IF0"><block type="logic_compare" id="x-_60oo.KA9Yf:4~[tJZ"><field name="OP">EQ</field><value name="A"><block type="get_experiment_num" id=":,^r{hi*`:q+zFFbJWU6"><field name="VAR">time</field></block></value><value name="B"><block type="math_number" id="D[``^5b;:tL0b@Pv(;6q"><field name="NUM">5</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="`!u/_p+G}[Jdwx:[u*oY"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="Zj%(yWD{H@#[TFcV#/A]"><field name="BOOL">FALSE</field></block></value></block></statement><next><block type="controls_if" id="`ovRngMMC(d${8yd#2QF"><value name="IF0"><block type="logic_compare" id="not~OvNp^y#7^6e_eYjy"><field name="OP">EQ</field><value name="A"><block type="get_experiment_num" id="mu7mhc9ad5aU`lLiAX*S"><field name="VAR">time</field></block></value><value name="B"><block type="math_number" id="*g$Zw5Yu3PCab;~*7~r+"><field name="NUM">10</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="=5eM%$B(7PEdLI2_561-"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="cuZi6$QID~)!]W(S#32K"><field name="BOOL">TRUE</field></block></value></block></statement><next><block type="controls_if" id="qYoz7oKaZBCqFrqPx@Fe"><value name="IF0"><block type="logic_compare" id="S:SO2.(Lv-u%9+|v!+|C"><field name="OP">EQ</field><value name="A"><block type="get_experiment_num" id="|LS3cPNW5)=dm8iM#(e*"><field name="VAR">time</field></block></value><value name="B"><block type="math_number" id="fQ@q=nX36k:ru;j$.1)q"><field name="NUM">15</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="*Lf~y,=A:|$k#LckbX*9"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="Zd:v)xx%+WM}*ATDz=nw"><field name="BOOL">FALSE</field></block></value></block></statement><next><block type="controls_if" id="W1mj@p#Lk1hW!U4%|XFN"><value name="IF0"><block type="logic_compare" id="^)t,tjq5^w}CmzZc968k"><field name="OP">EQ</field><value name="A"><block type="get_experiment_num" id="$%7[iJwUV~~Dy2u+c4w_"><field name="VAR">time</field></block></value><value name="B"><block type="math_number" id="%6D3+}CnKq^,TDvZScL_"><field name="NUM">20</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="7Sjmxff0Z^jGpY5O6ohx"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="?18Y]ZUf^S6=JGrtaOfU"><field name="BOOL">TRUE</field></block></value></block></statement></block></next></block></next></block></next></block></next></block></statement></block></next></block></next></block></xml>';
     case 5:
-      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id=";XQ{a~0`^LpFmcfO.VT|" x="32" y="45"><next><block type="set_experiment_num" id="19Mv%m,usC77p7m)2gp_"><field name="VAR">plantsNumber</field><value name="VALUE"><block type="math_number" id="3,T64KF5ElLVvLc5$M^8"><field name="NUM">1</field></block></value><next><block type="controls_repeat_ext" id="uo%/H9{g:Zi65*9_ry{p"><value name="TIMES"><block type="math_number" id=";YQk1@JB.Y^uj=_SEMIB"><field name="NUM">5</field></block></value><statement name="DO"><block type="controls_repeat_ext" id="zNjQltD%[G68;dbnfYM;"><value name="TIMES"><block type="math_number" id="D[``^5b;:tL0b@Pv(;6q"><field name="NUM">5</field></block></value><statement name="DO"><block type="wait" id="6dEr]g3lvpj5am^C!,-P"></block></statement><next><block type="controls_if" id="r7BI,a0e`5];)Q{.wZ=h"><mutation else="1"></mutation><value name="IF0"><block type="get_experiment_bool" id="P+6[]3%pz*1ky6$kRCz:"><field name="VAL">light</field><value name="BOOL"><block type="on_off_bool" id="Zj%(yWD{H@#[TFcV#/A]"><field name="BOOL">TRUE</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="`!u/_p+G}[Jdwx:[u*oY"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="WG+^s{a]A|]LpYIwbm(Y"><field name="BOOL">FALSE</field></block></value></block></statement><statement name="ELSE"><block type="set_experiment_bool" id="r_[0yd$mu]ITYw,^[Y=;"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="#2D9ddCUffN-YX~R@c{z"><field name="BOOL">TRUE</field></block></value></block></statement></block></next></block></statement></block></next></block></next></block></xml>';
+      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id=";XQ{a~0`^LpFmcfO.VT|" x="32" y="45"><next><block type="inc_experiment_num" id="rUah:}V-I+`wa##jOF{n"><field name="VAR">plantsNumber</field><next><block type="controls_repeat_ext" id="uo%/H9{g:Zi65*9_ry{p"><value name="TIMES"><block type="math_number" id=";YQk1@JB.Y^uj=_SEMIB"><field name="NUM">5</field></block></value><statement name="DO"><block type="controls_repeat_ext" id="zNjQltD%[G68;dbnfYM;"><value name="TIMES"><block type="math_number" id="D[``^5b;:tL0b@Pv(;6q"><field name="NUM">5</field></block></value><statement name="DO"><block type="wait" id="6dEr]g3lvpj5am^C!,-P"></block></statement><next><block type="controls_if" id="r7BI,a0e`5];)Q{.wZ=h"><mutation else="1"></mutation><value name="IF0"><block type="get_experiment_bool" id="P+6[]3%pz*1ky6$kRCz:"><field name="VAL">light</field><value name="BOOL"><block type="on_off_bool" id="Zj%(yWD{H@#[TFcV#/A]"><field name="BOOL">TRUE</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="`!u/_p+G}[Jdwx:[u*oY"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="WG+^s{a]A|]LpYIwbm(Y"><field name="BOOL">FALSE</field></block></value></block></statement><statement name="ELSE"><block type="set_experiment_bool" id="r_[0yd$mu]ITYw,^[Y=;"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="#2D9ddCUffN-YX~R@c{z"><field name="BOOL">TRUE</field></block></value></block></statement></block></next></block></statement></block></next></block></next></block></xml>';
     case 6:
-      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id=";XQ{a~0`^LpFmcfO.VT|" x="41" y="60"><next><block type="set_experiment_num" id="19Mv%m,usC77p7m)2gp_"><field name="VAR">plantsNumber</field><value name="VALUE"><block type="math_number" id="3,T64KF5ElLVvLc5$M^8"><field name="NUM">1</field></block></value><next><block type="controls_repeat_ext" id="uo%/H9{g:Zi65*9_ry{p"><value name="TIMES"><block type="math_number" id=";YQk1@JB.Y^uj=_SEMIB"><field name="NUM">25</field></block></value><statement name="DO"><block type="wait" id="u1s7M29@Hmtgbw/*E.^U"><next><block type="controls_if" id="NX9+S`%{cQLO2/;Zg4#h"><value name="IF0"><block type="logic_compare" id="urVA]gzjYJ6R?~:7}E?R"><field name="OP">LT</field><value name="A"><block type="get_experiment_num" id="_M/8;Po|Zx5kL0F@_pb-"><field name="VAR">co2</field></block></value><value name="B"><block type="math_number" id=";x/;_%:yTO084[%]}C:F"><field name="NUM">20</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="_JWR5,H08(m?xKkC(Pt|"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="f!WS!:gl/!NY9rt#qMAM"><field name="BOOL">FALSE</field></block></value></block></statement><next><block type="controls_if" id="G`#52tv]qdEZaC0.tw0y"><value name="IF0"><block type="logic_compare" id="?hX.J#ZEb#Q,4)$d4RFm"><field name="OP">GT</field><value name="A"><block type="get_experiment_num" id="HA_k=d^$HEw/OR}}uQi]"><field name="VAR">co2</field></block></value><value name="B"><block type="math_number" id="xY^kZ[3?Si=,kZF(1s)Q"><field name="NUM">20</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="Hh6d}WN14N6wvvlxFW4Y"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="2Ou=Te^OcW-Z?!dD3@.9"><field name="BOOL">TRUE</field></block></value></block></statement></block></next></block></next></block></statement></block></next></block></next></block></xml>';
+      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id=";XQ{a~0`^LpFmcfO.VT|" x="41" y="60"><next><block type="inc_experiment_num" id="R}Mme:mIUO*gLe6R5C]/"><field name="VAR">plantsNumber</field><next><block type="controls_repeat_ext" id="uo%/H9{g:Zi65*9_ry{p"><value name="TIMES"><block type="math_number" id=";YQk1@JB.Y^uj=_SEMIB"><field name="NUM">25</field></block></value><statement name="DO"><block type="wait" id="u1s7M29@Hmtgbw/*E.^U"><next><block type="controls_if" id="NX9+S`%{cQLO2/;Zg4#h"><value name="IF0"><block type="logic_compare" id="urVA]gzjYJ6R?~:7}E?R"><field name="OP">LT</field><value name="A"><block type="get_experiment_num" id="_M/8;Po|Zx5kL0F@_pb-"><field name="VAR">co2</field></block></value><value name="B"><block type="math_number" id=";x/;_%:yTO084[%]}C:F"><field name="NUM">20</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="_JWR5,H08(m?xKkC(Pt|"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="f!WS!:gl/!NY9rt#qMAM"><field name="BOOL">FALSE</field></block></value></block></statement><next><block type="controls_if" id="G`#52tv]qdEZaC0.tw0y"><value name="IF0"><block type="logic_compare" id="?hX.J#ZEb#Q,4)$d4RFm"><field name="OP">GT</field><value name="A"><block type="get_experiment_num" id="HA_k=d^$HEw/OR}}uQi]"><field name="VAR">co2</field></block></value><value name="B"><block type="math_number" id="xY^kZ[3?Si=,kZF(1s)Q"><field name="NUM">20</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="Hh6d}WN14N6wvvlxFW4Y"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="2Ou=Te^OcW-Z?!dD3@.9"><field name="BOOL">TRUE</field></block></value></block></statement></block></next></block></next></block></statement></block></next></block></next></block></xml>';
   }
 }
 
 /***/ }),
-/* 41 */
+/* 43 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21799,11 +21880,34 @@ function configureBlocks() {
     return 'setVar("' + varName + '", ' + argument0 + ');\n';
   };
 
+  // Number variable incrementer
+  _browser2.default.Blocks['inc_experiment_num'] = {
+    init: function init() {
+      this.jsonInit({
+        "message0": "Add %1",
+        "args0": [{
+          "type": "field_dropdown",
+          "name": "VAR",
+          "options": [["plant", "plantsNumber"], ["snail", "snailsNumber"]]
+        }],
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": "%{BKY_VARIABLES_HUE}",
+        "tooltip": "%{BKY_VARIABLES_SET_TOOLTIP}"
+      });
+    }
+  };
+
+  _browser2.default.JavaScript['inc_experiment_num'] = function (block) {
+    var varName = block.getFieldValue('VAR');
+    return 'incVar("' + varName + '");\n';
+  };
+
   // Boolean variable setter
   _browser2.default.Blocks['set_experiment_bool'] = {
     init: function init() {
       this.jsonInit({
-        "message0": "%{BKY_VARIABLES_SET}",
+        "message0": "Turn %1 %2",
         "args0": [{
           "type": "field_dropdown",
           "name": "VAR",
@@ -21827,11 +21931,11 @@ function configureBlocks() {
     return 'setVar("' + varName + '", ' + argument0 + ');\n';
   };
 
-  // Wait block
-  _browser2.default.Blocks['wait'] = {
+  // Short wait block
+  _browser2.default.Blocks['waitMin'] = {
     init: function init() {
       this.jsonInit({
-        "message0": "Wait 1 hr",
+        "message0": "Wait 1 Minute",
         "previousStatement": null,
         "nextStatement": null,
         "colour": "%{BKY_VARIABLES_HUE}"
@@ -21839,8 +21943,24 @@ function configureBlocks() {
     }
   };
 
-  _browser2.default.JavaScript['wait'] = function (block) {
-    return 'wait();\n';
+  _browser2.default.JavaScript['waitMin'] = function (block) {
+    return 'wait(1);\n';
+  };
+
+  // Long wait block
+  _browser2.default.Blocks['waitHr'] = {
+    init: function init() {
+      this.jsonInit({
+        "message0": "Wait 1 Hour",
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": "%{BKY_VARIABLES_HUE}"
+      });
+    }
+  };
+
+  _browser2.default.JavaScript['waitHr'] = function (block) {
+    return 'wait(60);\n';
   };
 
   // Reset block
