@@ -181,6 +181,22 @@ export function configureBlocks() {
     return 'setVar("' + varName + '", ' + argument0 + ');\n'
   };
 
+  // Record data block
+  Blockly.Blocks['recordData'] = {
+    init: function() {
+      this.jsonInit({
+        "message0": "Record Data Point",
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": "%{BKY_VARIABLES_HUE}",
+      })
+    }
+  };
+
+  Blockly.JavaScript['recordData'] = function(block) {
+    return 'recordData();\n'
+  };
+
   // Short wait block
   Blockly.Blocks['waitMin'] = {
     init: function() {

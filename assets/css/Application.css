@@ -8,3 +8,8 @@ button {
   font-size: 1em;
   margin: 5px;
 }
+
+.experiment-ui {
+  display: flex;
+  align-items: center;
+}

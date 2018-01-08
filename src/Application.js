@@ -3,6 +3,7 @@ import Blockly from 'node-blockly/browser';
 import OrganismGroup, { Organism } from './organism-group';
 import Experiment from './Experiment';
 import ExperimentHUD from './ExperimentHUD';
+import DataCollection from './DataCollection';
 import { initCodap, sendItems, extendDataSet } from './codap-utils';
 import { loadPreset } from './presets';
 
@@ -28,6 +29,7 @@ class Application extends React.Component {
       {toolbox: document.getElementById('toolbox')});
 
     this.handleChange = this.handleChange.bind(this)
+    this.createDataPoint = this.createDataPoint.bind(this)
 
     initCodap()
   }
@@ -51,9 +53,7 @@ class Application extends React.Component {
       {organismType: Organism.SNAIL, numberKey: "snailsNumber", foodKey: "snailsStoredFood"},
       {organismType: Organism.PLANT, numberKey: "plantsNumber", foodKey: "plantsStoredFood"}
     ], numSteps)
-    this.setState({time: this.state.time + numSteps}, () => {
-      sendItems(this.createDataPoint())
-    })
+    this.setState({time: this.state.time + numSteps})
   }
 
   createDataPoint() {
@@ -182,6 +182,13 @@ class Application extends React.Component {
     interpreter.setProperty(scope, 'incVar',
       interpreter.createNativeFunction(wrapper));
 
+    // Add an API function for the recordData() block.
+    wrapper = function(numSteps) {
+      sendItems(_this.createDataPoint())
+    }
+    interpreter.setProperty(scope, 'recordData',
+      interpreter.createNativeFunction(wrapper));
+
     // Add an API function for the wait() block.
     wrapper = function(numSteps) {
       _this.wait(numSteps)
@@ -227,7 +234,10 @@ class Application extends React.Component {
             { label: "Light", value: light ? "On" : "Off"}
           ]
         ]}/>
-        <Experiment numPlants={this.state.plantsNumber} numSnails={this.state.snailsNumber} light={this.state.light}/>
+        <div className="experiment-ui">
+          <Experiment numPlants={this.state.plantsNumber} numSnails={this.state.snailsNumber} light={this.state.light}/>
+          <DataCollection trackedVars={this.state.trackedVars} handleChange={this.handleChange} createDataPoint={this.createDataPoint} />
+        </div>
         <button
           onClick={() => {
             this.wait(1)
@@ -271,14 +281,6 @@ class Application extends React.Component {
         Reset simulation
         </button>
         <br/>
-        <input type="checkbox" name="time" checked={this.state.trackedVars.time} onChange={this.handleChange}/>Track Time
-        <input type="checkbox" name="o2" checked={this.state.trackedVars.o2} onChange={this.handleChange}/>Track O2
-        <input type="checkbox" name="co2" checked={this.state.trackedVars.co2} onChange={this.handleChange}/>Track CO2
-        <input type="checkbox" name="light" checked={this.state.trackedVars.light} onChange={this.handleChange}/>Track Light
-        <input type="checkbox" name="plantsNumber" checked={this.state.trackedVars.plantsNumber} onChange={this.handleChange}/>Track Plant Population
-        <input type="checkbox" name="snailsNumber" checked={this.state.trackedVars.snailsNumber} onChange={this.handleChange}/>Track Snail Population
-        <input type="checkbox" name="plantsStoredFood" checked={this.state.trackedVars.plantsStoredFood} onChange={this.handleChange}/>Track Stored Plant Food
-        <input type="checkbox" name="snailsStoredFood" checked={this.state.trackedVars.snailsStoredFood} onChange={this.handleChange}/>Track Stored Snail Food
         <br/>
         <button
           onClick={() => {

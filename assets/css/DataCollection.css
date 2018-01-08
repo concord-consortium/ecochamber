@@ -1,0 +1,17 @@
+.data-collection {
+  margin-left: 30px;
+  border-width: 3px;
+  border-style: solid;
+}
+
+.data-box {
+  display: flex;
+}
+
+.collector-label {
+  margin-left: 5px;
+}
+
+.data-button {
+  margin-top: 10px;
+}
