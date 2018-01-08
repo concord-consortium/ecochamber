@@ -21398,7 +21398,7 @@ var Application = function (_React$Component) {
       return _react2.default.createElement(
         'div',
         { className: 'ecochamber-app' },
-        _react2.default.createElement(_ExperimentHUD2.default, { colInfos: [[{ label: "Hour", value: time }, { label: "O2", value: Math.round(o2), unit: "ppm" }, { label: "CO2", value: Math.round(co2), unit: "ppm" }], [{ label: "Plant population", value: plantsNumber }, { label: "Snail population", value: snailsNumber }, { label: "Light", value: light ? "On" : "Off" }]] }),
+        _react2.default.createElement(_ExperimentHUD2.default, { colInfos: [[{ label: "Time", value: time }, { label: "O2", value: Math.round(o2), unit: "ppm" }, { label: "CO2", value: Math.round(co2), unit: "ppm" }], [{ label: "Plant population", value: plantsNumber }, { label: "Snail population", value: snailsNumber }, { label: "Light", value: light ? "On" : "Off" }]] }),
         _react2.default.createElement(
           'div',
           { className: 'experiment-ui' },
@@ -21430,7 +21430,7 @@ var Application = function (_React$Component) {
               _this4.wait(1);
             }
           },
-          'Wait 1 Minute'
+          'Wait 1 minute'
         ),
         _react2.default.createElement(
           'button',
@@ -21439,7 +21439,7 @@ var Application = function (_React$Component) {
               _this4.wait(60);
             }
           },
-          'Wait 1 Hour'
+          'Wait 1 hour'
         ),
         _react2.default.createElement(
           'button',
@@ -21482,7 +21482,7 @@ var Application = function (_React$Component) {
                 nextStep();
               }
             },
-            'Run Program'
+            'Run program'
           ),
           _react2.default.createElement(
             'button',
@@ -21494,7 +21494,7 @@ var Application = function (_React$Component) {
                 console.log(xml_text);
               }
             },
-            'Save Program'
+            'Save program'
           ),
           _react2.default.createElement(
             'button',
@@ -21505,7 +21505,7 @@ var Application = function (_React$Component) {
                 _browser2.default.Xml.domToWorkspace(xml, _this4.workspace);
               }
             },
-            'Load Program'
+            'Load program'
           ),
           _react2.default.createElement(
             'button',
@@ -21514,7 +21514,7 @@ var Application = function (_React$Component) {
                 _this4.workspace.clear();
               }
             },
-            'Clear Program'
+            'Clear program'
           )
         ),
         _react2.default.createElement(
@@ -21847,7 +21847,7 @@ var DataCollection = function DataCollection(_ref) {
           (0, _codapUtils.sendItems)(createDataPoint());
         }
       },
-      'Record Data Point'
+      'Record data point'
     )
   );
 };
@@ -22084,7 +22084,7 @@ function configureBlocks() {
   _browser2.default.Blocks['recordData'] = {
     init: function init() {
       this.jsonInit({
-        "message0": "Record Data Point",
+        "message0": "Record data point",
         "previousStatement": null,
         "nextStatement": null,
         "colour": "%{BKY_VARIABLES_HUE}"
