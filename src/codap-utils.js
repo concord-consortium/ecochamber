@@ -56,7 +56,7 @@ export function initCodap() {
   codapInterface.init({
     name: kDataSetName,
     title: kAppName,
-    dimensions: {width: 870, height: 540},
+    dimensions: {width: 750, height: 800},
     version: '0.1'
   }).then(function (iResult) {
     return requestDataContext(kDataSetName);

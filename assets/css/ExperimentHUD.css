@@ -10,6 +10,7 @@ table, td, th {
 .experiment-hud {
   display: flex;
   flex-direction: row;
+  margin-left: 90px;
 }
 
 .value-display .value {

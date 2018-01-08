@@ -9,7 +9,16 @@ button {
   margin: 5px;
 }
 
+.ecochamber-app {
+  width: 725px;
+}
+
 .experiment-ui {
   display: flex;
   align-items: center;
+}
+
+.blockly-controls {
+  width: 100%;
+  display: flex;
 }

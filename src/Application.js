@@ -25,13 +25,16 @@ class Application extends React.Component {
       light: false
     }
     this.state = defaultState
-    this.workspace = Blockly.inject('blocklyDiv',
-      {toolbox: document.getElementById('toolbox')});
 
     this.handleChange = this.handleChange.bind(this)
     this.createDataPoint = this.createDataPoint.bind(this)
 
     initCodap()
+  }
+
+  componentDidMount() {
+    this.workspace = Blockly.inject('blockly-div',
+          {toolbox: document.getElementById('toolbox')});
   }
 
   getDefaultExperimentState() {
@@ -221,7 +224,7 @@ class Application extends React.Component {
   render() {
     const { time, o2, co2, plantsNumber, snailsNumber, light } = this.state
     return (
-      <div>
+      <div className="ecochamber-app">
         <ExperimentHUD colInfos={[
           [
             { label: "Hour", value: time},
@@ -240,27 +243,6 @@ class Application extends React.Component {
         </div>
         <button
           onClick={() => {
-            this.wait(1)
-          }}
-        >
-        Wait 1 Minute
-        </button>
-        <button
-          onClick={() => {
-            this.wait(60)
-          }}
-        >
-        Wait 1 Hour
-        </button>
-        <button
-          onClick={() => {
-            this.setState({light: !light})
-          }}
-        >
-        Turn light {light ? "off" : "on"}
-        </button>
-        <button
-          onClick={() => {
             this.setState({plantsNumber: this.state.plantsNumber + 1})
           }}
         >
@@ -275,6 +257,27 @@ class Application extends React.Component {
         </button>
         <button
           onClick={() => {
+            this.wait(1)
+          }}
+        >
+        Wait 1 Minute
+        </button>
+        <button
+          onClick={() => {
+            this.wait(60)
+          }}
+        >
+        Wait 1 Hour
+        </button>
+        <button style={{width: 114}}
+          onClick={() => {
+            this.setState({light: !light})
+          }}
+        >
+        Turn light {light ? "off" : "on"}
+        </button>
+        <button
+          onClick={() => {
             this.reset()
           }}
         >
@@ -282,91 +285,89 @@ class Application extends React.Component {
         </button>
         <br/>
         <br/>
-        <button
-          onClick={() => {
-            var _this = this
-            var code = Blockly.JavaScript.workspaceToCode(_this.workspace);
-            var myInterpreter = new Interpreter(code, _this.initApi.bind(_this));
-            function nextStep() {
-              if (myInterpreter.step()) {
-                window.setTimeout(nextStep, 10);
-              } else {
-                _this.workspace.highlightBlock(null)
+        <div className="blockly-controls">
+          <button
+            onClick={() => {
+              var _this = this
+              var code = Blockly.JavaScript.workspaceToCode(_this.workspace);
+              var myInterpreter = new Interpreter(code, _this.initApi.bind(_this));
+              function nextStep() {
+                if (myInterpreter.step()) {
+                  window.setTimeout(nextStep, 10);
+                } else {
+                  _this.workspace.highlightBlock(null)
+                }
               }
-            }
-            nextStep();
-          }}
-        >
-        Run Blockly code
-        </button>
-        <button
-          onClick={() => {
-            loadPreset(1, this.workspace)
-          }}
-        >
-        Preset 1
-        </button>
-        <button
-          onClick={() => {
-            loadPreset(2, this.workspace)
-          }}
-        >
-        Preset 2
-        </button>
-        <button
-          onClick={() => {
-            loadPreset(3, this.workspace)
-          }}
-        >
-        Preset 3
-        </button>
-        {/*<button
-          onClick={() => {
-            loadPreset(4, this.workspace)
-          }}
-        >
-        Preset 4
-        </button>*/}
-        <button
-          onClick={() => {
-            loadPreset(5, this.workspace)
-          }}
-        >
-        Preset 4
-        </button>
-        <button
-          onClick={() => {
-            loadPreset(6, this.workspace)
-          }}
-        >
-        Preset 5
-        </button>
-        <button
-          onClick={() => {
-            var xml = Blockly.Xml.workspaceToDom(this.workspace)
-            var xml_text = Blockly.Xml.domToText(xml)
-            console.clear()
-            console.log(xml_text)
-          }}
-        >
-        Save Blockly Code
-        </button>
-        <button
-          onClick={() => {
-            var xml_text = prompt("Paste your saved program:")
-            var xml = Blockly.Xml.textToDom(xml_text)
-            Blockly.Xml.domToWorkspace(xml, this.workspace)
-          }}
-        >
-        Load Blockly Code
-        </button>
-        <button
-          onClick={() => {
-            this.workspace.clear()
-          }}
-        >
-        Clear Blockly Code
-        </button>
+              nextStep();
+            }}
+          >
+          Run Program
+          </button>
+          <button
+            onClick={() => {
+              var xml = Blockly.Xml.workspaceToDom(this.workspace)
+              var xml_text = Blockly.Xml.domToText(xml)
+              console.clear()
+              console.log(xml_text)
+            }}
+          >
+          Save Program
+          </button>
+          <button
+            onClick={() => {
+              var xml_text = prompt("Paste your saved program:")
+              var xml = Blockly.Xml.textToDom(xml_text)
+              Blockly.Xml.domToWorkspace(xml, this.workspace)
+            }}
+          >
+          Load Program
+          </button>
+          <button
+            onClick={() => {
+              this.workspace.clear()
+            }}
+          >
+          Clear Program
+          </button>
+        </div>
+        <div className="blockly-presets">
+          <button
+            onClick={() => {
+              loadPreset(1, this.workspace)
+            }}
+          >
+          Example 1
+          </button>
+          <button
+            onClick={() => {
+              loadPreset(2, this.workspace)
+            }}
+          >
+          Example 2
+          </button>
+          <button
+            onClick={() => {
+              loadPreset(3, this.workspace)
+            }}
+          >
+          Example 3
+          </button>
+          <button
+            onClick={() => {
+              loadPreset(5, this.workspace)
+            }}
+          >
+          Example 4
+          </button>
+          <button
+            onClick={() => {
+              loadPreset(6, this.workspace)
+            }}
+          >
+          Example 5
+          </button>
+        </div>
+        <div id="blockly-div" style={{width: 725, height: 600}}></div>
       </div>
     );
   }
