@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 15);
+/******/ 	return __webpack_require__(__webpack_require__.s = 16);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -261,9 +261,9 @@ process.umask = function() { return 0; };
 /* WEBPACK VAR INJECTION */(function(process) {
 
 if (process.env.NODE_ENV === 'production') {
-  module.exports = __webpack_require__(17);
-} else {
   module.exports = __webpack_require__(18);
+} else {
+  module.exports = __webpack_require__(19);
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
@@ -435,7 +435,7 @@ module.exports = emptyObject;
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Blockly = __webpack_require__(29);
+var Blockly = __webpack_require__(30);
 
 Blockly.setLocale = function(locale) {
   Blockly.Msg = Object.assign(locale, Blockly.Msg);
@@ -446,15 +446,15 @@ Blockly.utils.getMessageArray_ = function () {
   return Blockly.Msg
 }
 
-Blockly.setLocale(__webpack_require__(30))
+Blockly.setLocale(__webpack_require__(31))
 
-Blockly.Blocks = Object.assign(Blockly.Blocks, __webpack_require__(31)(Blockly));
+Blockly.Blocks = Object.assign(Blockly.Blocks, __webpack_require__(32)(Blockly));
 
-Blockly.JavaScript = __webpack_require__(32)(Blockly);
-Blockly.Lua = __webpack_require__(33)(Blockly);
-Blockly.Dart = __webpack_require__(34)(Blockly);
-Blockly.PHP = __webpack_require__(35)(Blockly);
-Blockly.Python = __webpack_require__(36)(Blockly);
+Blockly.JavaScript = __webpack_require__(33)(Blockly);
+Blockly.Lua = __webpack_require__(34)(Blockly);
+Blockly.Dart = __webpack_require__(35)(Blockly);
+Blockly.PHP = __webpack_require__(36)(Blockly);
+Blockly.Python = __webpack_require__(37)(Blockly);
 
 module.exports = Blockly;
 
@@ -604,7 +604,7 @@ module.exports = warning;
 if (process.env.NODE_ENV !== 'production') {
   var invariant = __webpack_require__(6);
   var warning = __webpack_require__(7);
-  var ReactPropTypesSecret = __webpack_require__(19);
+  var ReactPropTypesSecret = __webpack_require__(20);
   var loggedTypeFailures = {};
 }
 
@@ -903,7 +903,7 @@ module.exports = shallowEqual;
  * 
  */
 
-var isTextNode = __webpack_require__(22);
+var isTextNode = __webpack_require__(23);
 
 /*eslint-disable no-bitwise */
 
@@ -964,11 +964,138 @@ module.exports = focusNode;
 /* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(16);
+"use strict";
 
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.extendDataSet = extendDataSet;
+exports.initCodap = initCodap;
+exports.sendItems = sendItems;
+exports.sendLog = sendLog;
+var kDataSetName = 'Experimental Output',
+    kAppName = "Ecochamber Experiment",
+    kDataSetTemplate = {
+  name: "{name}",
+  collections: [{
+    name: "experiment_runs",
+    attrs: [{ name: "experiment_number", type: "categorical" }]
+  }, {
+    name: 'experimental_output',
+    parent: 'experiment_runs',
+    labels: {
+      pluralCase: "experimental_outputs",
+      setOfCasesWithArticle: "a sample"
+    },
+    attrs: [{ name: "hour", type: 'numeric', precision: 1 }, { name: "CO2", unit: "mL", type: 'numeric', precision: 2 }, { name: "O2", unit: "mL", type: 'numeric', precision: 2 }]
+  }]
+};
+
+function extendDataSet(newAttr) {
+  codapInterface.sendRequest({
+    action: 'create',
+    resource: "dataContext[Experimental Output].collection[experimental_output].attribute",
+    "values": [{
+      name: newAttr,
+      type: "numeric",
+      precision: 1
+    }]
+  });
+}
+
+function initCodap() {
+  var requestDataContext = function requestDataContext(name) {
+    return codapInterface.sendRequest({
+      action: 'get',
+      resource: 'dataContext[' + name + ']'
+    });
+  };
+  var requestCreateDataSet = function requestCreateDataSet(name, template) {
+    var dataSetDef = Object.assign({}, template);
+    dataSetDef.name = name;
+    return codapInterface.sendRequest({
+      action: 'create',
+      resource: 'dataContext',
+      values: dataSetDef
+    });
+  };
+  codapInterface.init({
+    name: kDataSetName,
+    title: kAppName,
+    dimensions: { width: 750, height: 800 },
+    version: '0.1'
+  }).then(function (iResult) {
+    return requestDataContext(kDataSetName);
+  }).then(function (iResult) {
+    // if we did not find a data set, make one
+    if (iResult && !iResult.success) {
+      // If not not found, create it.
+      return requestCreateDataSet(kDataSetName, kDataSetTemplate);
+    } else {
+      // else we are fine as we are, so return a resolved promise.
+      return Promise.resolve(iResult);
+    }
+  }).catch(function (msg) {
+    // handle errors
+    console.log(msg);
+  });
+}
+
+function sendItems(items) {
+  var promise = codapInterface.sendRequest({
+    action: 'create',
+    resource: 'dataContext[' + kDataSetName + '].item',
+    values: items
+  });
+  guaranteeCaseTable();
+  return promise;
+}
+
+function sendLog(formatStr, replaceArgs) {
+  return codapInterface.sendRequest({
+    action: 'notify',
+    resource: 'logMessage',
+    values: { formatStr: formatStr, replaceArgs: replaceArgs }
+  });
+}
+
+function guaranteeCaseTable() {
+  return new Promise(function (resolve, reject) {
+    codapInterface.sendRequest({
+      action: 'get',
+      resource: 'componentList'
+    }).then(function (iResult) {
+      if (iResult.success) {
+        // look for a case table in the list of components.
+        if (iResult.values && iResult.values.some(function (component) {
+          return component.type === 'caseTable';
+        })) {
+          resolve(iResult);
+        } else {
+          codapInterface.sendRequest({ action: 'create', resource: 'component', values: {
+              type: 'caseTable',
+              dataContext: kDataSetName
+            } }).then(function (result) {
+            resolve(result);
+          });
+        }
+      } else {
+        reject('api error');
+      }
+    });
+  });
+}
 
 /***/ }),
 /* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(17);
+
+
+/***/ }),
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -978,7 +1105,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactDom = __webpack_require__(20);
+var _reactDom = __webpack_require__(21);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
@@ -986,11 +1113,11 @@ var _browser = __webpack_require__(5);
 
 var _browser2 = _interopRequireDefault(_browser);
 
-var _application = __webpack_require__(37);
+var _application = __webpack_require__(38);
 
 var _application2 = _interopRequireDefault(_application);
 
-var _blocks = __webpack_require__(44);
+var _blocks = __webpack_require__(48);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1001,7 +1128,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1029,7 +1156,7 @@ isValidElement:K,version:"16.2.0",__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_F
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2394,7 +2521,7 @@ module.exports = react;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2413,7 +2540,7 @@ module.exports = ReactPropTypesSecret;
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2451,15 +2578,15 @@ if (process.env.NODE_ENV === 'production') {
   // DCE check should happen before ReactDOM bundle executes so that
   // DevTools can report bad minification during injection.
   checkDCE();
-  module.exports = __webpack_require__(21);
+  module.exports = __webpack_require__(22);
 } else {
-  module.exports = __webpack_require__(24);
+  module.exports = __webpack_require__(25);
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2695,7 +2822,7 @@ Z.injectIntoDevTools({findFiberByHostInstance:pb,bundleType:0,version:"16.2.0",r
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2710,7 +2837,7 @@ Z.injectIntoDevTools({findFiberByHostInstance:pb,bundleType:0,version:"16.2.0",r
  * @typechecks
  */
 
-var isNode = __webpack_require__(23);
+var isNode = __webpack_require__(24);
 
 /**
  * @param {*} object The object to check.
@@ -2723,7 +2850,7 @@ function isTextNode(object) {
 module.exports = isTextNode;
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2751,7 +2878,7 @@ function isNode(object) {
 module.exports = isNode;
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2785,8 +2912,8 @@ var containsNode = __webpack_require__(13);
 var focusNode = __webpack_require__(14);
 var emptyObject = __webpack_require__(4);
 var checkPropTypes = __webpack_require__(8);
-var hyphenateStyleName = __webpack_require__(25);
-var camelizeStyleName = __webpack_require__(27);
+var hyphenateStyleName = __webpack_require__(26);
+var camelizeStyleName = __webpack_require__(28);
 
 /**
  * WARNING: DO NOT manually require this module.
@@ -18153,7 +18280,7 @@ module.exports = reactDom;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18168,7 +18295,7 @@ module.exports = reactDom;
 
 
 
-var hyphenate = __webpack_require__(26);
+var hyphenate = __webpack_require__(27);
 
 var msPattern = /^ms-/;
 
@@ -18195,7 +18322,7 @@ function hyphenateStyleName(string) {
 module.exports = hyphenateStyleName;
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18231,7 +18358,7 @@ function hyphenate(string) {
 module.exports = hyphenate;
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18246,7 +18373,7 @@ module.exports = hyphenate;
 
 
 
-var camelize = __webpack_require__(28);
+var camelize = __webpack_require__(29);
 
 var msPattern = /^-ms-/;
 
@@ -18274,7 +18401,7 @@ function camelizeStyleName(string) {
 module.exports = camelizeStyleName;
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18309,7 +18436,7 @@ function camelize(string) {
 module.exports = camelize;
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports) {
 
 
@@ -19920,7 +20047,7 @@ Blockly.isNumber=function(a){return/^\s*-?\d+(\.\d+)?\s*$/.test(a)};goog.global.
       })()
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports) {
 
 var Blockly = {}; Blockly.Msg={};  module.exports = function(){ // This file was automatically generated.  Do not modify.
@@ -20350,7 +20477,7 @@ var Blockly = {}; Blockly.Msg={};  module.exports = function(){ // This file was
 /** @export */ Blockly.Msg.COLOUR_HUE = "20";return Blockly.Msg;}
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports) {
 
 
@@ -20515,7 +20642,7 @@ Blockly.ContextMenu.callbackFactory(this,c);a.push(d)}};Blockly.Extensions.regis
         }
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports) {
 
 module.exports = function(Blockly){// Do not edit this file; automatically generated by build.py.
@@ -20613,7 +20740,7 @@ Blockly.JavaScript.text_replace=function(a){var b=Blockly.JavaScript.valueToCode
 '                 .replace(/\\x08/g,"\\\\x08");',"  return haystack.replace(new RegExp(needle, 'g'), replacement);","}"])+"("+b+", "+c+", "+a+")",Blockly.JavaScript.ORDER_MEMBER]};Blockly.JavaScript.text_reverse=function(a){return[(Blockly.JavaScript.valueToCode(a,"TEXT",Blockly.JavaScript.ORDER_MEMBER)||"''")+".split('').reverse().join('')",Blockly.JavaScript.ORDER_MEMBER]};Blockly.JavaScript.variables={};Blockly.JavaScript.variables_get=function(a){return[Blockly.JavaScript.variableDB_.getName(a.getFieldValue("VAR"),Blockly.Variables.NAME_TYPE),Blockly.JavaScript.ORDER_ATOMIC]};Blockly.JavaScript.variables_set=function(a){var b=Blockly.JavaScript.valueToCode(a,"VALUE",Blockly.JavaScript.ORDER_ASSIGNMENT)||"0";return Blockly.JavaScript.variableDB_.getName(a.getFieldValue("VAR"),Blockly.Variables.NAME_TYPE)+" = "+b+";\n"};return Blockly.JavaScript;}
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports) {
 
 module.exports = function(Blockly){// Do not edit this file; automatically generated by build.py.
@@ -20696,7 +20823,7 @@ Blockly.Lua.text_replace=function(a){var b=Blockly.Lua.valueToCode(a,"TEXT",Bloc
 "        table.insert(buf, string.sub(replacement, j, j))","      end","      i = i + #needle","    else","      table.insert(buf, string.sub(haystack, i, i))","      i = i + 1","    end","  end","  return table.concat(buf)","end"])+"("+b+", "+c+", "+a+")",Blockly.Lua.ORDER_HIGH]};Blockly.Lua.text_reverse=function(a){return["string.reverse("+(Blockly.Lua.valueToCode(a,"TEXT",Blockly.Lua.ORDER_HIGH)||"''")+")",Blockly.Lua.ORDER_HIGH]};Blockly.Lua.variables={};Blockly.Lua.variables_get=function(a){return[Blockly.Lua.variableDB_.getName(a.getFieldValue("VAR"),Blockly.Variables.NAME_TYPE),Blockly.Lua.ORDER_ATOMIC]};Blockly.Lua.variables_set=function(a){var b=Blockly.Lua.valueToCode(a,"VALUE",Blockly.Lua.ORDER_NONE)||"0";return Blockly.Lua.variableDB_.getName(a.getFieldValue("VAR"),Blockly.Variables.NAME_TYPE)+" = "+b+"\n"};return Blockly.Lua;}
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports) {
 
 module.exports = function(Blockly){// Do not edit this file; automatically generated by build.py.
@@ -20796,7 +20923,7 @@ Blockly.Dart.text_count=function(a){var b=Blockly.Dart.valueToCode(a,"TEXT",Bloc
 Blockly.Dart.text_reverse=function(a){return["new String.fromCharCodes("+(Blockly.Dart.valueToCode(a,"TEXT",Blockly.Dart.ORDER_UNARY_POSTFIX)||"''")+".runes.toList().reversed)",Blockly.Dart.ORDER_UNARY_POSTFIX]};Blockly.Dart.variables={};Blockly.Dart.variables_get=function(a){return[Blockly.Dart.variableDB_.getName(a.getFieldValue("VAR"),Blockly.Variables.NAME_TYPE),Blockly.Dart.ORDER_ATOMIC]};Blockly.Dart.variables_set=function(a){var b=Blockly.Dart.valueToCode(a,"VALUE",Blockly.Dart.ORDER_ASSIGNMENT)||"0";return Blockly.Dart.variableDB_.getName(a.getFieldValue("VAR"),Blockly.Variables.NAME_TYPE)+" = "+b+";\n"};return Blockly.Dart;}
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports) {
 
 module.exports = function(Blockly){// Do not edit this file; automatically generated by build.py.
@@ -20887,7 +21014,7 @@ Blockly.PHP.text_count=function(a){var b=Blockly.PHP.valueToCode(a,"TEXT",Blockl
 Blockly.PHP.text_replace=function(a){var b=Blockly.PHP.valueToCode(a,"TEXT",Blockly.PHP.ORDER_MEMBER)||"''",c=Blockly.PHP.valueToCode(a,"FROM",Blockly.PHP.ORDER_NONE)||"''";a=Blockly.PHP.valueToCode(a,"TO",Blockly.PHP.ORDER_NONE)||"''";return["str_replace("+c+", "+a+", "+b+")",Blockly.PHP.ORDER_FUNCTION_CALL]};Blockly.PHP.text_reverse=function(a){return["strrev("+(Blockly.PHP.valueToCode(a,"TEXT",Blockly.PHP.ORDER_MEMBER)||"''")+")",Blockly.PHP.ORDER_FUNCTION_CALL]};Blockly.PHP.variables={};Blockly.PHP.variables_get=function(a){return[Blockly.PHP.variableDB_.getName(a.getFieldValue("VAR"),Blockly.Variables.NAME_TYPE),Blockly.PHP.ORDER_ATOMIC]};Blockly.PHP.variables_set=function(a){var b=Blockly.PHP.valueToCode(a,"VALUE",Blockly.PHP.ORDER_ASSIGNMENT)||"0";return Blockly.PHP.variableDB_.getName(a.getFieldValue("VAR"),Blockly.Variables.NAME_TYPE)+" = "+b+";\n"};return Blockly.PHP;}
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports) {
 
 module.exports = function(Blockly){// Do not edit this file; automatically generated by build.py.
@@ -20971,7 +21098,7 @@ Blockly.Python.text_prompt=Blockly.Python.text_prompt_ext;Blockly.Python.text_co
 Blockly.Python.text_replace=function(a){var b=Blockly.Python.valueToCode(a,"TEXT",Blockly.Python.ORDER_MEMBER)||"''",c=Blockly.Python.valueToCode(a,"FROM",Blockly.Python.ORDER_NONE)||"''";a=Blockly.Python.valueToCode(a,"TO",Blockly.Python.ORDER_NONE)||"''";return[b+".replace("+c+", "+a+")",Blockly.Python.ORDER_MEMBER]};Blockly.Python.text_reverse=function(a){return[(Blockly.Python.valueToCode(a,"TEXT",Blockly.Python.ORDER_MEMBER)||"''")+"[::-1]",Blockly.Python.ORDER_MEMBER]};Blockly.Python.variables={};Blockly.Python.variables_get=function(a){return[Blockly.Python.variableDB_.getName(a.getFieldValue("VAR"),Blockly.Variables.NAME_TYPE),Blockly.Python.ORDER_ATOMIC]};Blockly.Python.variables_set=function(a){var b=Blockly.Python.valueToCode(a,"VALUE",Blockly.Python.ORDER_NONE)||"0";return Blockly.Python.variableDB_.getName(a.getFieldValue("VAR"),Blockly.Variables.NAME_TYPE)+" = "+b+"\n"};return Blockly.Python;}
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20991,17 +21118,25 @@ var _browser = __webpack_require__(5);
 
 var _browser2 = _interopRequireDefault(_browser);
 
-var _organismGroup = __webpack_require__(38);
+var _organismGroup = __webpack_require__(39);
 
 var _organismGroup2 = _interopRequireDefault(_organismGroup);
 
-var _Experiment = __webpack_require__(39);
+var _Experiment = __webpack_require__(40);
 
 var _Experiment2 = _interopRequireDefault(_Experiment);
 
-var _codapUtils = __webpack_require__(41);
+var _ExperimentHUD = __webpack_require__(42);
 
-var _presets = __webpack_require__(42);
+var _ExperimentHUD2 = _interopRequireDefault(_ExperimentHUD);
+
+var _DataCollection = __webpack_require__(44);
+
+var _DataCollection2 = _interopRequireDefault(_DataCollection);
+
+var _codapUtils = __webpack_require__(15);
+
+var _presets = __webpack_require__(46);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21011,7 +21146,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-__webpack_require__(43);
+__webpack_require__(47);
 
 var Application = function (_React$Component) {
   _inherits(Application, _React$Component);
@@ -21034,15 +21169,20 @@ var Application = function (_React$Component) {
       light: false
     };
     _this2.state = defaultState;
-    _this2.workspace = _browser2.default.inject('blocklyDiv', { toolbox: document.getElementById('toolbox') });
 
     _this2.handleChange = _this2.handleChange.bind(_this2);
+    _this2.createDataPoint = _this2.createDataPoint.bind(_this2);
 
     (0, _codapUtils.initCodap)();
     return _this2;
   }
 
   _createClass(Application, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.workspace = _browser2.default.inject('blockly-div', { toolbox: document.getElementById('toolbox') });
+    }
+  }, {
     key: 'getDefaultExperimentState',
     value: function getDefaultExperimentState() {
       return {
@@ -21059,17 +21199,13 @@ var Application = function (_React$Component) {
   }, {
     key: 'wait',
     value: function wait(numSteps) {
-      var _this3 = this;
-
       var _state = this.state,
           co2 = _state.co2,
           o2 = _state.o2,
           time = _state.time;
 
       this.step([{ organismType: _organismGroup.Organism.SNAIL, numberKey: "snailsNumber", foodKey: "snailsStoredFood" }, { organismType: _organismGroup.Organism.PLANT, numberKey: "plantsNumber", foodKey: "plantsStoredFood" }], numSteps);
-      this.setState({ time: this.state.time + numSteps }, function () {
-        (0, _codapUtils.sendItems)(_this3.createDataPoint());
-      });
+      this.setState({ time: this.state.time + numSteps });
     }
   }, {
     key: 'createDataPoint',
@@ -21121,12 +21257,12 @@ var Application = function (_React$Component) {
   }, {
     key: 'reset',
     value: function reset() {
-      var _this4 = this;
+      var _this3 = this;
 
       var newState = this.getDefaultExperimentState();
       newState.experiment = this.state.experiment + 1;
       this.setState(newState, function () {
-        (0, _codapUtils.sendItems)(_this4.createDataPoint());
+        (0, _codapUtils.sendItems)(_this3.createDataPoint());
       });
     }
   }, {
@@ -21214,6 +21350,12 @@ var Application = function (_React$Component) {
       };
       interpreter.setProperty(scope, 'incVar', interpreter.createNativeFunction(wrapper));
 
+      // Add an API function for the recordData() block.
+      wrapper = function wrapper(numSteps) {
+        (0, _codapUtils.sendItems)(_this.createDataPoint());
+      };
+      interpreter.setProperty(scope, 'recordData', interpreter.createNativeFunction(wrapper));
+
       // Add an API function for the wait() block.
       wrapper = function wrapper(numSteps) {
         _this.wait(numSteps);
@@ -21243,24 +21385,49 @@ var Application = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _this5 = this;
+      var _this4 = this;
 
       var _state3 = this.state,
           time = _state3.time,
           o2 = _state3.o2,
           co2 = _state3.co2,
-          plants = _state3.plants,
-          snails = _state3.snails,
+          plantsNumber = _state3.plantsNumber,
+          snailsNumber = _state3.snailsNumber,
           light = _state3.light;
 
       return _react2.default.createElement(
         'div',
-        null,
+        { className: 'ecochamber-app' },
+        _react2.default.createElement(_ExperimentHUD2.default, { colInfos: [[{ label: "Hour", value: time }, { label: "O2", value: Math.round(o2), unit: "ppm" }, { label: "CO2", value: Math.round(co2), unit: "ppm" }], [{ label: "Plant population", value: plantsNumber }, { label: "Snail population", value: snailsNumber }, { label: "Light", value: light ? "On" : "Off" }]] }),
+        _react2.default.createElement(
+          'div',
+          { className: 'experiment-ui' },
+          _react2.default.createElement(_Experiment2.default, { numPlants: this.state.plantsNumber, numSnails: this.state.snailsNumber, light: this.state.light }),
+          _react2.default.createElement(_DataCollection2.default, { trackedVars: this.state.trackedVars, handleChange: this.handleChange, createDataPoint: this.createDataPoint })
+        ),
         _react2.default.createElement(
           'button',
           {
             onClick: function onClick() {
-              _this5.wait(1);
+              _this4.setState({ plantsNumber: _this4.state.plantsNumber + 1 });
+            }
+          },
+          'Add plant'
+        ),
+        _react2.default.createElement(
+          'button',
+          {
+            onClick: function onClick() {
+              _this4.setState({ snailsNumber: _this4.state.snailsNumber + 1 });
+            }
+          },
+          'Add snail'
+        ),
+        _react2.default.createElement(
+          'button',
+          {
+            onClick: function onClick() {
+              _this4.wait(1);
             }
           },
           'Wait 1 Minute'
@@ -21269,16 +21436,16 @@ var Application = function (_React$Component) {
           'button',
           {
             onClick: function onClick() {
-              _this5.wait(60);
+              _this4.wait(60);
             }
           },
           'Wait 1 Hour'
         ),
         _react2.default.createElement(
           'button',
-          {
+          { style: { width: 114 },
             onClick: function onClick() {
-              _this5.setState({ light: !light });
+              _this4.setState({ light: !light });
             }
           },
           'Turn light ',
@@ -21288,160 +21455,118 @@ var Application = function (_React$Component) {
           'button',
           {
             onClick: function onClick() {
-              _this5.setState({ plantsNumber: _this5.state.plantsNumber + 1 });
-            }
-          },
-          'Add plant'
-        ),
-        _react2.default.createElement(
-          'button',
-          {
-            onClick: function onClick() {
-              _this5.setState({ snailsNumber: _this5.state.snailsNumber + 1 });
-            }
-          },
-          'Add snail'
-        ),
-        _react2.default.createElement(
-          'button',
-          {
-            onClick: function onClick() {
-              _this5.reset();
+              _this4.reset();
             }
           },
           'Reset simulation'
         ),
         _react2.default.createElement('br', null),
-        _react2.default.createElement(_Experiment2.default, { numPlants: this.state.plantsNumber, numSnails: this.state.snailsNumber, light: this.state.light }),
-        _react2.default.createElement(_organismGroup2.default, { organismType: _organismGroup.Organism.PLANT, numOrganisms: this.state.plantsNumber, storedFood: this.state.plantsStoredFood }),
-        _react2.default.createElement(_organismGroup2.default, { organismType: _organismGroup.Organism.SNAIL, numOrganisms: this.state.snailsNumber, storedFood: this.state.snailsStoredFood }),
-        'Hour: ',
-        this.state.time,
-        _react2.default.createElement('br', null),
-        'O2: ',
-        Math.round(this.state.o2),
-        ' ppm',
-        _react2.default.createElement('br', null),
-        'CO2: ',
-        Math.round(this.state.co2),
-        ' ppm',
-        _react2.default.createElement('br', null),
-        'Light: ',
-        light ? "On" : "Off",
-        _react2.default.createElement('br', null),
-        _react2.default.createElement('input', { type: 'checkbox', name: 'time', checked: this.state.trackedVars.time, onChange: this.handleChange }),
-        'Track Time',
-        _react2.default.createElement('input', { type: 'checkbox', name: 'o2', checked: this.state.trackedVars.o2, onChange: this.handleChange }),
-        'Track O2',
-        _react2.default.createElement('input', { type: 'checkbox', name: 'co2', checked: this.state.trackedVars.co2, onChange: this.handleChange }),
-        'Track CO2',
-        _react2.default.createElement('input', { type: 'checkbox', name: 'light', checked: this.state.trackedVars.light, onChange: this.handleChange }),
-        'Track Light',
-        _react2.default.createElement('input', { type: 'checkbox', name: 'plantsNumber', checked: this.state.trackedVars.plantsNumber, onChange: this.handleChange }),
-        'Track Plant Population',
-        _react2.default.createElement('input', { type: 'checkbox', name: 'snailsNumber', checked: this.state.trackedVars.snailsNumber, onChange: this.handleChange }),
-        'Track Snail Population',
-        _react2.default.createElement('input', { type: 'checkbox', name: 'plantsStoredFood', checked: this.state.trackedVars.plantsStoredFood, onChange: this.handleChange }),
-        'Track Stored Plant Food',
-        _react2.default.createElement('input', { type: 'checkbox', name: 'snailsStoredFood', checked: this.state.trackedVars.snailsStoredFood, onChange: this.handleChange }),
-        'Track Stored Snail Food',
         _react2.default.createElement('br', null),
         _react2.default.createElement(
-          'button',
-          {
-            onClick: function onClick() {
-              var _this = _this5;
-              var code = _browser2.default.JavaScript.workspaceToCode(_this.workspace);
-              var myInterpreter = new Interpreter(code, _this.initApi.bind(_this));
-              function nextStep() {
-                if (myInterpreter.step()) {
-                  window.setTimeout(nextStep, 10);
-                } else {
-                  _this.workspace.highlightBlock(null);
+          'div',
+          { className: 'blockly-controls' },
+          _react2.default.createElement(
+            'button',
+            {
+              onClick: function onClick() {
+                var _this = _this4;
+                var code = _browser2.default.JavaScript.workspaceToCode(_this.workspace);
+                var myInterpreter = new Interpreter(code, _this.initApi.bind(_this));
+                function nextStep() {
+                  if (myInterpreter.step()) {
+                    window.setTimeout(nextStep, 10);
+                  } else {
+                    _this.workspace.highlightBlock(null);
+                  }
                 }
+                nextStep();
               }
-              nextStep();
-            }
-          },
-          'Run Blockly code'
+            },
+            'Run Program'
+          ),
+          _react2.default.createElement(
+            'button',
+            {
+              onClick: function onClick() {
+                var xml = _browser2.default.Xml.workspaceToDom(_this4.workspace);
+                var xml_text = _browser2.default.Xml.domToText(xml);
+                console.clear();
+                console.log(xml_text);
+              }
+            },
+            'Save Program'
+          ),
+          _react2.default.createElement(
+            'button',
+            {
+              onClick: function onClick() {
+                var xml_text = prompt("Paste your saved program:");
+                var xml = _browser2.default.Xml.textToDom(xml_text);
+                _browser2.default.Xml.domToWorkspace(xml, _this4.workspace);
+              }
+            },
+            'Load Program'
+          ),
+          _react2.default.createElement(
+            'button',
+            {
+              onClick: function onClick() {
+                _this4.workspace.clear();
+              }
+            },
+            'Clear Program'
+          )
         ),
         _react2.default.createElement(
-          'button',
-          {
-            onClick: function onClick() {
-              (0, _presets.loadPreset)(1, _this5.workspace);
-            }
-          },
-          'Preset 1'
+          'div',
+          { className: 'blockly-presets' },
+          _react2.default.createElement(
+            'button',
+            {
+              onClick: function onClick() {
+                (0, _presets.loadPreset)(1, _this4.workspace);
+              }
+            },
+            'Example 1'
+          ),
+          _react2.default.createElement(
+            'button',
+            {
+              onClick: function onClick() {
+                (0, _presets.loadPreset)(2, _this4.workspace);
+              }
+            },
+            'Example 2'
+          ),
+          _react2.default.createElement(
+            'button',
+            {
+              onClick: function onClick() {
+                (0, _presets.loadPreset)(3, _this4.workspace);
+              }
+            },
+            'Example 3'
+          ),
+          _react2.default.createElement(
+            'button',
+            {
+              onClick: function onClick() {
+                (0, _presets.loadPreset)(5, _this4.workspace);
+              }
+            },
+            'Example 4'
+          ),
+          _react2.default.createElement(
+            'button',
+            {
+              onClick: function onClick() {
+                (0, _presets.loadPreset)(6, _this4.workspace);
+              }
+            },
+            'Example 5'
+          )
         ),
-        _react2.default.createElement(
-          'button',
-          {
-            onClick: function onClick() {
-              (0, _presets.loadPreset)(2, _this5.workspace);
-            }
-          },
-          'Preset 2'
-        ),
-        _react2.default.createElement(
-          'button',
-          {
-            onClick: function onClick() {
-              (0, _presets.loadPreset)(3, _this5.workspace);
-            }
-          },
-          'Preset 3'
-        ),
-        _react2.default.createElement(
-          'button',
-          {
-            onClick: function onClick() {
-              (0, _presets.loadPreset)(5, _this5.workspace);
-            }
-          },
-          'Preset 4'
-        ),
-        _react2.default.createElement(
-          'button',
-          {
-            onClick: function onClick() {
-              (0, _presets.loadPreset)(6, _this5.workspace);
-            }
-          },
-          'Preset 5'
-        ),
-        _react2.default.createElement(
-          'button',
-          {
-            onClick: function onClick() {
-              var xml = _browser2.default.Xml.workspaceToDom(_this5.workspace);
-              var xml_text = _browser2.default.Xml.domToText(xml);
-              console.clear();
-              console.log(xml_text);
-            }
-          },
-          'Save Blockly Code'
-        ),
-        _react2.default.createElement(
-          'button',
-          {
-            onClick: function onClick() {
-              var xml_text = prompt("Paste your saved program:");
-              var xml = _browser2.default.Xml.textToDom(xml_text);
-              _browser2.default.Xml.domToWorkspace(xml, _this5.workspace);
-            }
-          },
-          'Load Blockly Code'
-        ),
-        _react2.default.createElement(
-          'button',
-          {
-            onClick: function onClick() {
-              _this5.workspace.clear();
-            }
-          },
-          'Clear Blockly Code'
-        )
+        _react2.default.createElement('div', { id: 'blockly-div', style: { width: 725, height: 600 } })
       );
     }
   }]);
@@ -21452,7 +21577,7 @@ var Application = function (_React$Component) {
 exports.default = Application;
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21523,7 +21648,7 @@ var OrganismGroup = function (_React$Component) {
 exports.default = OrganismGroup;
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21539,7 +21664,7 @@ var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(40);
+__webpack_require__(41);
 
 function getEvenlySpacedDivs(className, containerWidth, divWidth, numDivs) {
   if (numDivs === 1) {
@@ -21579,13 +21704,13 @@ var Experiment = function Experiment(_ref) {
 exports.default = Experiment;
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21594,125 +21719,149 @@ exports.default = Experiment;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.extendDataSet = extendDataSet;
-exports.initCodap = initCodap;
-exports.sendItems = sendItems;
-exports.sendLog = sendLog;
-var kDataSetName = 'Experimental Output',
-    kAppName = "Ecochamber Experiment",
-    kDataSetTemplate = {
-  name: "{name}",
-  collections: [{
-    name: "experiment_runs",
-    attrs: [{ name: "experiment_number", type: "categorical" }]
-  }, {
-    name: 'experimental_output',
-    parent: 'experiment_runs',
-    labels: {
-      pluralCase: "experimental_outputs",
-      setOfCasesWithArticle: "a sample"
-    },
-    attrs: [{ name: "hour", type: 'numeric', precision: 1 }, { name: "CO2", unit: "mL", type: 'numeric', precision: 2 }, { name: "O2", unit: "mL", type: 'numeric', precision: 2 }]
-  }]
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+__webpack_require__(43);
+
+var ValueDisplay = function ValueDisplay(_ref) {
+  var name = _ref.name,
+      value = _ref.value;
+
+  return _react2.default.createElement(
+    'tr',
+    { className: 'value-display' },
+    _react2.default.createElement(
+      'td',
+      { className: 'statistic' },
+      name,
+      ':'
+    ),
+    _react2.default.createElement(
+      'td',
+      { className: 'value' },
+      value
+    )
+  );
 };
 
-function extendDataSet(newAttr) {
-  codapInterface.sendRequest({
-    action: 'create',
-    resource: "dataContext[Experimental Output].collection[experimental_output].attribute",
-    "values": [{
-      name: newAttr,
-      type: "numeric",
-      precision: 1
-    }]
-  });
-}
+var ExperimentColumn = function ExperimentColumn(_ref2) {
+  var stats = _ref2.stats;
 
-function initCodap() {
-  var requestDataContext = function requestDataContext(name) {
-    return codapInterface.sendRequest({
-      action: 'get',
-      resource: 'dataContext[' + name + ']'
-    });
-  };
-  var requestCreateDataSet = function requestCreateDataSet(name, template) {
-    var dataSetDef = Object.assign({}, template);
-    dataSetDef.name = name;
-    return codapInterface.sendRequest({
-      action: 'create',
-      resource: 'dataContext',
-      values: dataSetDef
-    });
-  };
-  codapInterface.init({
-    name: kDataSetName,
-    title: kAppName,
-    dimensions: { width: 870, height: 540 },
-    version: '0.1'
-  }).then(function (iResult) {
-    return requestDataContext(kDataSetName);
-  }).then(function (iResult) {
-    // if we did not find a data set, make one
-    if (iResult && !iResult.success) {
-      // If not not found, create it.
-      return requestCreateDataSet(kDataSetName, kDataSetTemplate);
-    } else {
-      // else we are fine as we are, so return a resolved promise.
-      return Promise.resolve(iResult);
-    }
-  }).catch(function (msg) {
-    // handle errors
-    console.log(msg);
-  });
-}
+  var displays = [];
+  stats.forEach(function (stat) {
+    var label = stat.label,
+        value = stat.value,
+        unit = stat.unit;
 
-function sendItems(items) {
-  var promise = codapInterface.sendRequest({
-    action: 'create',
-    resource: 'dataContext[' + kDataSetName + '].item',
-    values: items
+    displays.push(_react2.default.createElement(ValueDisplay, { key: label, name: label, value: value + (unit ? " " + unit : "") }));
   });
-  guaranteeCaseTable();
-  return promise;
-}
+  return _react2.default.createElement(
+    'table',
+    { className: 'experiment-values' },
+    _react2.default.createElement(
+      'tbody',
+      null,
+      displays
+    )
+  );
+};
 
-function sendLog(formatStr, replaceArgs) {
-  return codapInterface.sendRequest({
-    action: 'notify',
-    resource: 'logMessage',
-    values: { formatStr: formatStr, replaceArgs: replaceArgs }
-  });
-}
+var ExperimentHUD = function ExperimentHUD(_ref3) {
+  var colInfos = _ref3.colInfos;
 
-function guaranteeCaseTable() {
-  return new Promise(function (resolve, reject) {
-    codapInterface.sendRequest({
-      action: 'get',
-      resource: 'componentList'
-    }).then(function (iResult) {
-      if (iResult.success) {
-        // look for a case table in the list of components.
-        if (iResult.values && iResult.values.some(function (component) {
-          return component.type === 'caseTable';
-        })) {
-          resolve(iResult);
-        } else {
-          codapInterface.sendRequest({ action: 'create', resource: 'component', values: {
-              type: 'caseTable',
-              dataContext: kDataSetName
-            } }).then(function (result) {
-            resolve(result);
-          });
-        }
-      } else {
-        reject('api error');
-      }
-    });
+  var cols = [];
+  colInfos.forEach(function (colInfo, index) {
+    cols.push(_react2.default.createElement(ExperimentColumn, { key: index, stats: colInfo }));
   });
-}
+  return _react2.default.createElement(
+    'div',
+    { className: 'experiment-hud' },
+    cols
+  );
+};
+
+exports.default = ExperimentHUD;
 
 /***/ }),
-/* 42 */
+/* 43 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 44 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _codapUtils = __webpack_require__(15);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+__webpack_require__(45);
+
+function getLabeledInput(name, label, checked, handleChange) {
+  return _react2.default.createElement(
+    'div',
+    { className: 'data-box' },
+    _react2.default.createElement('input', { type: 'checkbox', name: name, checked: checked, onChange: handleChange }),
+    _react2.default.createElement(
+      'div',
+      { className: 'collector-label' },
+      label
+    )
+  );
+}
+
+var DataCollection = function DataCollection(_ref) {
+  var trackedVars = _ref.trackedVars,
+      handleChange = _ref.handleChange,
+      createDataPoint = _ref.createDataPoint;
+
+  return _react2.default.createElement(
+    'div',
+    { className: 'data-collection' },
+    getLabeledInput("time", "Time", trackedVars.time, handleChange),
+    getLabeledInput("o2", "O2", trackedVars.o2, handleChange),
+    getLabeledInput("co2", "CO2", trackedVars.co2, handleChange),
+    getLabeledInput("plantsNumber", "Plant population", trackedVars.plantsNumber, handleChange),
+    getLabeledInput("snailsNumber", "Snail population", trackedVars.snailsNumber, handleChange),
+    _react2.default.createElement(
+      'button',
+      { className: 'data-button',
+        onClick: function onClick() {
+          (0, _codapUtils.sendItems)(createDataPoint());
+        }
+      },
+      'Record Data Point'
+    )
+  );
+};
+
+exports.default = DataCollection;
+
+/***/ }),
+/* 45 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21754,13 +21903,13 @@ function getPreset(presetNum) {
 }
 
 /***/ }),
-/* 43 */
+/* 47 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 44 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21931,11 +22080,11 @@ function configureBlocks() {
     return 'setVar("' + varName + '", ' + argument0 + ');\n';
   };
 
-  // Short wait block
-  _browser2.default.Blocks['waitMin'] = {
+  // Record data block
+  _browser2.default.Blocks['recordData'] = {
     init: function init() {
       this.jsonInit({
-        "message0": "Wait 1 Minute",
+        "message0": "Record Data Point",
         "previousStatement": null,
         "nextStatement": null,
         "colour": "%{BKY_VARIABLES_HUE}"
@@ -21943,15 +22092,20 @@ function configureBlocks() {
     }
   };
 
-  _browser2.default.JavaScript['waitMin'] = function (block) {
-    return 'wait(1);\n';
+  _browser2.default.JavaScript['recordData'] = function (block) {
+    return 'recordData();\n';
   };
 
-  // Long wait block
-  _browser2.default.Blocks['waitHr'] = {
+  // Wait block
+  _browser2.default.Blocks['wait'] = {
     init: function init() {
       this.jsonInit({
-        "message0": "Wait 1 Hour",
+        "message0": "Wait 1 %1",
+        "args0": [{
+          "type": "field_dropdown",
+          "name": "VAR",
+          "options": [["minute", "minute"], ["hour", "hour"]]
+        }],
         "previousStatement": null,
         "nextStatement": null,
         "colour": "%{BKY_VARIABLES_HUE}"
@@ -21959,8 +22113,9 @@ function configureBlocks() {
     }
   };
 
-  _browser2.default.JavaScript['waitHr'] = function (block) {
-    return 'wait(60);\n';
+  _browser2.default.JavaScript['wait'] = function (block) {
+    var numMins = block.getFieldValue('VAR') === "minute" ? 1 : 60;
+    return 'wait(' + numMins + ');\n';
   };
 
   // Reset block
