@@ -1127,7 +1127,7 @@ var _application = __webpack_require__(38);
 
 var _application2 = _interopRequireDefault(_application);
 
-var _blocks = __webpack_require__(48);
+var _blocks = __webpack_require__(47);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21128,25 +21128,21 @@ var _browser = __webpack_require__(5);
 
 var _browser2 = _interopRequireDefault(_browser);
 
-var _organismGroup = __webpack_require__(39);
-
-var _organismGroup2 = _interopRequireDefault(_organismGroup);
-
-var _Experiment = __webpack_require__(40);
+var _Experiment = __webpack_require__(39);
 
 var _Experiment2 = _interopRequireDefault(_Experiment);
 
-var _ExperimentHUD = __webpack_require__(42);
+var _ExperimentHUD = __webpack_require__(41);
 
 var _ExperimentHUD2 = _interopRequireDefault(_ExperimentHUD);
 
-var _DataCollection = __webpack_require__(44);
+var _DataCollection = __webpack_require__(43);
 
 var _DataCollection2 = _interopRequireDefault(_DataCollection);
 
 var _codapUtils = __webpack_require__(15);
 
-var _presets = __webpack_require__(46);
+var _presets = __webpack_require__(45);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21156,7 +21152,16 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-__webpack_require__(47);
+__webpack_require__(46);
+
+var Organism = {
+  PLANT: "PLANT",
+  SNAIL: "SNAIL",
+  properties: {
+    "PLANT": { label: "Plants", photosynthesizes: true, respirationRate: 1 },
+    "SNAIL": { label: "Snails", photosynthesizes: false, respirationRate: 2 }
+  }
+};
 
 var Application = function (_React$Component) {
   _inherits(Application, _React$Component);
@@ -21170,14 +21175,13 @@ var Application = function (_React$Component) {
     defaultState.experiment = 0;
     defaultState.showBlocks = false;
     defaultState.injectedBlocks = false;
+    defaultState.running = false;
     defaultState.trackedVars = {
       time: true,
       o2: true,
       co2: true,
       plantsNumber: false,
       snailsNumber: false,
-      plantsStoredFood: false,
-      snailsStoredFood: false,
       light: false
     };
     _this2.state = defaultState;
@@ -21190,6 +21194,11 @@ var Application = function (_React$Component) {
   }
 
   _createClass(Application, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.updateSensorValues();
+    }
+  }, {
     key: 'getDefaultExperimentState',
     value: function getDefaultExperimentState() {
       return {
@@ -21198,9 +21207,7 @@ var Application = function (_React$Component) {
         co2: 400,
         light: true,
         plantsNumber: 0,
-        plantsStoredFood: 100,
-        snailsNumber: 0,
-        snailsStoredFood: 100
+        snailsNumber: 0
       };
     }
   }, {
@@ -21211,7 +21218,7 @@ var Application = function (_React$Component) {
           o2 = _state.o2,
           time = _state.time;
 
-      this.step([{ organismType: _organismGroup.Organism.SNAIL, numberKey: "snailsNumber", foodKey: "snailsStoredFood" }, { organismType: _organismGroup.Organism.PLANT, numberKey: "plantsNumber", foodKey: "plantsStoredFood" }], numSteps);
+      this.step([{ organismType: Organism.SNAIL, numberKey: "snailsNumber" }, { organismType: Organism.PLANT, numberKey: "plantsNumber" }], numSteps);
       this.setState({ time: this.state.time + numSteps });
     }
   }, {
@@ -21224,20 +21231,20 @@ var Application = function (_React$Component) {
           co2 = _state2.co2,
           o2 = _state2.o2,
           light = _state2.light,
+          co2Sensor = _state2.co2Sensor,
+          o2Sensor = _state2.o2Sensor,
           plantsNumber = _state2.plantsNumber,
-          snailsNumber = _state2.snailsNumber,
-          plantsStoredFood = _state2.plantsStoredFood,
-          snailsStoredFood = _state2.snailsStoredFood;
+          snailsNumber = _state2.snailsNumber;
 
       var dataPoint = { experiment_number: experiment };
       if (trackedVars.time) {
         dataPoint.hour = time;
       }
       if (trackedVars.o2) {
-        dataPoint.O2 = Math.round(o2);
+        dataPoint.O2 = o2Sensor;
       }
       if (trackedVars.co2) {
-        dataPoint.CO2 = Math.round(co2);
+        dataPoint.CO2 = co2Sensor;
       }
       if (trackedVars.light) {
         (0, _codapUtils.extendDataSet)("light");
@@ -21251,14 +21258,6 @@ var Application = function (_React$Component) {
         (0, _codapUtils.extendDataSet)("num_snails");
         dataPoint.num_snails = snailsNumber;
       }
-      if (trackedVars.plantsStoredFood) {
-        (0, _codapUtils.extendDataSet)("plants_stored_food");
-        dataPoint.plants_stored_food = plantsStoredFood;
-      }
-      if (trackedVars.snailsStoredFood) {
-        (0, _codapUtils.extendDataSet)("snails_stored_food");
-        dataPoint.snails_stored_food = snailsStoredFood;
-      }
       return dataPoint;
     }
   }, {
@@ -21267,6 +21266,15 @@ var Application = function (_React$Component) {
       var newState = this.getDefaultExperimentState();
       newState.experiment = this.state.experiment + 1;
       this.setState(newState);
+    }
+
+    // Returns the given value, plus between -sqrt(value) and sqrt(value) noise
+
+  }, {
+    key: 'fuzzValue',
+    value: function fuzzValue(value) {
+      var noise = Math.sqrt(value) * (2 * Math.random() - 1);
+      return value + noise;
     }
   }, {
     key: 'step',
@@ -21283,7 +21291,7 @@ var Application = function (_React$Component) {
             return;
           }
 
-          var _Organism$properties$ = _organismGroup.Organism.properties[organismType],
+          var _Organism$properties$ = Organism.properties[organismType],
               respirationRate = _Organism$properties$.respirationRate,
               photosynthesizes = _Organism$properties$.photosynthesizes;
 
@@ -21386,6 +21394,21 @@ var Application = function (_React$Component) {
       this.setState({ trackedVars: trackedVars });
     }
   }, {
+    key: 'updateSensorValues',
+    value: function updateSensorValues() {
+      this.setState({
+        o2Sensor: Math.round(this.fuzzValue(this.state.o2)),
+        co2Sensor: Math.round(this.fuzzValue(this.state.co2))
+      });
+    }
+  }, {
+    key: 'componentWillUpdate',
+    value: function componentWillUpdate(nextProps, nextState) {
+      if (this.state.experiment !== nextState.experiment || this.state.time !== nextState.time) {
+        this.updateSensorValues();
+      }
+    }
+  }, {
     key: 'render',
     value: function render() {
       var _this3 = this;
@@ -21394,6 +21417,8 @@ var Application = function (_React$Component) {
           time = _state3.time,
           o2 = _state3.o2,
           co2 = _state3.co2,
+          o2Sensor = _state3.o2Sensor,
+          co2Sensor = _state3.co2Sensor,
           plantsNumber = _state3.plantsNumber,
           snailsNumber = _state3.snailsNumber,
           light = _state3.light,
@@ -21402,7 +21427,7 @@ var Application = function (_React$Component) {
       return _react2.default.createElement(
         'div',
         { className: 'ecochamber-app' },
-        _react2.default.createElement(_ExperimentHUD2.default, { colInfos: [[{ label: "Time", value: time }, { label: "O2", value: Math.round(o2), unit: "ppm" }, { label: "CO2", value: Math.round(co2), unit: "ppm" }], [{ label: "Plant population", value: plantsNumber }, { label: "Snail population", value: snailsNumber }, { label: "Light", value: light ? "On" : "Off" }]] }),
+        _react2.default.createElement(_ExperimentHUD2.default, { colInfos: [[{ label: "Time", value: time }, { label: "O2", value: o2Sensor, unit: "ppm" }, { label: "CO2", value: co2Sensor, unit: "ppm" }], [{ label: "Plant population", value: plantsNumber }, { label: "Snail population", value: snailsNumber }, { label: "Light", value: light ? "On" : "Off" }]] }),
         _react2.default.createElement(
           'div',
           { className: 'experiment-ui' },
@@ -21474,22 +21499,26 @@ var Application = function (_React$Component) {
             { className: 'blockly-controls' },
             _react2.default.createElement(
               'button',
-              {
+              { style: { width: 122 },
                 onClick: function onClick() {
                   var _this = _this3;
-                  var code = _browser2.default.JavaScript.workspaceToCode(_this.workspace);
-                  var myInterpreter = new Interpreter(code, _this.initApi.bind(_this));
-                  function nextStep() {
-                    if (myInterpreter.step()) {
-                      window.setTimeout(nextStep, 10);
-                    } else {
-                      _this.workspace.highlightBlock(null);
+                  _this.setState({ running: !_this.state.running }, function () {
+                    var code = _browser2.default.JavaScript.workspaceToCode(_this.workspace);
+                    var myInterpreter = new Interpreter(code, _this.initApi.bind(_this));
+                    function nextStep() {
+                      if (myInterpreter.step() && _this.state.running) {
+                        window.setTimeout(nextStep, 10);
+                      } else {
+                        _this.workspace.highlightBlock(null);
+                        _this.setState({ running: false });
+                      }
                     }
-                  }
-                  nextStep();
+                    nextStep();
+                  });
                 }
               },
-              'Run program'
+              this.state.running ? "Stop" : "Start",
+              ' program'
             ),
             _react2.default.createElement(
               'button',
@@ -21621,9 +21650,6 @@ exports.default = Application;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Organism = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = __webpack_require__(1);
 
@@ -21631,75 +21657,7 @@ var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Organism = exports.Organism = {
-  PLANT: "PLANT",
-  SNAIL: "SNAIL",
-  properties: {
-    "PLANT": { label: "Plants", photosynthesizes: true, respirationRate: 1 },
-    "SNAIL": { label: "Snails", photosynthesizes: false, respirationRate: 2 }
-  }
-};
-
-var OrganismGroup = function (_React$Component) {
-  _inherits(OrganismGroup, _React$Component);
-
-  function OrganismGroup() {
-    _classCallCheck(this, OrganismGroup);
-
-    return _possibleConstructorReturn(this, (OrganismGroup.__proto__ || Object.getPrototypeOf(OrganismGroup)).apply(this, arguments));
-  }
-
-  _createClass(OrganismGroup, [{
-    key: "render",
-    value: function render() {
-      var _props = this.props,
-          organismType = _props.organismType,
-          numOrganisms = _props.numOrganisms,
-          storedFood = _props.storedFood;
-      var label = Organism.properties[organismType].label;
-
-      return _react2.default.createElement(
-        "div",
-        null,
-        label,
-        " - Size: ",
-        numOrganisms,
-        ", Food Store: ",
-        storedFood,
-        "%"
-      );
-    }
-  }]);
-
-  return OrganismGroup;
-}(_react2.default.Component);
-
-exports.default = OrganismGroup;
-
-/***/ }),
-/* 40 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _react = __webpack_require__(1);
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-__webpack_require__(41);
+__webpack_require__(40);
 
 function getEvenlySpacedDivs(className, containerWidth, divWidth, numDivs) {
   if (numDivs === 1) {
@@ -21739,13 +21697,13 @@ var Experiment = function Experiment(_ref) {
 exports.default = Experiment;
 
 /***/ }),
-/* 41 */
+/* 40 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 42 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21761,7 +21719,7 @@ var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(43);
+__webpack_require__(42);
 
 var ValueDisplay = function ValueDisplay(_ref) {
   var name = _ref.name,
@@ -21823,13 +21781,13 @@ var ExperimentHUD = function ExperimentHUD(_ref3) {
 exports.default = ExperimentHUD;
 
 /***/ }),
-/* 43 */
+/* 42 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 44 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21847,7 +21805,7 @@ var _codapUtils = __webpack_require__(15);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(45);
+__webpack_require__(44);
 
 function getLabeledInput(name, label, checked, handleChange) {
   return _react2.default.createElement(
@@ -21873,6 +21831,7 @@ var DataCollection = function DataCollection(_ref) {
     getLabeledInput("time", "Time", trackedVars.time, handleChange),
     getLabeledInput("o2", "O2", trackedVars.o2, handleChange),
     getLabeledInput("co2", "CO2", trackedVars.co2, handleChange),
+    getLabeledInput("light", "Light", trackedVars.light, handleChange),
     getLabeledInput("plantsNumber", "Plant population", trackedVars.plantsNumber, handleChange),
     getLabeledInput("snailsNumber", "Snail population", trackedVars.snailsNumber, handleChange),
     _react2.default.createElement(
@@ -21890,13 +21849,13 @@ var DataCollection = function DataCollection(_ref) {
 exports.default = DataCollection;
 
 /***/ }),
-/* 45 */
+/* 44 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 46 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21936,13 +21895,13 @@ function getPreset(presetNum) {
 }
 
 /***/ }),
-/* 47 */
+/* 46 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 48 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
