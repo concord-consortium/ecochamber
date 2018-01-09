@@ -19,6 +19,7 @@ const DataCollection = ({trackedVars, handleChange, createDataPoint}) => {
       { getLabeledInput("time", "Time", trackedVars.time, handleChange) }
       { getLabeledInput("o2", "O2", trackedVars.o2, handleChange) }
       { getLabeledInput("co2", "CO2", trackedVars.co2, handleChange) }
+      { getLabeledInput("light", "Light", trackedVars.light, handleChange) }
       { getLabeledInput("plantsNumber", "Plant population", trackedVars.plantsNumber, handleChange) }
       { getLabeledInput("snailsNumber", "Snail population", trackedVars.snailsNumber, handleChange) }
       <button className="data-button"
