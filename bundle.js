@@ -971,6 +971,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.extendDataSet = extendDataSet;
+exports.setAppSize = setAppSize;
 exports.initCodap = initCodap;
 exports.sendItems = sendItems;
 exports.sendLog = sendLog;
@@ -1004,6 +1005,15 @@ function extendDataSet(newAttr) {
   });
 }
 
+function setAppSize(width, height) {
+  codapInterface.init({
+    name: kDataSetName,
+    title: kAppName,
+    dimensions: { width: width, height: height },
+    version: '0.1'
+  });
+}
+
 function initCodap() {
   var requestDataContext = function requestDataContext(name) {
     return codapInterface.sendRequest({
@@ -1023,7 +1033,7 @@ function initCodap() {
   codapInterface.init({
     name: kDataSetName,
     title: kAppName,
-    dimensions: { width: 750, height: 800 },
+    dimensions: { width: 750, height: 610 },
     version: '0.1'
   }).then(function (iResult) {
     return requestDataContext(kDataSetName);
@@ -21158,6 +21168,8 @@ var Application = function (_React$Component) {
 
     var defaultState = _this2.getDefaultExperimentState();
     defaultState.experiment = 0;
+    defaultState.showBlocks = false;
+    defaultState.injectedBlocks = false;
     defaultState.trackedVars = {
       time: true,
       o2: true,
@@ -21178,11 +21190,6 @@ var Application = function (_React$Component) {
   }
 
   _createClass(Application, [{
-    key: 'componentDidMount',
-    value: function componentDidMount() {
-      this.workspace = _browser2.default.inject('blockly-div', { toolbox: document.getElementById('toolbox') });
-    }
-  }, {
     key: 'getDefaultExperimentState',
     value: function getDefaultExperimentState() {
       return {
@@ -21257,13 +21264,9 @@ var Application = function (_React$Component) {
   }, {
     key: 'reset',
     value: function reset() {
-      var _this3 = this;
-
       var newState = this.getDefaultExperimentState();
       newState.experiment = this.state.experiment + 1;
-      this.setState(newState, function () {
-        (0, _codapUtils.sendItems)(_this3.createDataPoint());
-      });
+      this.setState(newState);
     }
   }, {
     key: 'step',
@@ -21385,7 +21388,7 @@ var Application = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _this4 = this;
+      var _this3 = this;
 
       var _state3 = this.state,
           time = _state3.time,
@@ -21393,7 +21396,8 @@ var Application = function (_React$Component) {
           co2 = _state3.co2,
           plantsNumber = _state3.plantsNumber,
           snailsNumber = _state3.snailsNumber,
-          light = _state3.light;
+          light = _state3.light,
+          showBlocks = _state3.showBlocks;
 
       return _react2.default.createElement(
         'div',
@@ -21409,7 +21413,7 @@ var Application = function (_React$Component) {
           'button',
           {
             onClick: function onClick() {
-              _this4.setState({ plantsNumber: _this4.state.plantsNumber + 1 });
+              _this3.setState({ plantsNumber: _this3.state.plantsNumber + 1 });
             }
           },
           'Add plant'
@@ -21418,7 +21422,7 @@ var Application = function (_React$Component) {
           'button',
           {
             onClick: function onClick() {
-              _this4.setState({ snailsNumber: _this4.state.snailsNumber + 1 });
+              _this3.setState({ snailsNumber: _this3.state.snailsNumber + 1 });
             }
           },
           'Add snail'
@@ -21427,7 +21431,7 @@ var Application = function (_React$Component) {
           'button',
           {
             onClick: function onClick() {
-              _this4.wait(1);
+              _this3.wait(1);
             }
           },
           'Wait 1 minute'
@@ -21436,7 +21440,7 @@ var Application = function (_React$Component) {
           'button',
           {
             onClick: function onClick() {
-              _this4.wait(60);
+              _this3.wait(60);
             }
           },
           'Wait 1 hour'
@@ -21445,7 +21449,7 @@ var Application = function (_React$Component) {
           'button',
           { style: { width: 114 },
             onClick: function onClick() {
-              _this4.setState({ light: !light });
+              _this3.setState({ light: !light });
             }
           },
           'Turn light ',
@@ -21455,7 +21459,7 @@ var Application = function (_React$Component) {
           'button',
           {
             onClick: function onClick() {
-              _this4.reset();
+              _this3.reset();
             }
           },
           'Reset simulation'
@@ -21464,109 +21468,140 @@ var Application = function (_React$Component) {
         _react2.default.createElement('br', null),
         _react2.default.createElement(
           'div',
-          { className: 'blockly-controls' },
+          { className: 'automation-env', hidden: !showBlocks },
           _react2.default.createElement(
-            'button',
-            {
-              onClick: function onClick() {
-                var _this = _this4;
-                var code = _browser2.default.JavaScript.workspaceToCode(_this.workspace);
-                var myInterpreter = new Interpreter(code, _this.initApi.bind(_this));
-                function nextStep() {
-                  if (myInterpreter.step()) {
-                    window.setTimeout(nextStep, 10);
-                  } else {
-                    _this.workspace.highlightBlock(null);
+            'div',
+            { className: 'blockly-controls' },
+            _react2.default.createElement(
+              'button',
+              {
+                onClick: function onClick() {
+                  var _this = _this3;
+                  var code = _browser2.default.JavaScript.workspaceToCode(_this.workspace);
+                  var myInterpreter = new Interpreter(code, _this.initApi.bind(_this));
+                  function nextStep() {
+                    if (myInterpreter.step()) {
+                      window.setTimeout(nextStep, 10);
+                    } else {
+                      _this.workspace.highlightBlock(null);
+                    }
                   }
+                  nextStep();
                 }
-                nextStep();
-              }
-            },
-            'Run program'
+              },
+              'Run program'
+            ),
+            _react2.default.createElement(
+              'button',
+              {
+                onClick: function onClick() {
+                  var xml = _browser2.default.Xml.workspaceToDom(_this3.workspace);
+                  var xml_text = _browser2.default.Xml.domToText(xml);
+                  console.clear();
+                  console.log(xml_text);
+                }
+              },
+              'Save program'
+            ),
+            _react2.default.createElement(
+              'button',
+              {
+                onClick: function onClick() {
+                  var xml_text = prompt("Paste your saved program:");
+                  var xml = _browser2.default.Xml.textToDom(xml_text);
+                  _browser2.default.Xml.domToWorkspace(xml, _this3.workspace);
+                }
+              },
+              'Load program'
+            ),
+            _react2.default.createElement(
+              'button',
+              {
+                onClick: function onClick() {
+                  _this3.workspace.clear();
+                }
+              },
+              'Clear program'
+            )
           ),
           _react2.default.createElement(
-            'button',
-            {
-              onClick: function onClick() {
-                var xml = _browser2.default.Xml.workspaceToDom(_this4.workspace);
-                var xml_text = _browser2.default.Xml.domToText(xml);
-                console.clear();
-                console.log(xml_text);
-              }
-            },
-            'Save program'
+            'div',
+            { className: 'blockly-presets' },
+            _react2.default.createElement(
+              'button',
+              {
+                onClick: function onClick() {
+                  (0, _presets.loadPreset)(1, _this3.workspace);
+                }
+              },
+              'Example 1'
+            ),
+            _react2.default.createElement(
+              'button',
+              {
+                onClick: function onClick() {
+                  (0, _presets.loadPreset)(2, _this3.workspace);
+                }
+              },
+              'Example 2'
+            ),
+            _react2.default.createElement(
+              'button',
+              {
+                onClick: function onClick() {
+                  (0, _presets.loadPreset)(3, _this3.workspace);
+                }
+              },
+              'Example 3'
+            ),
+            _react2.default.createElement(
+              'button',
+              {
+                onClick: function onClick() {
+                  (0, _presets.loadPreset)(4, _this3.workspace);
+                }
+              },
+              'Example 4'
+            ),
+            _react2.default.createElement(
+              'button',
+              {
+                onClick: function onClick() {
+                  (0, _presets.loadPreset)(5, _this3.workspace);
+                }
+              },
+              'Example 5'
+            )
           ),
-          _react2.default.createElement(
-            'button',
-            {
-              onClick: function onClick() {
-                var xml_text = prompt("Paste your saved program:");
-                var xml = _browser2.default.Xml.textToDom(xml_text);
-                _browser2.default.Xml.domToWorkspace(xml, _this4.workspace);
-              }
-            },
-            'Load program'
-          ),
-          _react2.default.createElement(
-            'button',
-            {
-              onClick: function onClick() {
-                _this4.workspace.clear();
-              }
-            },
-            'Clear program'
-          )
+          _react2.default.createElement('div', { id: 'blockly-div', style: { width: 725, height: 600 } })
         ),
         _react2.default.createElement(
           'div',
-          { className: 'blockly-presets' },
+          { className: 'blockly-display' },
           _react2.default.createElement(
             'button',
             {
               onClick: function onClick() {
-                (0, _presets.loadPreset)(1, _this4.workspace);
+                if (showBlocks) {
+                  (0, _codapUtils.setAppSize)(750, 610);
+                } else {
+                  (0, _codapUtils.setAppSize)(750, 800);
+                }
+
+                _this3.setState({ showBlocks: !showBlocks });
+                // Hack to only inject Blockly once container is visible
+                setTimeout(function () {
+                  if (!_this3.state.injectedBlocks) {
+                    _this3.workspace = _browser2.default.inject('blockly-div', { toolbox: document.getElementById('toolbox') });
+                    _this3.setState({ injectedBlocks: true });
+                  }
+                }, 100);
               }
             },
-            'Example 1'
-          ),
-          _react2.default.createElement(
-            'button',
-            {
-              onClick: function onClick() {
-                (0, _presets.loadPreset)(2, _this4.workspace);
-              }
-            },
-            'Example 2'
-          ),
-          _react2.default.createElement(
-            'button',
-            {
-              onClick: function onClick() {
-                (0, _presets.loadPreset)(3, _this4.workspace);
-              }
-            },
-            'Example 3'
-          ),
-          _react2.default.createElement(
-            'button',
-            {
-              onClick: function onClick() {
-                (0, _presets.loadPreset)(5, _this4.workspace);
-              }
-            },
-            'Example 4'
-          ),
-          _react2.default.createElement(
-            'button',
-            {
-              onClick: function onClick() {
-                (0, _presets.loadPreset)(6, _this4.workspace);
-              }
-            },
-            'Example 5'
+            showBlocks ? "Hide" : "Show",
+            ' experiment automation'
           )
-        ),
-        _react2.default.createElement('div', { id: 'blockly-div', style: { width: 725, height: 600 } })
+        )
       );
     }
   }]);
@@ -21888,17 +21923,15 @@ function loadPreset(presetNum, workspace) {
 function getPreset(presetNum) {
   switch (presetNum) {
     case 1:
-      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id="@/(C}pI$Qqk3xOnPB?c!" x="42" y="42"><next><block type="inc_experiment_num" id="GDu6Uw_dmdC$%0[-+35$"><field name="VAR">plantsNumber</field><next><block type="wait" id=",m]=e:02!$L}G`[@2ot1"><next><block type="wait" id="xlf(ecX5jBW)t=w*xPhO"><next><block type="wait" id="TfnVg9exe~vBafmC/+/%"><next><block type="wait" id="[Ci#WIP1H$DcW/+CJK/G"><next><block type="wait" id="_xH{hk)?{!DN@3kP8=Rq"></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>';
+      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id="@/(C}pI$Qqk3xOnPB?c!" x="42" y="42"><next><block type="inc_experiment_num" id="GDu6Uw_dmdC$%0[-+35$"><field name="VAR">plantsNumber</field><next><block type="recordData" id="w{On#`xOv?Xm*C,U0gfS"><next><block type="wait" id=",m]=e:02!$L}G`[@2ot1"><field name="VAR">hour</field><next><block type="recordData" id="uV2vyK9T~]a0a?t%{tF9"><next><block type="wait" id="q7b,j6~2)rS1Qjt33g`L"><field name="VAR">hour</field><next><block type="recordData" id="/)+1uo?*3Nc*bzaX1x2/"><next><block type="wait" id="Sd:,F5;f^JaG^cK|X]K*"><field name="VAR">hour</field><next><block type="recordData" id="g;GV9fjsS(W_=N8sg|,x"><next><block type="wait" id="Sbe6[0n:[MuH%SDcda=6"><field name="VAR">hour</field><next><block type="recordData" id="[sMMs_A[C/K|ZDxX09n|"></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>';
     case 2:
-      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id="@/(C}pI$Qqk3xOnPB?c!" x="39" y="49"><next><block type="inc_experiment_num" id="/(JOZM~{j2=F0q4G3aTL"><field name="VAR">plantsNumber</field><next><block type="controls_repeat_ext" id="pshQ9!1ly1bT7JuQQ;8O"><value name="TIMES"><block type="math_number" id="#B{t1LkJ~Z.e2fwz%~gh"><field name="NUM">20</field></block></value><statement name="DO"><block type="wait" id="_xH{hk)?{!DN@3kP8=Rq"></block></statement></block></next></block></next></block></xml>';
+      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id="@/(C}pI$Qqk3xOnPB?c!" x="39" y="49"><next><block type="inc_experiment_num" id="/(JOZM~{j2=F0q4G3aTL"><field name="VAR">plantsNumber</field><next><block type="controls_repeat_ext" id="pshQ9!1ly1bT7JuQQ;8O"><value name="TIMES"><block type="math_number" id="#B{t1LkJ~Z.e2fwz%~gh"><field name="NUM">30</field></block></value><statement name="DO"><block type="wait" id="_xH{hk)?{!DN@3kP8=Rq"><field name="VAR">minute</field><next><block type="wait" id="H@;9`V)%`.S-hi$UGIFb"><field name="VAR">minute</field><next><block type="recordData" id="[{eE*H;/AVj:6[bom=26"></block></next></block></next></block></statement></block></next></block></next></block></xml>';
     case 3:
-      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id="@/(C}pI$Qqk3xOnPB?c!" x="39" y="49"><next><block type="inc_experiment_num" id="lPd[LaXUaFtj:nAH3@CS"><field name="VAR">plantsNumber</field><next><block type="controls_repeat_ext" id="pshQ9!1ly1bT7JuQQ;8O"><value name="TIMES"><block type="math_number" id="#B{t1LkJ~Z.e2fwz%~gh"><field name="NUM">20</field></block></value><statement name="DO"><block type="wait" id="_xH{hk)?{!DN@3kP8=Rq"></block></statement><next><block type="reset" id="]M*@@x8-/+fD4qFE]m1:"><next><block type="inc_experiment_num" id="-O+so/X8VdwnK=/q_cKk"><field name="VAR">plantsNumber</field><next><block type="inc_experiment_num" id="3@M(~zTq8.iR*}:^34r*"><field name="VAR">snailsNumber</field><next><block type="controls_repeat_ext" id="6)c(X*V{K()$crqC0R;q" inline="true"><value name="TIMES"><block type="math_number" id="j9}IG;zo/qK6GK%^E:?F"><field name="NUM">20</field></block></value><statement name="DO"><block type="wait" id="oacur$j,t[3HuO%5_VPa"></block></statement></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>';
+      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id="@/(C}pI$Qqk3xOnPB?c!" x="39" y="49"><next><block type="inc_experiment_num" id="/(JOZM~{j2=F0q4G3aTL"><field name="VAR">plantsNumber</field><next><block type="controls_repeat_ext" id="pshQ9!1ly1bT7JuQQ;8O"><value name="TIMES"><block type="math_number" id="#B{t1LkJ~Z.e2fwz%~gh"><field name="NUM">30</field></block></value><statement name="DO"><block type="wait" id="_xH{hk)?{!DN@3kP8=Rq"><field name="VAR">minute</field><next><block type="wait" id="H@;9`V)%`.S-hi$UGIFb"><field name="VAR">minute</field><next><block type="recordData" id="[{eE*H;/AVj:6[bom=26"></block></next></block></next></block></statement><next><block type="reset" id="sJ`d/L4GKiZyiB(}*xN~"><next><block type="inc_experiment_num" id="3c#w}~6!QP/.VWc}KU)0"><field name="VAR">plantsNumber</field><next><block type="inc_experiment_num" id=":/KrsuR!NY/SgF{o]xxZ"><field name="VAR">snailsNumber</field><next><block type="controls_repeat_ext" id=":uHndDo?uA7_m:q[Ff]+"><value name="TIMES"><block type="math_number" id="caR`-eQeN|f,YC~N/88w"><field name="NUM">30</field></block></value><statement name="DO"><block type="wait" id="~)`9WJ!_-i@jN=^?YO(3"><field name="VAR">minute</field><next><block type="wait" id="DW(afVp}V/iP]u5A4yA_"><field name="VAR">minute</field><next><block type="recordData" id="Nk{d9t{A%#lLPD.-nRXh"></block></next></block></next></block></statement></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>';
     case 4:
-      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id=";XQ{a~0`^LpFmcfO.VT|" x="26" y="54"><next><block type="set_experiment_num" id="19Mv%m,usC77p7m)2gp_"><field name="VAR">plantsNumber</field><value name="VALUE"><block type="math_number" id="3,T64KF5ElLVvLc5$M^8"><field name="NUM">1</field></block></value><next><block type="controls_repeat_ext" id="uo%/H9{g:Zi65*9_ry{p"><value name="TIMES"><block type="math_number" id=";YQk1@JB.Y^uj=_SEMIB"><field name="NUM">20</field></block></value><statement name="DO"><block type="wait" id="u1s7M29@Hmtgbw/*E.^U"><next><block type="controls_if" id="r7BI,a0e`5];)Q{.wZ=h"><value name="IF0"><block type="logic_compare" id="x-_60oo.KA9Yf:4~[tJZ"><field name="OP">EQ</field><value name="A"><block type="get_experiment_num" id=":,^r{hi*`:q+zFFbJWU6"><field name="VAR">time</field></block></value><value name="B"><block type="math_number" id="D[``^5b;:tL0b@Pv(;6q"><field name="NUM">5</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="`!u/_p+G}[Jdwx:[u*oY"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="Zj%(yWD{H@#[TFcV#/A]"><field name="BOOL">FALSE</field></block></value></block></statement><next><block type="controls_if" id="`ovRngMMC(d${8yd#2QF"><value name="IF0"><block type="logic_compare" id="not~OvNp^y#7^6e_eYjy"><field name="OP">EQ</field><value name="A"><block type="get_experiment_num" id="mu7mhc9ad5aU`lLiAX*S"><field name="VAR">time</field></block></value><value name="B"><block type="math_number" id="*g$Zw5Yu3PCab;~*7~r+"><field name="NUM">10</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="=5eM%$B(7PEdLI2_561-"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="cuZi6$QID~)!]W(S#32K"><field name="BOOL">TRUE</field></block></value></block></statement><next><block type="controls_if" id="qYoz7oKaZBCqFrqPx@Fe"><value name="IF0"><block type="logic_compare" id="S:SO2.(Lv-u%9+|v!+|C"><field name="OP">EQ</field><value name="A"><block type="get_experiment_num" id="|LS3cPNW5)=dm8iM#(e*"><field name="VAR">time</field></block></value><value name="B"><block type="math_number" id="fQ@q=nX36k:ru;j$.1)q"><field name="NUM">15</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="*Lf~y,=A:|$k#LckbX*9"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="Zd:v)xx%+WM}*ATDz=nw"><field name="BOOL">FALSE</field></block></value></block></statement><next><block type="controls_if" id="W1mj@p#Lk1hW!U4%|XFN"><value name="IF0"><block type="logic_compare" id="^)t,tjq5^w}CmzZc968k"><field name="OP">EQ</field><value name="A"><block type="get_experiment_num" id="$%7[iJwUV~~Dy2u+c4w_"><field name="VAR">time</field></block></value><value name="B"><block type="math_number" id="%6D3+}CnKq^,TDvZScL_"><field name="NUM">20</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="7Sjmxff0Z^jGpY5O6ohx"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="?18Y]ZUf^S6=JGrtaOfU"><field name="BOOL">TRUE</field></block></value></block></statement></block></next></block></next></block></next></block></next></block></statement></block></next></block></next></block></xml>';
+      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id=";XQ{a~0`^LpFmcfO.VT|" x="32" y="45"><next><block type="inc_experiment_num" id="rUah:}V-I+`wa##jOF{n"><field name="VAR">plantsNumber</field><next><block type="controls_repeat_ext" id="uo%/H9{g:Zi65*9_ry{p"><value name="TIMES"><block type="math_number" id=";YQk1@JB.Y^uj=_SEMIB"><field name="NUM">10</field></block></value><statement name="DO"><block type="controls_repeat_ext" id="zNjQltD%[G68;dbnfYM;"><value name="TIMES"><block type="math_number" id="D[``^5b;:tL0b@Pv(;6q"><field name="NUM">5</field></block></value><statement name="DO"><block type="wait" id="6dEr]g3lvpj5am^C!,-P"><field name="VAR">minute</field><next><block type="recordData" id="7xY$Z4.SXJ-PIgua?P=Y"></block></next></block></statement><next><block type="controls_if" id="r7BI,a0e`5];)Q{.wZ=h"><mutation else="1"></mutation><value name="IF0"><block type="get_experiment_bool" id="P+6[]3%pz*1ky6$kRCz:"><field name="VAL">light</field><value name="BOOL"><block type="on_off_bool" id="Zj%(yWD{H@#[TFcV#/A]"><field name="BOOL">TRUE</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="`!u/_p+G}[Jdwx:[u*oY"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="WG+^s{a]A|]LpYIwbm(Y"><field name="BOOL">FALSE</field></block></value></block></statement><statement name="ELSE"><block type="set_experiment_bool" id="r_[0yd$mu]ITYw,^[Y=;"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="#2D9ddCUffN-YX~R@c{z"><field name="BOOL">TRUE</field></block></value></block></statement></block></next></block></statement></block></next></block></next></block></xml>';
     case 5:
-      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id=";XQ{a~0`^LpFmcfO.VT|" x="32" y="45"><next><block type="inc_experiment_num" id="rUah:}V-I+`wa##jOF{n"><field name="VAR">plantsNumber</field><next><block type="controls_repeat_ext" id="uo%/H9{g:Zi65*9_ry{p"><value name="TIMES"><block type="math_number" id=";YQk1@JB.Y^uj=_SEMIB"><field name="NUM">5</field></block></value><statement name="DO"><block type="controls_repeat_ext" id="zNjQltD%[G68;dbnfYM;"><value name="TIMES"><block type="math_number" id="D[``^5b;:tL0b@Pv(;6q"><field name="NUM">5</field></block></value><statement name="DO"><block type="wait" id="6dEr]g3lvpj5am^C!,-P"></block></statement><next><block type="controls_if" id="r7BI,a0e`5];)Q{.wZ=h"><mutation else="1"></mutation><value name="IF0"><block type="get_experiment_bool" id="P+6[]3%pz*1ky6$kRCz:"><field name="VAL">light</field><value name="BOOL"><block type="on_off_bool" id="Zj%(yWD{H@#[TFcV#/A]"><field name="BOOL">TRUE</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="`!u/_p+G}[Jdwx:[u*oY"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="WG+^s{a]A|]LpYIwbm(Y"><field name="BOOL">FALSE</field></block></value></block></statement><statement name="ELSE"><block type="set_experiment_bool" id="r_[0yd$mu]ITYw,^[Y=;"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="#2D9ddCUffN-YX~R@c{z"><field name="BOOL">TRUE</field></block></value></block></statement></block></next></block></statement></block></next></block></next></block></xml>';
-    case 6:
-      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id=";XQ{a~0`^LpFmcfO.VT|" x="41" y="60"><next><block type="inc_experiment_num" id="R}Mme:mIUO*gLe6R5C]/"><field name="VAR">plantsNumber</field><next><block type="controls_repeat_ext" id="uo%/H9{g:Zi65*9_ry{p"><value name="TIMES"><block type="math_number" id=";YQk1@JB.Y^uj=_SEMIB"><field name="NUM">25</field></block></value><statement name="DO"><block type="wait" id="u1s7M29@Hmtgbw/*E.^U"><next><block type="controls_if" id="NX9+S`%{cQLO2/;Zg4#h"><value name="IF0"><block type="logic_compare" id="urVA]gzjYJ6R?~:7}E?R"><field name="OP">LT</field><value name="A"><block type="get_experiment_num" id="_M/8;Po|Zx5kL0F@_pb-"><field name="VAR">co2</field></block></value><value name="B"><block type="math_number" id=";x/;_%:yTO084[%]}C:F"><field name="NUM">20</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="_JWR5,H08(m?xKkC(Pt|"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="f!WS!:gl/!NY9rt#qMAM"><field name="BOOL">FALSE</field></block></value></block></statement><next><block type="controls_if" id="G`#52tv]qdEZaC0.tw0y"><value name="IF0"><block type="logic_compare" id="?hX.J#ZEb#Q,4)$d4RFm"><field name="OP">GT</field><value name="A"><block type="get_experiment_num" id="HA_k=d^$HEw/OR}}uQi]"><field name="VAR">co2</field></block></value><value name="B"><block type="math_number" id="xY^kZ[3?Si=,kZF(1s)Q"><field name="NUM">20</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="Hh6d}WN14N6wvvlxFW4Y"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="2Ou=Te^OcW-Z?!dD3@.9"><field name="BOOL">TRUE</field></block></value></block></statement></block></next></block></next></block></statement></block></next></block></next></block></xml>';
+      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id=";XQ{a~0`^LpFmcfO.VT|" x="59" y="53"><next><block type="inc_experiment_num" id="R}Mme:mIUO*gLe6R5C]/"><field name="VAR">plantsNumber</field><next><block type="controls_repeat_ext" id="uo%/H9{g:Zi65*9_ry{p"><value name="TIMES"><block type="math_number" id=";YQk1@JB.Y^uj=_SEMIB"><field name="NUM">100</field></block></value><statement name="DO"><block type="wait" id="{WJ~/G|=WSy7v`DVe}Z*"><field name="VAR">minute</field><next><block type="controls_if" id="NX9+S`%{cQLO2/;Zg4#h"><value name="IF0"><block type="logic_compare" id="urVA]gzjYJ6R?~:7}E?R"><field name="OP">LT</field><value name="A"><block type="get_experiment_num" id="_M/8;Po|Zx5kL0F@_pb-"><field name="VAR">co2</field></block></value><value name="B"><block type="math_number" id=";x/;_%:yTO084[%]}C:F"><field name="NUM">380</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="_JWR5,H08(m?xKkC(Pt|"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="f!WS!:gl/!NY9rt#qMAM"><field name="BOOL">FALSE</field></block></value></block></statement><next><block type="controls_if" id="G`#52tv]qdEZaC0.tw0y"><value name="IF0"><block type="logic_compare" id="?hX.J#ZEb#Q,4)$d4RFm"><field name="OP">GT</field><value name="A"><block type="get_experiment_num" id="HA_k=d^$HEw/OR}}uQi]"><field name="VAR">co2</field></block></value><value name="B"><block type="math_number" id="xY^kZ[3?Si=,kZF(1s)Q"><field name="NUM">410</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="Hh6d}WN14N6wvvlxFW4Y"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="2Ou=Te^OcW-Z?!dD3@.9"><field name="BOOL">TRUE</field></block></value></block></statement><next><block type="recordData" id="7xY$Z4.SXJ-PIgua?P=Y"></block></next></block></next></block></next></block></statement></block></next></block></next></block></xml>';
   }
 }
 

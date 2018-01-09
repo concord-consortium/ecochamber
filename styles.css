@@ -68,6 +68,10 @@ table, td, th {
   margin-left: 90px;
 }
 
+.experiment-values {
+  width: 211px;
+}
+
 .value-display .value {
   text-align: right;
 }.data-collection {
@@ -109,4 +113,10 @@ button {
 .blockly-controls {
   width: 100%;
   display: flex;
+}
+
+.blockly-display {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
