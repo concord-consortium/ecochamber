@@ -1,6 +1,5 @@
 import React from 'react';
 import Blockly from 'node-blockly/browser';
-import OrganismGroup, { Organism } from './organism-group';
 import Experiment from './Experiment';
 import ExperimentHUD from './ExperimentHUD';
 import DataCollection from './DataCollection';
@@ -8,6 +7,15 @@ import { initCodap, sendItems, extendDataSet, setAppSize } from './codap-utils';
 import { loadPreset } from './presets';
 
 require('../assets/css/Application.css');
+
+const Organism = { 
+  PLANT: "PLANT",
+  SNAIL: "SNAIL",
+  properties: {
+    "PLANT": { label: "Plants", photosynthesizes: true, respirationRate: 1 },
+    "SNAIL": { label: "Snails", photosynthesizes: false, respirationRate: 2 }
+  }
+}
 
 class Application extends React.Component {
   constructor() {
@@ -23,8 +31,6 @@ class Application extends React.Component {
       co2: true,
       plantsNumber: false,
       snailsNumber: false,
-      plantsStoredFood: false,
-      snailsStoredFood: false,
       light: false
     }
     this.state = defaultState
@@ -42,24 +48,22 @@ class Application extends React.Component {
       co2: 400,
       light: true,
       plantsNumber: 0,
-      plantsStoredFood: 100,
       snailsNumber: 0,
-      snailsStoredFood: 100
     }
   }
 
   wait(numSteps) {
     let { co2, o2, time } = this.state
     this.step([
-      {organismType: Organism.SNAIL, numberKey: "snailsNumber", foodKey: "snailsStoredFood"},
-      {organismType: Organism.PLANT, numberKey: "plantsNumber", foodKey: "plantsStoredFood"}
+      {organismType: Organism.SNAIL, numberKey: "snailsNumber"},
+      {organismType: Organism.PLANT, numberKey: "plantsNumber"}
     ], numSteps)
     this.setState({time: this.state.time + numSteps})
   }
 
   createDataPoint() {
     let { trackedVars, experiment, time, co2, o2, light, 
-      plantsNumber, snailsNumber, plantsStoredFood, snailsStoredFood } = this.state
+      plantsNumber, snailsNumber } = this.state
     let dataPoint = {experiment_number: experiment}
     if (trackedVars.time) {
       dataPoint.hour = time
@@ -81,14 +85,6 @@ class Application extends React.Component {
     if (trackedVars.snailsNumber) {
       extendDataSet("num_snails")
       dataPoint.num_snails = snailsNumber
-    }
-    if (trackedVars.plantsStoredFood) {
-      extendDataSet("plants_stored_food")
-      dataPoint.plants_stored_food = plantsStoredFood
-    }
-    if (trackedVars.snailsStoredFood) {
-      extendDataSet("snails_stored_food")
-      dataPoint.snails_stored_food = snailsStoredFood
     }
     return dataPoint
   }
