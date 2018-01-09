@@ -41,6 +41,10 @@ class Application extends React.Component {
     initCodap()
   }
 
+  componentDidMount() {
+    this.updateSensorValues()
+  }
+
   getDefaultExperimentState() {
     return {
       time: 0,
@@ -62,17 +66,17 @@ class Application extends React.Component {
   }
 
   createDataPoint() {
-    let { trackedVars, experiment, time, co2, o2, light, 
+    let { trackedVars, experiment, time, co2, o2, light, co2Sensor, o2Sensor,
       plantsNumber, snailsNumber } = this.state
     let dataPoint = {experiment_number: experiment}
     if (trackedVars.time) {
       dataPoint.hour = time
     }
     if (trackedVars.o2) {
-      dataPoint.O2 = Math.round(o2)
+      dataPoint.O2 = o2Sensor
     }
     if (trackedVars.co2) {
-      dataPoint.CO2 = Math.round(co2)
+      dataPoint.CO2 = co2Sensor
     }
     if (trackedVars.light) {
       extendDataSet("light")
@@ -95,10 +99,9 @@ class Application extends React.Component {
     this.setState(newState)
   }
 
-  // Returns the given value, plus between -10% and 10% noise
+  // Returns the given value, plus between -sqrt(value) and sqrt(value) noise
   fuzzValue(value) {
-    return value
-    let noise = value * (Math.random() * .2 - .1)
+    let noise = Math.sqrt(value) * (2 * Math.random() - 1)
     return value + noise
   }
 
@@ -115,7 +118,7 @@ class Application extends React.Component {
 
         let { respirationRate, photosynthesizes } = Organism.properties[organismType]
 
-        let respirationConversion = this.fuzzValue(newState[numberKey] * respirationRate)
+        let respirationConversion = newState[numberKey] * respirationRate
         if (respirationConversion > newState.o2) {
           respirationConversion = newState.o2
           newState[numberKey] = 0
@@ -125,7 +128,7 @@ class Application extends React.Component {
 
         if (photosynthesizes) {
           let photosynthesisRate = Math.max(Math.min((.02 * newState.co2) - 1, 7), 1)
-          let photosynthesisConversion = this.fuzzValue(newState[numberKey] * photosynthesisRate)
+          let photosynthesisConversion = newState[numberKey] * photosynthesisRate
           if (!newState.light) {
             photosynthesisConversion = 0
           } else if (photosynthesisConversion > newState.co2) {
@@ -219,16 +222,29 @@ class Application extends React.Component {
     trackedVars[event.target.name] = event.target.checked
     this.setState({trackedVars})
   }
+
+  updateSensorValues() {
+    this.setState({
+      o2Sensor: Math.round(this.fuzzValue(this.state.o2)),
+      co2Sensor: Math.round(this.fuzzValue(this.state.co2))
+    })
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (this.state.experiment !== nextState.experiment || this.state.time !== nextState.time) {
+      this.updateSensorValues()
+    }
+  }
  
   render() {
-    const { time, o2, co2, plantsNumber, snailsNumber, light, showBlocks } = this.state
+    const { time, o2, co2, o2Sensor, co2Sensor, plantsNumber, snailsNumber, light, showBlocks } = this.state
     return (
       <div className="ecochamber-app">
         <ExperimentHUD colInfos={[
           [
             { label: "Time", value: time},
-            { label: "O2", value: Math.round(o2), unit: "ppm"},
-            { label: "CO2", value: Math.round(co2), unit: "ppm"}
+            { label: "O2", value: o2Sensor, unit: "ppm"},
+            { label: "CO2", value: co2Sensor, unit: "ppm"}
           ],
           [
             { label: "Plant population", value: plantsNumber},
