@@ -4,7 +4,7 @@ import OrganismGroup, { Organism } from './organism-group';
 import Experiment from './Experiment';
 import ExperimentHUD from './ExperimentHUD';
 import DataCollection from './DataCollection';
-import { initCodap, sendItems, extendDataSet } from './codap-utils';
+import { initCodap, sendItems, extendDataSet, setAppSize } from './codap-utils';
 import { loadPreset } from './presets';
 
 require('../assets/css/Application.css');
@@ -14,6 +14,8 @@ class Application extends React.Component {
     super()
     let defaultState = this.getDefaultExperimentState()
     defaultState.experiment = 0
+    defaultState.showBlocks = false
+    defaultState.injectedBlocks = false
     defaultState.trackedVars = {
       time: true,
       o2: true,
@@ -30,11 +32,6 @@ class Application extends React.Component {
     this.createDataPoint = this.createDataPoint.bind(this)
 
     initCodap()
-  }
-
-  componentDidMount() {
-    this.workspace = Blockly.inject('blockly-div',
-          {toolbox: document.getElementById('toolbox')});
   }
 
   getDefaultExperimentState() {
@@ -220,7 +217,7 @@ class Application extends React.Component {
   }
  
   render() {
-    const { time, o2, co2, plantsNumber, snailsNumber, light } = this.state
+    const { time, o2, co2, plantsNumber, snailsNumber, light, showBlocks } = this.state
     return (
       <div className="ecochamber-app">
         <ExperimentHUD colInfos={[
@@ -283,89 +280,114 @@ class Application extends React.Component {
         </button>
         <br/>
         <br/>
-        <div className="blockly-controls">
-          <button
-            onClick={() => {
-              var _this = this
-              var code = Blockly.JavaScript.workspaceToCode(_this.workspace);
-              var myInterpreter = new Interpreter(code, _this.initApi.bind(_this));
-              function nextStep() {
-                if (myInterpreter.step()) {
-                  window.setTimeout(nextStep, 10);
-                } else {
-                  _this.workspace.highlightBlock(null)
+        <div className="automation-env" hidden={!showBlocks}>
+          <div className="blockly-controls">
+            <button
+              onClick={() => {
+                var _this = this
+                var code = Blockly.JavaScript.workspaceToCode(_this.workspace);
+                var myInterpreter = new Interpreter(code, _this.initApi.bind(_this));
+                function nextStep() {
+                  if (myInterpreter.step()) {
+                    window.setTimeout(nextStep, 10);
+                  } else {
+                    _this.workspace.highlightBlock(null)
+                  }
                 }
+                nextStep();
+              }}
+            >
+            Run program
+            </button>
+            <button
+              onClick={() => {
+                var xml = Blockly.Xml.workspaceToDom(this.workspace)
+                var xml_text = Blockly.Xml.domToText(xml)
+                console.clear()
+                console.log(xml_text)
+              }}
+            >
+            Save program
+            </button>
+            <button
+              onClick={() => {
+                var xml_text = prompt("Paste your saved program:")
+                var xml = Blockly.Xml.textToDom(xml_text)
+                Blockly.Xml.domToWorkspace(xml, this.workspace)
+              }}
+            >
+            Load program
+            </button>
+            <button
+              onClick={() => {
+                this.workspace.clear()
+              }}
+            >
+            Clear program
+            </button>
+          </div>
+          <div className="blockly-presets">
+            <button
+              onClick={() => {
+                loadPreset(1, this.workspace)
+              }}
+            >
+            Example 1
+            </button>
+            <button
+              onClick={() => {
+                loadPreset(2, this.workspace)
+              }}
+            >
+            Example 2
+            </button>
+            <button
+              onClick={() => {
+                loadPreset(3, this.workspace)
+              }}
+            >
+            Example 3
+            </button>
+            <button
+              onClick={() => {
+                loadPreset(4, this.workspace)
+              }}
+            >
+            Example 4
+            </button>
+            <button
+              onClick={() => {
+                loadPreset(5, this.workspace)
+              }}
+            >
+            Example 5
+            </button>
+          </div>
+          <div id="blockly-div" style={{width: 725, height: 600}}></div>
+        </div>
+        <div className="blockly-display">
+          <button
+            onClick={() => {
+              if (showBlocks) {
+                setAppSize(750, 610)
+              } else {
+                setAppSize(750, 800)
               }
-              nextStep();
+
+              this.setState({showBlocks: !showBlocks})
+              // Hack to only inject Blockly once container is visible
+              setTimeout(() => {
+                if (!this.state.injectedBlocks) {
+                  this.workspace = Blockly.inject('blockly-div',
+                    {toolbox: document.getElementById('toolbox')});
+                  this.setState({injectedBlocks: true})
+                }
+              }, 100)
             }}
           >
-          Run program
-          </button>
-          <button
-            onClick={() => {
-              var xml = Blockly.Xml.workspaceToDom(this.workspace)
-              var xml_text = Blockly.Xml.domToText(xml)
-              console.clear()
-              console.log(xml_text)
-            }}
-          >
-          Save program
-          </button>
-          <button
-            onClick={() => {
-              var xml_text = prompt("Paste your saved program:")
-              var xml = Blockly.Xml.textToDom(xml_text)
-              Blockly.Xml.domToWorkspace(xml, this.workspace)
-            }}
-          >
-          Load program
-          </button>
-          <button
-            onClick={() => {
-              this.workspace.clear()
-            }}
-          >
-          Clear program
+          {showBlocks ? "Hide" : "Show"} experiment automation
           </button>
         </div>
-        <div className="blockly-presets">
-          <button
-            onClick={() => {
-              loadPreset(1, this.workspace)
-            }}
-          >
-          Example 1
-          </button>
-          <button
-            onClick={() => {
-              loadPreset(2, this.workspace)
-            }}
-          >
-          Example 2
-          </button>
-          <button
-            onClick={() => {
-              loadPreset(3, this.workspace)
-            }}
-          >
-          Example 3
-          </button>
-          <button
-            onClick={() => {
-              loadPreset(4, this.workspace)
-            }}
-          >
-          Example 4
-          </button>
-          <button
-            onClick={() => {
-              loadPreset(5, this.workspace)
-            }}
-          >
-          Example 5
-          </button>
-        </div>
-        <div id="blockly-div" style={{width: 725, height: 600}}></div>
       </div>
     );
   }

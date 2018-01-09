@@ -37,6 +37,15 @@ export function extendDataSet(newAttr) {
   })
 }
 
+export function setAppSize(width, height) {
+  codapInterface.init({
+    name: kDataSetName,
+    title: kAppName,
+    dimensions: {width, height},
+    version: '0.1'
+  })
+}
+
 export function initCodap() {
   let requestDataContext = (name) => {
     return codapInterface.sendRequest({
@@ -56,7 +65,7 @@ export function initCodap() {
   codapInterface.init({
     name: kDataSetName,
     title: kAppName,
-    dimensions: {width: 750, height: 800},
+    dimensions: {width: 750, height: 610},
     version: '0.1'
   }).then(function (iResult) {
     return requestDataContext(kDataSetName);
