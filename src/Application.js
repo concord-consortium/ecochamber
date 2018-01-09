@@ -98,9 +98,7 @@ class Application extends React.Component {
   reset() {
     let newState = this.getDefaultExperimentState()
     newState.experiment = this.state.experiment + 1
-    this.setState(newState, () => {
-      sendItems(this.createDataPoint())
-    })
+    this.setState(newState)
   }
 
   step(organismInfos, numSteps) {
@@ -227,7 +225,7 @@ class Application extends React.Component {
       <div className="ecochamber-app">
         <ExperimentHUD colInfos={[
           [
-            { label: "Hour", value: time},
+            { label: "Time", value: time},
             { label: "O2", value: Math.round(o2), unit: "ppm"},
             { label: "CO2", value: Math.round(co2), unit: "ppm"}
           ],
@@ -260,14 +258,14 @@ class Application extends React.Component {
             this.wait(1)
           }}
         >
-        Wait 1 Minute
+        Wait 1 minute
         </button>
         <button
           onClick={() => {
             this.wait(60)
           }}
         >
-        Wait 1 Hour
+        Wait 1 hour
         </button>
         <button style={{width: 114}}
           onClick={() => {
@@ -301,7 +299,7 @@ class Application extends React.Component {
               nextStep();
             }}
           >
-          Run Program
+          Run program
           </button>
           <button
             onClick={() => {
@@ -311,7 +309,7 @@ class Application extends React.Component {
               console.log(xml_text)
             }}
           >
-          Save Program
+          Save program
           </button>
           <button
             onClick={() => {
@@ -320,14 +318,14 @@ class Application extends React.Component {
               Blockly.Xml.domToWorkspace(xml, this.workspace)
             }}
           >
-          Load Program
+          Load program
           </button>
           <button
             onClick={() => {
               this.workspace.clear()
             }}
           >
-          Clear Program
+          Clear program
           </button>
         </div>
         <div className="blockly-presets">
@@ -354,14 +352,14 @@ class Application extends React.Component {
           </button>
           <button
             onClick={() => {
-              loadPreset(5, this.workspace)
+              loadPreset(4, this.workspace)
             }}
           >
           Example 4
           </button>
           <button
             onClick={() => {
-              loadPreset(6, this.workspace)
+              loadPreset(5, this.workspace)
             }}
           >
           Example 5

@@ -185,7 +185,7 @@ export function configureBlocks() {
   Blockly.Blocks['recordData'] = {
     init: function() {
       this.jsonInit({
-        "message0": "Record Data Point",
+        "message0": "Record data point",
         "previousStatement": null,
         "nextStatement": null,
         "colour": "%{BKY_VARIABLES_HUE}",

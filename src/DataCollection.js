@@ -26,7 +26,7 @@ const DataCollection = ({trackedVars, handleChange, createDataPoint}) => {
           sendItems(createDataPoint())
         }}
       >
-      Record Data Point
+      Record data point
       </button>
     </div>
   )
