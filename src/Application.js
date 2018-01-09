@@ -99,6 +99,13 @@ class Application extends React.Component {
     this.setState(newState)
   }
 
+  // Returns the given value, plus between -10% and 10% noise
+  fuzzValue(value) {
+    return value
+    let noise = value * (Math.random() * .2 - .1)
+    return value + noise
+  }
+
   step(organismInfos, numSteps) {
     let newState = Object.assign({}, this.state)
 
@@ -112,7 +119,7 @@ class Application extends React.Component {
 
         let { respirationRate, photosynthesizes } = Organism.properties[organismType]
 
-        let respirationConversion = newState[numberKey] * respirationRate
+        let respirationConversion = this.fuzzValue(newState[numberKey] * respirationRate)
         if (respirationConversion > newState.o2) {
           respirationConversion = newState.o2
           newState[numberKey] = 0
@@ -122,7 +129,7 @@ class Application extends React.Component {
 
         if (photosynthesizes) {
           let photosynthesisRate = Math.max(Math.min((.02 * newState.co2) - 1, 7), 1)
-          let photosynthesisConversion = newState[numberKey] * photosynthesisRate
+          let photosynthesisConversion = this.fuzzValue(newState[numberKey] * photosynthesisRate)
           if (!newState.light) {
             photosynthesisConversion = 0
           } else if (photosynthesisConversion > newState.co2) {
