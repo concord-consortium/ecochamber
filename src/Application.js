@@ -16,6 +16,7 @@ class Application extends React.Component {
     defaultState.experiment = 0
     defaultState.showBlocks = false
     defaultState.injectedBlocks = false
+    defaultState.running = false
     defaultState.trackedVars = {
       time: true,
       o2: true,
@@ -282,22 +283,25 @@ class Application extends React.Component {
         <br/>
         <div className="automation-env" hidden={!showBlocks}>
           <div className="blockly-controls">
-            <button
+            <button style={{width: 122}}
               onClick={() => {
                 var _this = this
-                var code = Blockly.JavaScript.workspaceToCode(_this.workspace);
-                var myInterpreter = new Interpreter(code, _this.initApi.bind(_this));
-                function nextStep() {
-                  if (myInterpreter.step()) {
-                    window.setTimeout(nextStep, 10);
-                  } else {
-                    _this.workspace.highlightBlock(null)
+                _this.setState({running: !_this.state.running}, () => {
+                  var code = Blockly.JavaScript.workspaceToCode(_this.workspace);
+                  var myInterpreter = new Interpreter(code, _this.initApi.bind(_this));
+                  function nextStep() {
+                    if (myInterpreter.step() && _this.state.running) {
+                      window.setTimeout(nextStep, 10);
+                    } else {
+                      _this.workspace.highlightBlock(null)
+                      _this.setState({running: false})
+                    }
                   }
-                }
-                nextStep();
+                  nextStep();
+                })
               }}
             >
-            Run program
+            {this.state.running ? "Stop" : "Start"} program
             </button>
             <button
               onClick={() => {
