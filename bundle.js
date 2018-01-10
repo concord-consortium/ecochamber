@@ -1127,7 +1127,7 @@ var _application = __webpack_require__(38);
 
 var _application2 = _interopRequireDefault(_application);
 
-var _blocks = __webpack_require__(47);
+var _blocks = __webpack_require__(48);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21144,6 +21144,8 @@ var _codapUtils = __webpack_require__(15);
 
 var _presets = __webpack_require__(45);
 
+var _utils = __webpack_require__(46);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -21152,7 +21154,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-__webpack_require__(46);
+__webpack_require__(47);
 
 var Organism = {
   PLANT: "PLANT",
@@ -21273,7 +21275,10 @@ var Application = function (_React$Component) {
   }, {
     key: 'fuzzValue',
     value: function fuzzValue(value) {
-      var noise = Math.sqrt(value) * (2 * Math.random() - 1);
+      var noise = 0;
+      if ((0, _utils.getURLParam)("noise") === "true") {
+        noise = Math.sqrt(value) * (2 * Math.random() - 1);
+      }
       return value + noise;
     }
   }, {
@@ -21402,9 +21407,9 @@ var Application = function (_React$Component) {
       });
     }
   }, {
-    key: 'componentWillUpdate',
-    value: function componentWillUpdate(nextProps, nextState) {
-      if (this.state.experiment !== nextState.experiment || this.state.time !== nextState.time) {
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate(prevProps, prevState) {
+      if (this.state.experiment !== prevState.experiment || this.state.time !== prevState.time) {
         this.updateSensorValues();
       }
     }
@@ -21896,12 +21901,33 @@ function getPreset(presetNum) {
 
 /***/ }),
 /* 46 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getURLParam = getURLParam;
+function getURLParam(name) {
+  var url = location.href;
+  name = name.replace(/[[]]/g, '\\$&');
+  var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+  var results = regex.exec(url);
+  if (!results) return null;
+  if (!results[2]) return true;
+  return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+/***/ }),
+/* 47 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
