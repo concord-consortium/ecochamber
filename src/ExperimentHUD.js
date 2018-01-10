@@ -15,6 +15,9 @@ const ExperimentColumn = ({stats}) => {
   let displays = []
   stats.forEach(stat => {
     let { label, value, unit } = stat
+    if (!isNaN(value)) {
+      value = value.toLocaleString()
+    }
     displays.push(<ValueDisplay key={label} name={label} value={value + (unit ? " " + unit : "")} />)
   })
   return (

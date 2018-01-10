@@ -17,7 +17,7 @@ const kDataSetName = 'Experimental Output',
                                  setOfCasesWithArticle: "a sample"
                                },
                                attrs: [
-                                {name: "hour", type: 'numeric', precision: 1},
+                                {name: "time", type: 'numeric', precision: 1},
                                 {name: "CO2", unit: "mL", type: 'numeric', precision: 2},
                                 {name: "O2", unit: "mL", type: 'numeric', precision: 2},
                               ]

@@ -71,7 +71,7 @@ class Application extends React.Component {
       plantsNumber, snailsNumber } = this.state
     let dataPoint = {experiment_number: experiment}
     if (trackedVars.time) {
-      dataPoint.hour = time
+      dataPoint.time = time
     }
     if (trackedVars.o2) {
       dataPoint.O2 = o2Sensor
@@ -104,7 +104,11 @@ class Application extends React.Component {
   fuzzValue(value) {
     let noise = 0
     if (getURLParam("noise") === "true") {
-      noise = Math.sqrt(value) * (2 * Math.random() - 1)
+      let noiseMultiplier = parseFloat(getURLParam("noiseMultiplier"))
+      if (isNaN(noiseMultiplier)) {
+        noiseMultiplier = 1
+      }
+      noise = Math.sqrt(value) * (2 * Math.random() - 1) * noiseMultiplier
     }
     return value + noise
   }
