@@ -5,6 +5,7 @@ import ExperimentHUD from './ExperimentHUD';
 import DataCollection from './DataCollection';
 import { initCodap, sendItems, extendDataSet, setAppSize } from './codap-utils';
 import { loadPreset } from './presets';
+import { getURLParam } from './utils';
 
 require('../assets/css/Application.css');
 
@@ -101,7 +102,10 @@ class Application extends React.Component {
 
   // Returns the given value, plus between -sqrt(value) and sqrt(value) noise
   fuzzValue(value) {
-    let noise = Math.sqrt(value) * (2 * Math.random() - 1)
+    let noise = 0
+    if (getURLParam("noise") === "true") {
+      noise = Math.sqrt(value) * (2 * Math.random() - 1)
+    }
     return value + noise
   }
 
@@ -230,8 +234,8 @@ class Application extends React.Component {
     })
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    if (this.state.experiment !== nextState.experiment || this.state.time !== nextState.time) {
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.experiment !== prevState.experiment || this.state.time !== prevState.time) {
       this.updateSensorValues()
     }
   }
