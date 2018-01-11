@@ -989,7 +989,7 @@ var kDataSetName = 'Experimental Output',
       pluralCase: "experimental_outputs",
       setOfCasesWithArticle: "a sample"
     },
-    attrs: [{ name: "hour", type: 'numeric', precision: 1 }, { name: "CO2", unit: "mL", type: 'numeric', precision: 2 }, { name: "O2", unit: "mL", type: 'numeric', precision: 2 }]
+    attrs: [{ name: "time", type: 'numeric', precision: 1 }, { name: "CO2", unit: "mL", type: 'numeric', precision: 2 }, { name: "O2", unit: "mL", type: 'numeric', precision: 2 }]
   }]
 };
 
@@ -1033,7 +1033,7 @@ function initCodap() {
   codapInterface.init({
     name: kDataSetName,
     title: kAppName,
-    dimensions: { width: 750, height: 610 },
+    dimensions: { width: 750, height: 550 },
     version: '0.1'
   }).then(function (iResult) {
     return requestDataContext(kDataSetName);
@@ -21165,6 +21165,35 @@ var Organism = {
   }
 };
 
+var RUN_STATE = {
+  STOPPED: 0,
+  RUNNING: 1,
+  RUSHING: 2,
+  getNext: function getNext(curr) {
+    if ((0, _utils.getURLParam)("rushMode") === "false") {
+      return curr === 0 ? 1 : 0;
+    } else {
+      return curr < 2 ? curr + 1 : 0;
+    }
+  },
+  isRunning: function isRunning(state) {
+    return state > 0;
+  },
+  runDelay: function runDelay(state) {
+    return state === 2 ? 0 : 10;
+  },
+  getButtonPrefix: function getButtonPrefix(state) {
+    switch (RUN_STATE.getNext(state)) {
+      case 1:
+        return "Run";
+      case 2:
+        return "Rush";
+      default:
+        return "Stop";
+    }
+  }
+};
+
 var Application = function (_React$Component) {
   _inherits(Application, _React$Component);
 
@@ -21177,7 +21206,7 @@ var Application = function (_React$Component) {
     defaultState.experiment = 0;
     defaultState.showBlocks = false;
     defaultState.injectedBlocks = false;
-    defaultState.running = false;
+    defaultState.running = RUN_STATE.STOPPED;
     defaultState.trackedVars = {
       time: true,
       o2: true,
@@ -21240,7 +21269,7 @@ var Application = function (_React$Component) {
 
       var dataPoint = { experiment_number: experiment };
       if (trackedVars.time) {
-        dataPoint.hour = time;
+        dataPoint.time = time;
       }
       if (trackedVars.o2) {
         dataPoint.O2 = o2Sensor;
@@ -21277,7 +21306,11 @@ var Application = function (_React$Component) {
     value: function fuzzValue(value) {
       var noise = 0;
       if ((0, _utils.getURLParam)("noise") === "true") {
-        noise = Math.sqrt(value) * (2 * Math.random() - 1);
+        var noiseMultiplier = parseFloat((0, _utils.getURLParam)("noiseMultiplier"));
+        if (isNaN(noiseMultiplier)) {
+          noiseMultiplier = 1;
+        }
+        noise = Math.sqrt(value) * (2 * Math.random() - 1) * noiseMultiplier;
       }
       return value + noise;
     }
@@ -21427,7 +21460,8 @@ var Application = function (_React$Component) {
           plantsNumber = _state3.plantsNumber,
           snailsNumber = _state3.snailsNumber,
           light = _state3.light,
-          showBlocks = _state3.showBlocks;
+          showBlocks = _state3.showBlocks,
+          running = _state3.running;
 
       return _react2.default.createElement(
         'div',
@@ -21461,10 +21495,10 @@ var Application = function (_React$Component) {
           'button',
           {
             onClick: function onClick() {
-              _this3.wait(1);
+              _this3.wait(5);
             }
           },
-          'Wait 1 minute'
+          'Wait 5 minutes'
         ),
         _react2.default.createElement(
           'button',
@@ -21504,25 +21538,28 @@ var Application = function (_React$Component) {
             { className: 'blockly-controls' },
             _react2.default.createElement(
               'button',
-              { style: { width: 122 },
+              { style: { width: 123 },
                 onClick: function onClick() {
                   var _this = _this3;
-                  _this.setState({ running: !_this.state.running }, function () {
+                  _this.setState({ running: RUN_STATE.getNext(_this.state.running) }, function () {
                     var code = _browser2.default.JavaScript.workspaceToCode(_this.workspace);
                     var myInterpreter = new Interpreter(code, _this.initApi.bind(_this));
-                    function nextStep() {
-                      if (myInterpreter.step() && _this.state.running) {
-                        window.setTimeout(nextStep, 10);
-                      } else {
-                        _this.workspace.highlightBlock(null);
-                        _this.setState({ running: false });
-                      }
+                    if (_this.state.running === RUN_STATE.RUNNING) {
+                      var _nextStep = function _nextStep() {
+                        if (myInterpreter.step() && RUN_STATE.isRunning(_this.state.running)) {
+                          window.setTimeout(_nextStep, RUN_STATE.runDelay(_this.state.running));
+                        } else {
+                          _this.workspace.highlightBlock(null);
+                          _this.setState({ running: RUN_STATE.STOPPED });
+                        }
+                      };
+
+                      _nextStep();
                     }
-                    nextStep();
                   });
                 }
               },
-              this.state.running ? "Stop" : "Start",
+              RUN_STATE.getButtonPrefix(running),
               ' program'
             ),
             _react2.default.createElement(
@@ -21617,7 +21654,7 @@ var Application = function (_React$Component) {
             {
               onClick: function onClick() {
                 if (showBlocks) {
-                  (0, _codapUtils.setAppSize)(750, 610);
+                  (0, _codapUtils.setAppSize)(750, 550);
                 } else {
                   (0, _codapUtils.setAppSize)(750, 800);
                 }
@@ -21756,6 +21793,9 @@ var ExperimentColumn = function ExperimentColumn(_ref2) {
         value = stat.value,
         unit = stat.unit;
 
+    if (!isNaN(value)) {
+      value = value.toLocaleString();
+    }
     displays.push(_react2.default.createElement(ValueDisplay, { key: label, name: label, value: value + (unit ? " " + unit : "") }));
   });
   return _react2.default.createElement(
@@ -21889,13 +21929,13 @@ function getPreset(presetNum) {
     case 1:
       return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id="@/(C}pI$Qqk3xOnPB?c!" x="42" y="42"><next><block type="inc_experiment_num" id="GDu6Uw_dmdC$%0[-+35$"><field name="VAR">plantsNumber</field><next><block type="recordData" id="w{On#`xOv?Xm*C,U0gfS"><next><block type="wait" id=",m]=e:02!$L}G`[@2ot1"><field name="VAR">hour</field><next><block type="recordData" id="uV2vyK9T~]a0a?t%{tF9"><next><block type="wait" id="q7b,j6~2)rS1Qjt33g`L"><field name="VAR">hour</field><next><block type="recordData" id="/)+1uo?*3Nc*bzaX1x2/"><next><block type="wait" id="Sd:,F5;f^JaG^cK|X]K*"><field name="VAR">hour</field><next><block type="recordData" id="g;GV9fjsS(W_=N8sg|,x"><next><block type="wait" id="Sbe6[0n:[MuH%SDcda=6"><field name="VAR">hour</field><next><block type="recordData" id="[sMMs_A[C/K|ZDxX09n|"></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>';
     case 2:
-      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id="@/(C}pI$Qqk3xOnPB?c!" x="39" y="49"><next><block type="inc_experiment_num" id="/(JOZM~{j2=F0q4G3aTL"><field name="VAR">plantsNumber</field><next><block type="controls_repeat_ext" id="pshQ9!1ly1bT7JuQQ;8O"><value name="TIMES"><block type="math_number" id="#B{t1LkJ~Z.e2fwz%~gh"><field name="NUM">30</field></block></value><statement name="DO"><block type="wait" id="_xH{hk)?{!DN@3kP8=Rq"><field name="VAR">minute</field><next><block type="wait" id="H@;9`V)%`.S-hi$UGIFb"><field name="VAR">minute</field><next><block type="recordData" id="[{eE*H;/AVj:6[bom=26"></block></next></block></next></block></statement></block></next></block></next></block></xml>';
+      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id="@/(C}pI$Qqk3xOnPB?c!" x="39" y="49"><next><block type="inc_experiment_num" id="/(JOZM~{j2=F0q4G3aTL"><field name="VAR">plantsNumber</field><next><block type="controls_repeat_ext" id="pshQ9!1ly1bT7JuQQ;8O"><value name="TIMES"><block type="math_number" id="#B{t1LkJ~Z.e2fwz%~gh"><field name="NUM">30</field></block></value><statement name="DO"><block type="wait" id="H@;9`V)%`.S-hi$UGIFb"><field name="VAR">minute</field><next><block type="recordData" id="[{eE*H;/AVj:6[bom=26"></block></next></block></statement></block></next></block></next></block></xml>';
     case 3:
-      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id="@/(C}pI$Qqk3xOnPB?c!" x="39" y="49"><next><block type="inc_experiment_num" id="/(JOZM~{j2=F0q4G3aTL"><field name="VAR">plantsNumber</field><next><block type="controls_repeat_ext" id="pshQ9!1ly1bT7JuQQ;8O"><value name="TIMES"><block type="math_number" id="#B{t1LkJ~Z.e2fwz%~gh"><field name="NUM">30</field></block></value><statement name="DO"><block type="wait" id="_xH{hk)?{!DN@3kP8=Rq"><field name="VAR">minute</field><next><block type="wait" id="H@;9`V)%`.S-hi$UGIFb"><field name="VAR">minute</field><next><block type="recordData" id="[{eE*H;/AVj:6[bom=26"></block></next></block></next></block></statement><next><block type="reset" id="sJ`d/L4GKiZyiB(}*xN~"><next><block type="inc_experiment_num" id="3c#w}~6!QP/.VWc}KU)0"><field name="VAR">plantsNumber</field><next><block type="inc_experiment_num" id=":/KrsuR!NY/SgF{o]xxZ"><field name="VAR">snailsNumber</field><next><block type="controls_repeat_ext" id=":uHndDo?uA7_m:q[Ff]+"><value name="TIMES"><block type="math_number" id="caR`-eQeN|f,YC~N/88w"><field name="NUM">30</field></block></value><statement name="DO"><block type="wait" id="~)`9WJ!_-i@jN=^?YO(3"><field name="VAR">minute</field><next><block type="wait" id="DW(afVp}V/iP]u5A4yA_"><field name="VAR">minute</field><next><block type="recordData" id="Nk{d9t{A%#lLPD.-nRXh"></block></next></block></next></block></statement></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>';
+      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id="@/(C}pI$Qqk3xOnPB?c!" x="39" y="49"><next><block type="inc_experiment_num" id="/(JOZM~{j2=F0q4G3aTL"><field name="VAR">plantsNumber</field><next><block type="controls_repeat_ext" id="pshQ9!1ly1bT7JuQQ;8O"><value name="TIMES"><block type="math_number" id="#B{t1LkJ~Z.e2fwz%~gh"><field name="NUM">30</field></block></value><statement name="DO"><block type="wait" id="_xH{hk)?{!DN@3kP8=Rq"><field name="VAR">minute</field><next><block type="recordData" id="[{eE*H;/AVj:6[bom=26"></block></next></block></statement><next><block type="reset" id="sJ`d/L4GKiZyiB(}*xN~"><next><block type="inc_experiment_num" id="3c#w}~6!QP/.VWc}KU)0"><field name="VAR">plantsNumber</field><next><block type="inc_experiment_num" id=":/KrsuR!NY/SgF{o]xxZ"><field name="VAR">snailsNumber</field><next><block type="controls_repeat_ext" id=":uHndDo?uA7_m:q[Ff]+"><value name="TIMES"><block type="math_number" id="caR`-eQeN|f,YC~N/88w"><field name="NUM">30</field></block></value><statement name="DO"><block type="wait" id="~)`9WJ!_-i@jN=^?YO(3"><field name="VAR">minute</field><next><block type="recordData" id="Nk{d9t{A%#lLPD.-nRXh"></block></next></block></statement></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>';
     case 4:
-      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id=";XQ{a~0`^LpFmcfO.VT|" x="32" y="45"><next><block type="inc_experiment_num" id="rUah:}V-I+`wa##jOF{n"><field name="VAR">plantsNumber</field><next><block type="controls_repeat_ext" id="uo%/H9{g:Zi65*9_ry{p"><value name="TIMES"><block type="math_number" id=";YQk1@JB.Y^uj=_SEMIB"><field name="NUM">10</field></block></value><statement name="DO"><block type="controls_repeat_ext" id="zNjQltD%[G68;dbnfYM;"><value name="TIMES"><block type="math_number" id="D[``^5b;:tL0b@Pv(;6q"><field name="NUM">5</field></block></value><statement name="DO"><block type="wait" id="6dEr]g3lvpj5am^C!,-P"><field name="VAR">minute</field><next><block type="recordData" id="7xY$Z4.SXJ-PIgua?P=Y"></block></next></block></statement><next><block type="controls_if" id="r7BI,a0e`5];)Q{.wZ=h"><mutation else="1"></mutation><value name="IF0"><block type="get_experiment_bool" id="P+6[]3%pz*1ky6$kRCz:"><field name="VAL">light</field><value name="BOOL"><block type="on_off_bool" id="Zj%(yWD{H@#[TFcV#/A]"><field name="BOOL">TRUE</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="`!u/_p+G}[Jdwx:[u*oY"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="WG+^s{a]A|]LpYIwbm(Y"><field name="BOOL">FALSE</field></block></value></block></statement><statement name="ELSE"><block type="set_experiment_bool" id="r_[0yd$mu]ITYw,^[Y=;"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="#2D9ddCUffN-YX~R@c{z"><field name="BOOL">TRUE</field></block></value></block></statement></block></next></block></statement></block></next></block></next></block></xml>';
+      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id=";XQ{a~0`^LpFmcfO.VT|" x="32" y="45"><next><block type="inc_experiment_num" id="rUah:}V-I+`wa##jOF{n"><field name="VAR">plantsNumber</field><next><block type="controls_repeat_ext" id="uo%/H9{g:Zi65*9_ry{p"><value name="TIMES"><block type="math_number" id=";YQk1@JB.Y^uj=_SEMIB"><field name="NUM">30</field></block></value><statement name="DO"><block type="wait" id="6dEr]g3lvpj5am^C!,-P"><field name="VAR">minute</field><next><block type="recordData" id="7xY$Z4.SXJ-PIgua?P=Y"><next><block type="controls_if" id="r7BI,a0e`5];)Q{.wZ=h"><mutation else="1"></mutation><value name="IF0"><block type="get_experiment_bool" id="P+6[]3%pz*1ky6$kRCz:"><field name="VAL">light</field><value name="BOOL"><block type="on_off_bool" id="Zj%(yWD{H@#[TFcV#/A]"><field name="BOOL">TRUE</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="`!u/_p+G}[Jdwx:[u*oY"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="WG+^s{a]A|]LpYIwbm(Y"><field name="BOOL">FALSE</field></block></value></block></statement><statement name="ELSE"><block type="set_experiment_bool" id="r_[0yd$mu]ITYw,^[Y=;"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="#2D9ddCUffN-YX~R@c{z"><field name="BOOL">TRUE</field></block></value></block></statement></block></next></block></next></block></statement></block></next></block></next></block></xml>';
     case 5:
-      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id=";XQ{a~0`^LpFmcfO.VT|" x="59" y="53"><next><block type="inc_experiment_num" id="R}Mme:mIUO*gLe6R5C]/"><field name="VAR">plantsNumber</field><next><block type="controls_repeat_ext" id="uo%/H9{g:Zi65*9_ry{p"><value name="TIMES"><block type="math_number" id=";YQk1@JB.Y^uj=_SEMIB"><field name="NUM">100</field></block></value><statement name="DO"><block type="wait" id="{WJ~/G|=WSy7v`DVe}Z*"><field name="VAR">minute</field><next><block type="controls_if" id="NX9+S`%{cQLO2/;Zg4#h"><value name="IF0"><block type="logic_compare" id="urVA]gzjYJ6R?~:7}E?R"><field name="OP">LT</field><value name="A"><block type="get_experiment_num" id="_M/8;Po|Zx5kL0F@_pb-"><field name="VAR">co2</field></block></value><value name="B"><block type="math_number" id=";x/;_%:yTO084[%]}C:F"><field name="NUM">380</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="_JWR5,H08(m?xKkC(Pt|"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="f!WS!:gl/!NY9rt#qMAM"><field name="BOOL">FALSE</field></block></value></block></statement><next><block type="controls_if" id="G`#52tv]qdEZaC0.tw0y"><value name="IF0"><block type="logic_compare" id="?hX.J#ZEb#Q,4)$d4RFm"><field name="OP">GT</field><value name="A"><block type="get_experiment_num" id="HA_k=d^$HEw/OR}}uQi]"><field name="VAR">co2</field></block></value><value name="B"><block type="math_number" id="xY^kZ[3?Si=,kZF(1s)Q"><field name="NUM">410</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="Hh6d}WN14N6wvvlxFW4Y"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="2Ou=Te^OcW-Z?!dD3@.9"><field name="BOOL">TRUE</field></block></value></block></statement><next><block type="recordData" id="7xY$Z4.SXJ-PIgua?P=Y"></block></next></block></next></block></next></block></statement></block></next></block></next></block></xml>';
+      return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id=";XQ{a~0`^LpFmcfO.VT|" x="59" y="53"><next><block type="inc_experiment_num" id="R}Mme:mIUO*gLe6R5C]/"><field name="VAR">plantsNumber</field><next><block type="controls_repeat_ext" id="uo%/H9{g:Zi65*9_ry{p"><value name="TIMES"><block type="math_number" id=";YQk1@JB.Y^uj=_SEMIB"><field name="NUM">30</field></block></value><statement name="DO"><block type="wait" id="{WJ~/G|=WSy7v`DVe}Z*"><field name="VAR">minute</field><next><block type="controls_if" id="NX9+S`%{cQLO2/;Zg4#h"><value name="IF0"><block type="logic_compare" id="urVA]gzjYJ6R?~:7}E?R"><field name="OP">LT</field><value name="A"><block type="get_experiment_num" id="_M/8;Po|Zx5kL0F@_pb-"><field name="VAR">co2</field></block></value><value name="B"><block type="math_number" id=";x/;_%:yTO084[%]}C:F"><field name="NUM">380</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="_JWR5,H08(m?xKkC(Pt|"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="f!WS!:gl/!NY9rt#qMAM"><field name="BOOL">FALSE</field></block></value></block></statement><next><block type="controls_if" id="G`#52tv]qdEZaC0.tw0y"><value name="IF0"><block type="logic_compare" id="?hX.J#ZEb#Q,4)$d4RFm"><field name="OP">GT</field><value name="A"><block type="get_experiment_num" id="HA_k=d^$HEw/OR}}uQi]"><field name="VAR">co2</field></block></value><value name="B"><block type="math_number" id="xY^kZ[3?Si=,kZF(1s)Q"><field name="NUM">410</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="Hh6d}WN14N6wvvlxFW4Y"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="2Ou=Te^OcW-Z?!dD3@.9"><field name="BOOL">TRUE</field></block></value></block></statement><next><block type="recordData" id="7xY$Z4.SXJ-PIgua?P=Y"></block></next></block></next></block></next></block></statement></block></next></block></next></block></xml>';
   }
 }
 
@@ -22114,8 +22154,8 @@ function configureBlocks() {
     return 'recordData();\n';
   };
 
-  // Wait block
-  _browser2.default.Blocks['wait'] = {
+  // Wait block (deprecated)
+  _browser2.default.Blocks['wait_old'] = {
     init: function init() {
       this.jsonInit({
         "message0": "Wait 1 %1",
@@ -22131,8 +22171,30 @@ function configureBlocks() {
     }
   };
 
-  _browser2.default.JavaScript['wait'] = function (block) {
+  _browser2.default.JavaScript['wait_old'] = function (block) {
     var numMins = block.getFieldValue('VAR') === "minute" ? 1 : 60;
+    return 'wait(' + numMins + ');\n';
+  };
+
+  // Wait block
+  _browser2.default.Blocks['wait'] = {
+    init: function init() {
+      this.jsonInit({
+        "message0": "Wait %1",
+        "args0": [{
+          "type": "field_dropdown",
+          "name": "VAR",
+          "options": [["5 minutes", "minute"], ["1 hour", "hour"]]
+        }],
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": "%{BKY_VARIABLES_HUE}"
+      });
+    }
+  };
+
+  _browser2.default.JavaScript['wait'] = function (block) {
+    var numMins = block.getFieldValue('VAR') === "minute" ? 5 : 60;
     return 'wait(' + numMins + ');\n';
   };
 
