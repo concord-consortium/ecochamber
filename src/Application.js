@@ -400,7 +400,7 @@ class Application extends React.Component {
           <button
             onClick={() => {
               if (showBlocks) {
-                setAppSize(750, 610)
+                setAppSize(750, 550)
               } else {
                 setAppSize(750, 800)
               }
