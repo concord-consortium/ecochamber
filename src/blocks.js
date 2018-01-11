@@ -197,8 +197,8 @@ export function configureBlocks() {
     return 'recordData();\n'
   };
 
-  // Wait block
-  Blockly.Blocks['wait'] = {
+  // Wait block (deprecated)
+  Blockly.Blocks['wait_old'] = {
     init: function() {
       this.jsonInit({
         "message0": "Wait 1 %1",
@@ -216,8 +216,32 @@ export function configureBlocks() {
     }
   };
 
-  Blockly.JavaScript['wait'] = function(block) {
+  Blockly.JavaScript['wait_old'] = function(block) {
     var numMins = block.getFieldValue('VAR') === "minute" ? 1 : 60;
+    return 'wait(' + numMins + ');\n'
+  };
+
+  // Wait block
+  Blockly.Blocks['wait'] = {
+    init: function() {
+      this.jsonInit({
+        "message0": "Wait %1",
+        "args0": [
+          {
+            "type": "field_dropdown",
+            "name": "VAR",
+            "options": [["5 minutes", "minute"], ["1 hour", "hour"]]
+          }
+        ],
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": "%{BKY_VARIABLES_HUE}",
+      })
+    }
+  };
+
+  Blockly.JavaScript['wait'] = function(block) {
+    var numMins = block.getFieldValue('VAR') === "minute" ? 5 : 60;
     return 'wait(' + numMins + ');\n'
   };
 

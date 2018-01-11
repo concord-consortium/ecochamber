@@ -305,10 +305,10 @@ class Application extends React.Component {
         </button>
         <button
           onClick={() => {
-            this.wait(1)
+            this.wait(5)
           }}
         >
-        Wait 1 minute
+        Wait 5 minutes
         </button>
         <button
           onClick={() => {
