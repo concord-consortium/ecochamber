@@ -18,6 +18,31 @@ const Organism = {
   }
 }
 
+const RUN_STATE = {
+  STOPPED: 0,
+  RUNNING: 1,
+  RUSHING: 2,
+  getNext: (curr) => {
+    if (getURLParam("rushMode") === "false") {
+      return curr === 0 ? 1 : 0
+    } else {
+      return curr < 2 ? curr + 1 : 0
+    }
+  },
+  isRunning: (state) => state > 0,
+  runDelay: (state) => state === 2 ? 0 : 10,
+  getButtonPrefix: (state) => {
+    switch (RUN_STATE.getNext(state)) {
+      case 1:
+        return "Run"
+      case 2:
+        return "Rush"
+      default:
+        return "Stop"
+    }
+  }
+}
+
 class Application extends React.Component {
   constructor() {
     super()
@@ -25,7 +50,7 @@ class Application extends React.Component {
     defaultState.experiment = 0
     defaultState.showBlocks = false
     defaultState.injectedBlocks = false
-    defaultState.running = false
+    defaultState.running = RUN_STATE.STOPPED
     defaultState.trackedVars = {
       time: true,
       o2: true,
@@ -245,7 +270,7 @@ class Application extends React.Component {
   }
  
   render() {
-    const { time, o2, co2, o2Sensor, co2Sensor, plantsNumber, snailsNumber, light, showBlocks } = this.state
+    const { time, o2, co2, o2Sensor, co2Sensor, plantsNumber, snailsNumber, light, showBlocks, running } = this.state
     return (
       <div className="ecochamber-app">
         <ExperimentHUD colInfos={[
@@ -310,25 +335,27 @@ class Application extends React.Component {
         <br/>
         <div className="automation-env" hidden={!showBlocks}>
           <div className="blockly-controls">
-            <button style={{width: 122}}
+            <button style={{width: 123}}
               onClick={() => {
                 var _this = this
-                _this.setState({running: !_this.state.running}, () => {
+                _this.setState({running: RUN_STATE.getNext(_this.state.running)}, () => {
                   var code = Blockly.JavaScript.workspaceToCode(_this.workspace);
                   var myInterpreter = new Interpreter(code, _this.initApi.bind(_this));
-                  function nextStep() {
-                    if (myInterpreter.step() && _this.state.running) {
-                      window.setTimeout(nextStep, 10);
-                    } else {
-                      _this.workspace.highlightBlock(null)
-                      _this.setState({running: false})
+                  if (_this.state.running === RUN_STATE.RUNNING) {
+                    function nextStep() {
+                      if (myInterpreter.step() && RUN_STATE.isRunning(_this.state.running)) {
+                        window.setTimeout(nextStep, RUN_STATE.runDelay(_this.state.running));
+                      } else {
+                        _this.workspace.highlightBlock(null)
+                        _this.setState({running: RUN_STATE.STOPPED})
+                      }
                     }
+                    nextStep();
                   }
-                  nextStep();
                 })
               }}
             >
-            {this.state.running ? "Stop" : "Start"} program
+            {RUN_STATE.getButtonPrefix(running)} program
             </button>
             <button
               onClick={() => {
