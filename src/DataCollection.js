@@ -1,5 +1,6 @@
 import React from 'react';
 import { sendItems } from './codap-utils';
+import { getURLParam } from './utils';
 
 require('../assets/css/DataCollection.css');
 
@@ -14,6 +15,15 @@ function getLabeledInput(name, label, checked, handleChange) {
 }
 
 const DataCollection = ({trackedVars, handleChange, createDataPoint}) => {
+  let recordButton = (
+    <button className="data-button"
+      onClick={() => {
+        sendItems(createDataPoint())
+      }}
+    >
+    Record data point
+    </button>
+  )
   return (
     <div className="data-collection">
       { getLabeledInput("time", "Time", trackedVars.time, handleChange) }
@@ -22,13 +32,7 @@ const DataCollection = ({trackedVars, handleChange, createDataPoint}) => {
       { getLabeledInput("light", "Light", trackedVars.light, handleChange) }
       { getLabeledInput("plantsNumber", "Plant population", trackedVars.plantsNumber, handleChange) }
       { getLabeledInput("snailsNumber", "Snail population", trackedVars.snailsNumber, handleChange) }
-      <button className="data-button"
-        onClick={() => {
-          sendItems(createDataPoint())
-        }}
-      >
-      Record data point
-      </button>
+      { getURLParam("showAutomation") === "false" ? null : recordButton }
     </div>
   )
 }

@@ -89,6 +89,10 @@ class Application extends React.Component {
       {organismType: Organism.PLANT, numberKey: "plantsNumber"}
     ], numSteps)
     this.setState({time: this.state.time + numSteps})
+
+    if (getURLParam("showAutomation") === "false") {
+      sendItems(this.createDataPoint())
+    }
   }
 
   createDataPoint() {
@@ -271,6 +275,29 @@ class Application extends React.Component {
  
   render() {
     const { time, o2, co2, o2Sensor, co2Sensor, plantsNumber, snailsNumber, light, showBlocks, running } = this.state
+    let displayButton = (
+      <button
+        onClick={() => {
+          setAppSize(750, 800)
+          this.setState({showBlocks: true})
+          // Hack to only inject Blockly once container is visible
+          setTimeout(() => {
+            if (!this.state.injectedBlocks) {
+              this.workspace = Blockly.inject('blockly-div',
+                {toolbox: document.getElementById('toolbox')});
+              this.setState({injectedBlocks: true})
+            }
+          }, 100)
+        }}
+      >
+      Show experiment automation
+      </button>
+    )
+    let blocklyDisplay = (
+      <div className="blockly-display">
+        { showBlocks ? null : displayButton }
+      </div>
+    )
     return (
       <div className="ecochamber-app">
         <ExperimentHUD colInfos={[
@@ -383,6 +410,14 @@ class Application extends React.Component {
             >
             Clear program
             </button>
+            <button
+              onClick={() => {
+                setAppSize(750, 550)
+                this.setState({showBlocks: false})
+              }}
+            >
+            Hide automation
+            </button>
           </div>
           <div className="blockly-presets">
             <button
@@ -423,29 +458,7 @@ class Application extends React.Component {
           </div>
           <div id="blockly-div" style={{width: 725, height: 600}}></div>
         </div>
-        <div className="blockly-display">
-          <button
-            onClick={() => {
-              if (showBlocks) {
-                setAppSize(750, 550)
-              } else {
-                setAppSize(750, 800)
-              }
-
-              this.setState({showBlocks: !showBlocks})
-              // Hack to only inject Blockly once container is visible
-              setTimeout(() => {
-                if (!this.state.injectedBlocks) {
-                  this.workspace = Blockly.inject('blockly-div',
-                    {toolbox: document.getElementById('toolbox')});
-                  this.setState({injectedBlocks: true})
-                }
-              }, 100)
-            }}
-          >
-          {showBlocks ? "Hide" : "Show"} experiment automation
-          </button>
-        </div>
+        { getURLParam("showAutomation") === "false" ? null : blocklyDisplay }
       </div>
     );
   }
