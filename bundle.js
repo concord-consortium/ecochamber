@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 16);
+/******/ 	return __webpack_require__(__webpack_require__.s = 17);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -261,9 +261,9 @@ process.umask = function() { return 0; };
 /* WEBPACK VAR INJECTION */(function(process) {
 
 if (process.env.NODE_ENV === 'production') {
-  module.exports = __webpack_require__(18);
-} else {
   module.exports = __webpack_require__(19);
+} else {
+  module.exports = __webpack_require__(20);
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
@@ -435,7 +435,7 @@ module.exports = emptyObject;
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Blockly = __webpack_require__(30);
+var Blockly = __webpack_require__(31);
 
 Blockly.setLocale = function(locale) {
   Blockly.Msg = Object.assign(locale, Blockly.Msg);
@@ -446,15 +446,15 @@ Blockly.utils.getMessageArray_ = function () {
   return Blockly.Msg
 }
 
-Blockly.setLocale(__webpack_require__(31))
+Blockly.setLocale(__webpack_require__(32))
 
-Blockly.Blocks = Object.assign(Blockly.Blocks, __webpack_require__(32)(Blockly));
+Blockly.Blocks = Object.assign(Blockly.Blocks, __webpack_require__(33)(Blockly));
 
-Blockly.JavaScript = __webpack_require__(33)(Blockly);
-Blockly.Lua = __webpack_require__(34)(Blockly);
-Blockly.Dart = __webpack_require__(35)(Blockly);
-Blockly.PHP = __webpack_require__(36)(Blockly);
-Blockly.Python = __webpack_require__(37)(Blockly);
+Blockly.JavaScript = __webpack_require__(34)(Blockly);
+Blockly.Lua = __webpack_require__(35)(Blockly);
+Blockly.Dart = __webpack_require__(36)(Blockly);
+Blockly.PHP = __webpack_require__(37)(Blockly);
+Blockly.Python = __webpack_require__(38)(Blockly);
 
 module.exports = Blockly;
 
@@ -604,7 +604,7 @@ module.exports = warning;
 if (process.env.NODE_ENV !== 'production') {
   var invariant = __webpack_require__(6);
   var warning = __webpack_require__(7);
-  var ReactPropTypesSecret = __webpack_require__(20);
+  var ReactPropTypesSecret = __webpack_require__(21);
   var loggedTypeFailures = {};
 }
 
@@ -903,7 +903,7 @@ module.exports = shallowEqual;
  * 
  */
 
-var isTextNode = __webpack_require__(23);
+var isTextNode = __webpack_require__(24);
 
 /*eslint-disable no-bitwise */
 
@@ -1101,11 +1101,32 @@ function guaranteeCaseTable() {
 /* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(17);
+"use strict";
 
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getURLParam = getURLParam;
+function getURLParam(name) {
+  var url = location.href;
+  name = name.replace(/[[]]/g, '\\$&');
+  var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+  var results = regex.exec(url);
+  if (!results) return null;
+  if (!results[2]) return true;
+  return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
 
 /***/ }),
 /* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(18);
+
+
+/***/ }),
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1115,7 +1136,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactDom = __webpack_require__(21);
+var _reactDom = __webpack_require__(22);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
@@ -1123,7 +1144,7 @@ var _browser = __webpack_require__(5);
 
 var _browser2 = _interopRequireDefault(_browser);
 
-var _application = __webpack_require__(38);
+var _application = __webpack_require__(39);
 
 var _application2 = _interopRequireDefault(_application);
 
@@ -1138,7 +1159,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1166,7 +1187,7 @@ isValidElement:K,version:"16.2.0",__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_F
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2531,7 +2552,7 @@ module.exports = react;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2550,7 +2571,7 @@ module.exports = ReactPropTypesSecret;
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2588,15 +2609,15 @@ if (process.env.NODE_ENV === 'production') {
   // DCE check should happen before ReactDOM bundle executes so that
   // DevTools can report bad minification during injection.
   checkDCE();
-  module.exports = __webpack_require__(22);
+  module.exports = __webpack_require__(23);
 } else {
-  module.exports = __webpack_require__(25);
+  module.exports = __webpack_require__(26);
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2832,7 +2853,7 @@ Z.injectIntoDevTools({findFiberByHostInstance:pb,bundleType:0,version:"16.2.0",r
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2847,7 +2868,7 @@ Z.injectIntoDevTools({findFiberByHostInstance:pb,bundleType:0,version:"16.2.0",r
  * @typechecks
  */
 
-var isNode = __webpack_require__(24);
+var isNode = __webpack_require__(25);
 
 /**
  * @param {*} object The object to check.
@@ -2860,7 +2881,7 @@ function isTextNode(object) {
 module.exports = isTextNode;
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2888,7 +2909,7 @@ function isNode(object) {
 module.exports = isNode;
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2922,8 +2943,8 @@ var containsNode = __webpack_require__(13);
 var focusNode = __webpack_require__(14);
 var emptyObject = __webpack_require__(4);
 var checkPropTypes = __webpack_require__(8);
-var hyphenateStyleName = __webpack_require__(26);
-var camelizeStyleName = __webpack_require__(28);
+var hyphenateStyleName = __webpack_require__(27);
+var camelizeStyleName = __webpack_require__(29);
 
 /**
  * WARNING: DO NOT manually require this module.
@@ -18290,7 +18311,7 @@ module.exports = reactDom;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18305,7 +18326,7 @@ module.exports = reactDom;
 
 
 
-var hyphenate = __webpack_require__(27);
+var hyphenate = __webpack_require__(28);
 
 var msPattern = /^ms-/;
 
@@ -18332,7 +18353,7 @@ function hyphenateStyleName(string) {
 module.exports = hyphenateStyleName;
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18368,7 +18389,7 @@ function hyphenate(string) {
 module.exports = hyphenate;
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18383,7 +18404,7 @@ module.exports = hyphenate;
 
 
 
-var camelize = __webpack_require__(29);
+var camelize = __webpack_require__(30);
 
 var msPattern = /^-ms-/;
 
@@ -18411,7 +18432,7 @@ function camelizeStyleName(string) {
 module.exports = camelizeStyleName;
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18446,7 +18467,7 @@ function camelize(string) {
 module.exports = camelize;
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports) {
 
 
@@ -20057,7 +20078,7 @@ Blockly.isNumber=function(a){return/^\s*-?\d+(\.\d+)?\s*$/.test(a)};goog.global.
       })()
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports) {
 
 var Blockly = {}; Blockly.Msg={};  module.exports = function(){ // This file was automatically generated.  Do not modify.
@@ -20487,7 +20508,7 @@ var Blockly = {}; Blockly.Msg={};  module.exports = function(){ // This file was
 /** @export */ Blockly.Msg.COLOUR_HUE = "20";return Blockly.Msg;}
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports) {
 
 
@@ -20652,7 +20673,7 @@ Blockly.ContextMenu.callbackFactory(this,c);a.push(d)}};Blockly.Extensions.regis
         }
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports) {
 
 module.exports = function(Blockly){// Do not edit this file; automatically generated by build.py.
@@ -20750,7 +20771,7 @@ Blockly.JavaScript.text_replace=function(a){var b=Blockly.JavaScript.valueToCode
 '                 .replace(/\\x08/g,"\\\\x08");',"  return haystack.replace(new RegExp(needle, 'g'), replacement);","}"])+"("+b+", "+c+", "+a+")",Blockly.JavaScript.ORDER_MEMBER]};Blockly.JavaScript.text_reverse=function(a){return[(Blockly.JavaScript.valueToCode(a,"TEXT",Blockly.JavaScript.ORDER_MEMBER)||"''")+".split('').reverse().join('')",Blockly.JavaScript.ORDER_MEMBER]};Blockly.JavaScript.variables={};Blockly.JavaScript.variables_get=function(a){return[Blockly.JavaScript.variableDB_.getName(a.getFieldValue("VAR"),Blockly.Variables.NAME_TYPE),Blockly.JavaScript.ORDER_ATOMIC]};Blockly.JavaScript.variables_set=function(a){var b=Blockly.JavaScript.valueToCode(a,"VALUE",Blockly.JavaScript.ORDER_ASSIGNMENT)||"0";return Blockly.JavaScript.variableDB_.getName(a.getFieldValue("VAR"),Blockly.Variables.NAME_TYPE)+" = "+b+";\n"};return Blockly.JavaScript;}
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports) {
 
 module.exports = function(Blockly){// Do not edit this file; automatically generated by build.py.
@@ -20833,7 +20854,7 @@ Blockly.Lua.text_replace=function(a){var b=Blockly.Lua.valueToCode(a,"TEXT",Bloc
 "        table.insert(buf, string.sub(replacement, j, j))","      end","      i = i + #needle","    else","      table.insert(buf, string.sub(haystack, i, i))","      i = i + 1","    end","  end","  return table.concat(buf)","end"])+"("+b+", "+c+", "+a+")",Blockly.Lua.ORDER_HIGH]};Blockly.Lua.text_reverse=function(a){return["string.reverse("+(Blockly.Lua.valueToCode(a,"TEXT",Blockly.Lua.ORDER_HIGH)||"''")+")",Blockly.Lua.ORDER_HIGH]};Blockly.Lua.variables={};Blockly.Lua.variables_get=function(a){return[Blockly.Lua.variableDB_.getName(a.getFieldValue("VAR"),Blockly.Variables.NAME_TYPE),Blockly.Lua.ORDER_ATOMIC]};Blockly.Lua.variables_set=function(a){var b=Blockly.Lua.valueToCode(a,"VALUE",Blockly.Lua.ORDER_NONE)||"0";return Blockly.Lua.variableDB_.getName(a.getFieldValue("VAR"),Blockly.Variables.NAME_TYPE)+" = "+b+"\n"};return Blockly.Lua;}
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports) {
 
 module.exports = function(Blockly){// Do not edit this file; automatically generated by build.py.
@@ -20933,7 +20954,7 @@ Blockly.Dart.text_count=function(a){var b=Blockly.Dart.valueToCode(a,"TEXT",Bloc
 Blockly.Dart.text_reverse=function(a){return["new String.fromCharCodes("+(Blockly.Dart.valueToCode(a,"TEXT",Blockly.Dart.ORDER_UNARY_POSTFIX)||"''")+".runes.toList().reversed)",Blockly.Dart.ORDER_UNARY_POSTFIX]};Blockly.Dart.variables={};Blockly.Dart.variables_get=function(a){return[Blockly.Dart.variableDB_.getName(a.getFieldValue("VAR"),Blockly.Variables.NAME_TYPE),Blockly.Dart.ORDER_ATOMIC]};Blockly.Dart.variables_set=function(a){var b=Blockly.Dart.valueToCode(a,"VALUE",Blockly.Dart.ORDER_ASSIGNMENT)||"0";return Blockly.Dart.variableDB_.getName(a.getFieldValue("VAR"),Blockly.Variables.NAME_TYPE)+" = "+b+";\n"};return Blockly.Dart;}
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports) {
 
 module.exports = function(Blockly){// Do not edit this file; automatically generated by build.py.
@@ -21024,7 +21045,7 @@ Blockly.PHP.text_count=function(a){var b=Blockly.PHP.valueToCode(a,"TEXT",Blockl
 Blockly.PHP.text_replace=function(a){var b=Blockly.PHP.valueToCode(a,"TEXT",Blockly.PHP.ORDER_MEMBER)||"''",c=Blockly.PHP.valueToCode(a,"FROM",Blockly.PHP.ORDER_NONE)||"''";a=Blockly.PHP.valueToCode(a,"TO",Blockly.PHP.ORDER_NONE)||"''";return["str_replace("+c+", "+a+", "+b+")",Blockly.PHP.ORDER_FUNCTION_CALL]};Blockly.PHP.text_reverse=function(a){return["strrev("+(Blockly.PHP.valueToCode(a,"TEXT",Blockly.PHP.ORDER_MEMBER)||"''")+")",Blockly.PHP.ORDER_FUNCTION_CALL]};Blockly.PHP.variables={};Blockly.PHP.variables_get=function(a){return[Blockly.PHP.variableDB_.getName(a.getFieldValue("VAR"),Blockly.Variables.NAME_TYPE),Blockly.PHP.ORDER_ATOMIC]};Blockly.PHP.variables_set=function(a){var b=Blockly.PHP.valueToCode(a,"VALUE",Blockly.PHP.ORDER_ASSIGNMENT)||"0";return Blockly.PHP.variableDB_.getName(a.getFieldValue("VAR"),Blockly.Variables.NAME_TYPE)+" = "+b+";\n"};return Blockly.PHP;}
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports) {
 
 module.exports = function(Blockly){// Do not edit this file; automatically generated by build.py.
@@ -21108,7 +21129,7 @@ Blockly.Python.text_prompt=Blockly.Python.text_prompt_ext;Blockly.Python.text_co
 Blockly.Python.text_replace=function(a){var b=Blockly.Python.valueToCode(a,"TEXT",Blockly.Python.ORDER_MEMBER)||"''",c=Blockly.Python.valueToCode(a,"FROM",Blockly.Python.ORDER_NONE)||"''";a=Blockly.Python.valueToCode(a,"TO",Blockly.Python.ORDER_NONE)||"''";return[b+".replace("+c+", "+a+")",Blockly.Python.ORDER_MEMBER]};Blockly.Python.text_reverse=function(a){return[(Blockly.Python.valueToCode(a,"TEXT",Blockly.Python.ORDER_MEMBER)||"''")+"[::-1]",Blockly.Python.ORDER_MEMBER]};Blockly.Python.variables={};Blockly.Python.variables_get=function(a){return[Blockly.Python.variableDB_.getName(a.getFieldValue("VAR"),Blockly.Variables.NAME_TYPE),Blockly.Python.ORDER_ATOMIC]};Blockly.Python.variables_set=function(a){var b=Blockly.Python.valueToCode(a,"VALUE",Blockly.Python.ORDER_NONE)||"0";return Blockly.Python.variableDB_.getName(a.getFieldValue("VAR"),Blockly.Variables.NAME_TYPE)+" = "+b+"\n"};return Blockly.Python;}
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21128,23 +21149,23 @@ var _browser = __webpack_require__(5);
 
 var _browser2 = _interopRequireDefault(_browser);
 
-var _Experiment = __webpack_require__(39);
+var _Experiment = __webpack_require__(40);
 
 var _Experiment2 = _interopRequireDefault(_Experiment);
 
-var _ExperimentHUD = __webpack_require__(41);
+var _ExperimentHUD = __webpack_require__(42);
 
 var _ExperimentHUD2 = _interopRequireDefault(_ExperimentHUD);
 
-var _DataCollection = __webpack_require__(43);
+var _DataCollection = __webpack_require__(44);
 
 var _DataCollection2 = _interopRequireDefault(_DataCollection);
 
 var _codapUtils = __webpack_require__(15);
 
-var _presets = __webpack_require__(45);
+var _presets = __webpack_require__(46);
 
-var _utils = __webpack_require__(46);
+var _utils = __webpack_require__(16);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21251,6 +21272,10 @@ var Application = function (_React$Component) {
 
       this.step([{ organismType: Organism.SNAIL, numberKey: "snailsNumber" }, { organismType: Organism.PLANT, numberKey: "plantsNumber" }], numSteps);
       this.setState({ time: this.state.time + numSteps });
+
+      if ((0, _utils.getURLParam)("hideAutomation") === "false") {
+        (0, _codapUtils.sendItems)(this.createDataPoint());
+      }
     }
   }, {
     key: 'createDataPoint',
@@ -21463,6 +21488,28 @@ var Application = function (_React$Component) {
           showBlocks = _state3.showBlocks,
           running = _state3.running;
 
+      var displayButton = _react2.default.createElement(
+        'button',
+        {
+          onClick: function onClick() {
+            (0, _codapUtils.setAppSize)(750, 800);
+            _this3.setState({ showBlocks: true });
+            // Hack to only inject Blockly once container is visible
+            setTimeout(function () {
+              if (!_this3.state.injectedBlocks) {
+                _this3.workspace = _browser2.default.inject('blockly-div', { toolbox: document.getElementById('toolbox') });
+                _this3.setState({ injectedBlocks: true });
+              }
+            }, 100);
+          }
+        },
+        'Show experiment automation'
+      );
+      var blocklyDisplay = _react2.default.createElement(
+        'div',
+        { className: 'blockly-display' },
+        showBlocks ? null : displayButton
+      );
       return _react2.default.createElement(
         'div',
         { className: 'ecochamber-app' },
@@ -21593,6 +21640,16 @@ var Application = function (_React$Component) {
                 }
               },
               'Clear program'
+            ),
+            _react2.default.createElement(
+              'button',
+              {
+                onClick: function onClick() {
+                  (0, _codapUtils.setAppSize)(750, 550);
+                  _this3.setState({ showBlocks: false });
+                }
+              },
+              'Hide automation'
             )
           ),
           _react2.default.createElement(
@@ -21646,33 +21703,7 @@ var Application = function (_React$Component) {
           ),
           _react2.default.createElement('div', { id: 'blockly-div', style: { width: 725, height: 600 } })
         ),
-        _react2.default.createElement(
-          'div',
-          { className: 'blockly-display' },
-          _react2.default.createElement(
-            'button',
-            {
-              onClick: function onClick() {
-                if (showBlocks) {
-                  (0, _codapUtils.setAppSize)(750, 550);
-                } else {
-                  (0, _codapUtils.setAppSize)(750, 800);
-                }
-
-                _this3.setState({ showBlocks: !showBlocks });
-                // Hack to only inject Blockly once container is visible
-                setTimeout(function () {
-                  if (!_this3.state.injectedBlocks) {
-                    _this3.workspace = _browser2.default.inject('blockly-div', { toolbox: document.getElementById('toolbox') });
-                    _this3.setState({ injectedBlocks: true });
-                  }
-                }, 100);
-              }
-            },
-            showBlocks ? "Hide" : "Show",
-            ' experiment automation'
-          )
-        )
+        (0, _utils.getURLParam)("hideAutomation") === "false" ? null : blocklyDisplay
       );
     }
   }]);
@@ -21683,7 +21714,7 @@ var Application = function (_React$Component) {
 exports.default = Application;
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21699,7 +21730,7 @@ var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(40);
+__webpack_require__(41);
 
 function getEvenlySpacedDivs(className, containerWidth, divWidth, numDivs) {
   if (numDivs === 1) {
@@ -21739,13 +21770,13 @@ var Experiment = function Experiment(_ref) {
 exports.default = Experiment;
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21761,7 +21792,7 @@ var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(42);
+__webpack_require__(43);
 
 var ValueDisplay = function ValueDisplay(_ref) {
   var name = _ref.name,
@@ -21826,13 +21857,13 @@ var ExperimentHUD = function ExperimentHUD(_ref3) {
 exports.default = ExperimentHUD;
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21848,9 +21879,11 @@ var _react2 = _interopRequireDefault(_react);
 
 var _codapUtils = __webpack_require__(15);
 
+var _utils = __webpack_require__(16);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(44);
+__webpack_require__(45);
 
 function getLabeledInput(name, label, checked, handleChange) {
   return _react2.default.createElement(
@@ -21870,6 +21903,15 @@ var DataCollection = function DataCollection(_ref) {
       handleChange = _ref.handleChange,
       createDataPoint = _ref.createDataPoint;
 
+  var recordButton = _react2.default.createElement(
+    'button',
+    { className: 'data-button',
+      onClick: function onClick() {
+        (0, _codapUtils.sendItems)(createDataPoint());
+      }
+    },
+    'Record data point'
+  );
   return _react2.default.createElement(
     'div',
     { className: 'data-collection' },
@@ -21879,28 +21921,20 @@ var DataCollection = function DataCollection(_ref) {
     getLabeledInput("light", "Light", trackedVars.light, handleChange),
     getLabeledInput("plantsNumber", "Plant population", trackedVars.plantsNumber, handleChange),
     getLabeledInput("snailsNumber", "Snail population", trackedVars.snailsNumber, handleChange),
-    _react2.default.createElement(
-      'button',
-      { className: 'data-button',
-        onClick: function onClick() {
-          (0, _codapUtils.sendItems)(createDataPoint());
-        }
-      },
-      'Record data point'
-    )
+    (0, _utils.getURLParam)("hideAutomation") === "false" ? null : recordButton
   );
 };
 
 exports.default = DataCollection;
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21937,27 +21971,6 @@ function getPreset(presetNum) {
     case 5:
       return '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="reset" id=";XQ{a~0`^LpFmcfO.VT|" x="59" y="53"><next><block type="inc_experiment_num" id="R}Mme:mIUO*gLe6R5C]/"><field name="VAR">plantsNumber</field><next><block type="controls_repeat_ext" id="uo%/H9{g:Zi65*9_ry{p"><value name="TIMES"><block type="math_number" id=";YQk1@JB.Y^uj=_SEMIB"><field name="NUM">30</field></block></value><statement name="DO"><block type="wait" id="{WJ~/G|=WSy7v`DVe}Z*"><field name="VAR">minute</field><next><block type="controls_if" id="NX9+S`%{cQLO2/;Zg4#h"><value name="IF0"><block type="logic_compare" id="urVA]gzjYJ6R?~:7}E?R"><field name="OP">LT</field><value name="A"><block type="get_experiment_num" id="_M/8;Po|Zx5kL0F@_pb-"><field name="VAR">co2</field></block></value><value name="B"><block type="math_number" id=";x/;_%:yTO084[%]}C:F"><field name="NUM">380</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="_JWR5,H08(m?xKkC(Pt|"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="f!WS!:gl/!NY9rt#qMAM"><field name="BOOL">FALSE</field></block></value></block></statement><next><block type="controls_if" id="G`#52tv]qdEZaC0.tw0y"><value name="IF0"><block type="logic_compare" id="?hX.J#ZEb#Q,4)$d4RFm"><field name="OP">GT</field><value name="A"><block type="get_experiment_num" id="HA_k=d^$HEw/OR}}uQi]"><field name="VAR">co2</field></block></value><value name="B"><block type="math_number" id="xY^kZ[3?Si=,kZF(1s)Q"><field name="NUM">410</field></block></value></block></value><statement name="DO0"><block type="set_experiment_bool" id="Hh6d}WN14N6wvvlxFW4Y"><field name="VAR">light</field><value name="VALUE"><block type="on_off_bool" id="2Ou=Te^OcW-Z?!dD3@.9"><field name="BOOL">TRUE</field></block></value></block></statement><next><block type="recordData" id="7xY$Z4.SXJ-PIgua?P=Y"></block></next></block></next></block></next></block></statement></block></next></block></next></block></xml>';
   }
-}
-
-/***/ }),
-/* 46 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.getURLParam = getURLParam;
-function getURLParam(name) {
-  var url = location.href;
-  name = name.replace(/[[]]/g, '\\$&');
-  var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
-  var results = regex.exec(url);
-  if (!results) return null;
-  if (!results[2]) return true;
-  return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
 /***/ }),
