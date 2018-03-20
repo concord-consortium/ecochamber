@@ -21273,7 +21273,7 @@ var Application = function (_React$Component) {
       this.step([{ organismType: Organism.SNAIL, numberKey: "snailsNumber" }, { organismType: Organism.PLANT, numberKey: "plantsNumber" }], numSteps);
       this.setState({ time: this.state.time + numSteps });
 
-      if ((0, _utils.getURLParam)("hideAutomation") === "false") {
+      if ((0, _utils.getURLParam)("showAutomation") === "false") {
         (0, _codapUtils.sendItems)(this.createDataPoint());
       }
     }
@@ -21703,7 +21703,7 @@ var Application = function (_React$Component) {
           ),
           _react2.default.createElement('div', { id: 'blockly-div', style: { width: 725, height: 600 } })
         ),
-        (0, _utils.getURLParam)("hideAutomation") === "false" ? null : blocklyDisplay
+        (0, _utils.getURLParam)("showAutomation") === "false" ? null : blocklyDisplay
       );
     }
   }]);
@@ -21921,7 +21921,7 @@ var DataCollection = function DataCollection(_ref) {
     getLabeledInput("light", "Light", trackedVars.light, handleChange),
     getLabeledInput("plantsNumber", "Plant population", trackedVars.plantsNumber, handleChange),
     getLabeledInput("snailsNumber", "Snail population", trackedVars.snailsNumber, handleChange),
-    (0, _utils.getURLParam)("hideAutomation") === "false" ? null : recordButton
+    (0, _utils.getURLParam)("showAutomation") === "false" ? null : recordButton
   );
 };
 
