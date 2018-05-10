@@ -21513,7 +21513,7 @@ var Application = function (_React$Component) {
       return _react2.default.createElement(
         'div',
         { className: 'ecochamber-app' },
-        _react2.default.createElement(_ExperimentHUD2.default, { colInfos: [[{ label: "Time", value: time }, { label: "O2", value: o2Sensor, unit: "ppm" }, { label: "CO2", value: co2Sensor, unit: "ppm" }], [{ label: "Plant population", value: plantsNumber }, { label: "Snail population", value: snailsNumber }, { label: "Light", value: light ? "On" : "Off" }]] }),
+        _react2.default.createElement(_ExperimentHUD2.default, { colInfos: [[{ label: "Time", value: time, unit: "minutes" }, { label: "O2", value: o2Sensor, unit: "ppm" }, { label: "CO2", value: co2Sensor, unit: "ppm" }], [{ label: "Plant population", value: plantsNumber }, { label: "Snail population", value: snailsNumber }, { label: "Light", value: light ? "On" : "Off" }]] }),
         _react2.default.createElement(
           'div',
           { className: 'experiment-ui' },
@@ -22230,3 +22230,4 @@ function configureBlocks() {
 
 /***/ })
 /******/ ]);
+//# sourceMappingURL=bundle.js.map
