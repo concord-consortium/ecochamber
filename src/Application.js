@@ -302,7 +302,7 @@ class Application extends React.Component {
       <div className="ecochamber-app">
         <ExperimentHUD colInfos={[
           [
-            { label: "Time", value: time},
+            { label: "Time", value: time, unit: "mins"},
             { label: "O2", value: o2Sensor, unit: "ppm"},
             { label: "CO2", value: co2Sensor, unit: "ppm"}
           ],
