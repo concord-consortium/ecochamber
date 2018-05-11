@@ -21513,7 +21513,13 @@ var Application = function (_React$Component) {
       return _react2.default.createElement(
         'div',
         { className: 'ecochamber-app' },
-        _react2.default.createElement(_ExperimentHUD2.default, { colInfos: [[{ label: "Time", value: time, unit: "minutes" }, { label: "O2", value: o2Sensor, unit: "ppm" }, { label: "CO2", value: co2Sensor, unit: "ppm" }], [{ label: "Plant population", value: plantsNumber }, { label: "Snail population", value: snailsNumber }, { label: "Light", value: light ? "On" : "Off" }]] }),
+        _react2.default.createElement(_ExperimentHUD2.default, { colInfos: [{
+            title: "Sensors",
+            stats: [{ label: "O2", value: o2Sensor, unit: "ppm" }, { label: "CO2", value: co2Sensor, unit: "ppm" }, { label: "Light", value: light ? "On" : "Off" }]
+          }, {
+            title: "Other",
+            stats: [{ label: "Time", value: time, unit: "mins" }, { label: "Plant population", value: plantsNumber }, { label: "Snail population", value: snailsNumber }]
+          }] }),
         _react2.default.createElement(
           'div',
           { className: 'experiment-ui' },
@@ -21521,62 +21527,66 @@ var Application = function (_React$Component) {
           _react2.default.createElement(_DataCollection2.default, { trackedVars: this.state.trackedVars, handleChange: this.handleChange, createDataPoint: this.createDataPoint })
         ),
         _react2.default.createElement(
-          'button',
-          {
-            onClick: function onClick() {
-              _this3.setState({ plantsNumber: _this3.state.plantsNumber + 1 });
-            }
-          },
-          'Add plant'
+          'div',
+          { className: 'experiment-buttons' },
+          _react2.default.createElement(
+            'button',
+            {
+              onClick: function onClick() {
+                _this3.setState({ plantsNumber: _this3.state.plantsNumber + 1 });
+              }
+            },
+            'Add plant'
+          ),
+          _react2.default.createElement(
+            'button',
+            {
+              onClick: function onClick() {
+                _this3.setState({ snailsNumber: _this3.state.snailsNumber + 1 });
+              }
+            },
+            'Add snail'
+          ),
+          _react2.default.createElement(
+            'button',
+            {
+              onClick: function onClick() {
+                _this3.wait(5);
+              }
+            },
+            'Wait 5 minutes'
+          ),
+          _react2.default.createElement(
+            'button',
+            {
+              onClick: function onClick() {
+                _this3.wait(60);
+              }
+            },
+            'Wait 1 hour'
+          ),
+          _react2.default.createElement(
+            'button',
+            { style: { width: 114 },
+              onClick: function onClick() {
+                _this3.setState({ light: !light });
+              }
+            },
+            'Turn light ',
+            light ? "off" : "on"
+          ),
+          _react2.default.createElement(
+            'button',
+            {
+              onClick: function onClick() {
+                _this3.reset();
+              }
+            },
+            'Reset simulation'
+          ),
+          _react2.default.createElement('br', null),
+          _react2.default.createElement('br', null)
         ),
-        _react2.default.createElement(
-          'button',
-          {
-            onClick: function onClick() {
-              _this3.setState({ snailsNumber: _this3.state.snailsNumber + 1 });
-            }
-          },
-          'Add snail'
-        ),
-        _react2.default.createElement(
-          'button',
-          {
-            onClick: function onClick() {
-              _this3.wait(5);
-            }
-          },
-          'Wait 5 minutes'
-        ),
-        _react2.default.createElement(
-          'button',
-          {
-            onClick: function onClick() {
-              _this3.wait(60);
-            }
-          },
-          'Wait 1 hour'
-        ),
-        _react2.default.createElement(
-          'button',
-          { style: { width: 114 },
-            onClick: function onClick() {
-              _this3.setState({ light: !light });
-            }
-          },
-          'Turn light ',
-          light ? "off" : "on"
-        ),
-        _react2.default.createElement(
-          'button',
-          {
-            onClick: function onClick() {
-              _this3.reset();
-            }
-          },
-          'Reset simulation'
-        ),
-        _react2.default.createElement('br', null),
-        _react2.default.createElement('br', null),
         _react2.default.createElement(
           'div',
           { className: 'automation-env', hidden: !showBlocks },
@@ -21816,7 +21826,8 @@ var ValueDisplay = function ValueDisplay(_ref) {
 };
 
 var ExperimentColumn = function ExperimentColumn(_ref2) {
-  var stats = _ref2.stats;
+  var stats = _ref2.stats,
+      title = _ref2.title;
 
   var displays = [];
   stats.forEach(function (stat) {
@@ -21830,12 +21841,21 @@ var ExperimentColumn = function ExperimentColumn(_ref2) {
     displays.push(_react2.default.createElement(ValueDisplay, { key: label, name: label, value: value + (unit ? " " + unit : "") }));
   });
   return _react2.default.createElement(
-    'table',
-    { className: 'experiment-values' },
+    'div',
+    { className: 'experiment-column' },
     _react2.default.createElement(
-      'tbody',
-      null,
-      displays
+      'div',
+      { className: 'experiment-column-title' },
+      title
+    ),
+    _react2.default.createElement(
+      'table',
+      { className: 'experiment-values' },
+      _react2.default.createElement(
+        'tbody',
+        null,
+        displays
+      )
     )
   );
 };
@@ -21845,7 +21865,7 @@ var ExperimentHUD = function ExperimentHUD(_ref3) {
 
   var cols = [];
   colInfos.forEach(function (colInfo, index) {
-    cols.push(_react2.default.createElement(ExperimentColumn, { key: index, stats: colInfo }));
+    cols.push(_react2.default.createElement(ExperimentColumn, { key: index, stats: colInfo.stats, title: colInfo.title }));
   });
   return _react2.default.createElement(
     'div',
