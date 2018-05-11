@@ -21935,6 +21935,11 @@ var DataCollection = function DataCollection(_ref) {
   return _react2.default.createElement(
     'div',
     { className: 'data-collection' },
+    _react2.default.createElement(
+      'div',
+      { className: 'data-collection-title' },
+      'Sensor Data'
+    ),
     getLabeledInput("time", "Time", trackedVars.time, handleChange),
     getLabeledInput("o2", "O2", trackedVars.o2, handleChange),
     getLabeledInput("co2", "CO2", trackedVars.co2, handleChange),

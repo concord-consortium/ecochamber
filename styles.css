@@ -90,7 +90,6 @@ table, td, th {
   text-decoration: underline;
 }
 
-
 .value-display .value {
   text-align: right;
 }.data-collection {
@@ -98,6 +97,13 @@ table, td, th {
   border-style: solid;
   margin-left: -10px;
   padding: 2px;
+}
+
+.data-collection-title {
+  font-size: 19px;
+  text-align: center;
+  text-decoration: underline;
+  margin-bottom: 5px;
 }
 
 .data-box {
