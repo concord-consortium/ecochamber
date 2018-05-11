@@ -301,65 +301,73 @@ class Application extends React.Component {
     return (
       <div className="ecochamber-app">
         <ExperimentHUD colInfos={[
-          [
-            { label: "Time", value: time, unit: "mins"},
-            { label: "O2", value: o2Sensor, unit: "ppm"},
-            { label: "CO2", value: co2Sensor, unit: "ppm"}
-          ],
-          [
-            { label: "Plant population", value: plantsNumber},
-            { label: "Snail population", value: snailsNumber},
-            { label: "Light", value: light ? "On" : "Off"}
-          ]
+          {
+            title: "Sensors",
+            stats: [
+              { label: "O2", value: o2Sensor, unit: "ppm"},
+              { label: "CO2", value: co2Sensor, unit: "ppm"},
+              { label: "Light", value: light ? "On" : "Off"}
+            ]
+          },
+          {
+            title: "Other",
+            stats: [
+              { label: "Time", value: time, unit: "mins"},
+              { label: "Plant population", value: plantsNumber},
+              { label: "Snail population", value: snailsNumber}
+            ]
+          }
         ]}/>
         <div className="experiment-ui">
           <Experiment numPlants={this.state.plantsNumber} numSnails={this.state.snailsNumber} light={this.state.light}/>
           <DataCollection trackedVars={this.state.trackedVars} handleChange={this.handleChange} createDataPoint={this.createDataPoint} />
         </div>
-        <button
-          onClick={() => {
-            this.setState({plantsNumber: this.state.plantsNumber + 1})
-          }}
-        >
-        Add plant
-        </button>
-        <button
-          onClick={() => {
-            this.setState({snailsNumber: this.state.snailsNumber + 1})
-          }}
-        >
-        Add snail
-        </button>
-        <button
-          onClick={() => {
-            this.wait(5)
-          }}
-        >
-        Wait 5 minutes
-        </button>
-        <button
-          onClick={() => {
-            this.wait(60)
-          }}
-        >
-        Wait 1 hour
-        </button>
-        <button style={{width: 114}}
-          onClick={() => {
-            this.setState({light: !light})
-          }}
-        >
-        Turn light {light ? "off" : "on"}
-        </button>
-        <button
-          onClick={() => {
-            this.reset()
-          }}
-        >
-        Reset simulation
-        </button>
-        <br/>
-        <br/>
+        <div className="experiment-buttons">
+          <button
+            onClick={() => {
+              this.setState({plantsNumber: this.state.plantsNumber + 1})
+            }}
+          >
+          Add plant
+          </button>
+          <button
+            onClick={() => {
+              this.setState({snailsNumber: this.state.snailsNumber + 1})
+            }}
+          >
+          Add snail
+          </button>
+          <button
+            onClick={() => {
+              this.wait(5)
+            }}
+          >
+          Wait 5 minutes
+          </button>
+          <button
+            onClick={() => {
+              this.wait(60)
+            }}
+          >
+          Wait 1 hour
+          </button>
+          <button style={{width: 114}}
+            onClick={() => {
+              this.setState({light: !light})
+            }}
+          >
+          Turn light {light ? "off" : "on"}
+          </button>
+          <button
+            onClick={() => {
+              this.reset()
+            }}
+          >
+          Reset simulation
+          </button>
+          <br/>
+          <br/>
+        </div>
         <div className="automation-env" hidden={!showBlocks}>
           <div className="blockly-controls">
             <button style={{width: 123}}

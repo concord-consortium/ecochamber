@@ -11,6 +11,9 @@ button {
 
 .ecochamber-app {
   width: 725px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .experiment-ui {
