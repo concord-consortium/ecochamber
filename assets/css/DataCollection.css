@@ -5,6 +5,13 @@
   padding: 2px;
 }
 
+.data-collection-title {
+  font-size: 19px;
+  text-align: center;
+  text-decoration: underline;
+  margin-bottom: 5px;
+}
+
 .data-box {
   display: flex;
 }

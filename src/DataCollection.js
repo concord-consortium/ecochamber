@@ -26,6 +26,7 @@ const DataCollection = ({trackedVars, handleChange, createDataPoint}) => {
   )
   return (
     <div className="data-collection">
+      <div className="data-collection-title">Sensor Data</div>
       { getLabeledInput("time", "Time", trackedVars.time, handleChange) }
       { getLabeledInput("o2", "O2", trackedVars.o2, handleChange) }
       { getLabeledInput("co2", "CO2", trackedVars.co2, handleChange) }
