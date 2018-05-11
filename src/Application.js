@@ -149,6 +149,18 @@ class Application extends React.Component {
       organismInfos.forEach(organismInfo => {
         let {organismType, numberKey} = organismInfo
 
+        let numDead = 0
+        // This gives organisms a 0% chance of death at atmospheric oxygen (20%),
+        // and a .1% chance of death every minute at deadly levels (6%)
+        let percentO2 = newState.o2 / 10000
+        let deathChance = (-.7 * percentO2 + 14)/10000
+        for (let j = 0; j < newState[numberKey]; j++) {
+          if (Math.random() < deathChance) {
+            numDead++
+          }
+        }
+        newState[numberKey] -= numDead
+
         if (newState[numberKey] === 0) {
           return
         }
