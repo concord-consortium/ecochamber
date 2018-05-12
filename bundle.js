@@ -21240,6 +21240,12 @@ var Application = function (_React$Component) {
 
     _this2.handleChange = _this2.handleChange.bind(_this2);
     _this2.createDataPoint = _this2.createDataPoint.bind(_this2);
+    _this2.wait = _this2.wait.bind(_this2);
+    _this2.reset = _this2.reset.bind(_this2);
+    _this2.incSnails = _this2.incSnails.bind(_this2);
+    _this2.incPlants = _this2.incPlants.bind(_this2);
+    _this2.toggleLight = _this2.toggleLight.bind(_this2);
+    _this2.toggleAutomation = _this2.toggleAutomation.bind(_this2);
 
     (0, _codapUtils.initCodap)();
     return _this2;
@@ -21469,6 +21475,41 @@ var Application = function (_React$Component) {
       this.setState({ trackedVars: trackedVars });
     }
   }, {
+    key: 'incPlants',
+    value: function incPlants() {
+      this.setState({ plantsNumber: this.state.plantsNumber + 1 });
+    }
+  }, {
+    key: 'incSnails',
+    value: function incSnails() {
+      this.setState({ snailsNumber: this.state.snailsNumber + 1 });
+    }
+  }, {
+    key: 'toggleLight',
+    value: function toggleLight() {
+      this.setState({ light: !this.state.light });
+    }
+  }, {
+    key: 'toggleAutomation',
+    value: function toggleAutomation() {
+      var _this3 = this;
+
+      if (this.state.showBlocks) {
+        (0, _codapUtils.setAppSize)(750, 550);
+        this.setState({ showBlocks: false });
+      } else {
+        (0, _codapUtils.setAppSize)(750, 800);
+        this.setState({ showBlocks: true });
+        // Hack to only inject Blockly once container is visible
+        setTimeout(function () {
+          if (!_this3.state.injectedBlocks) {
+            _this3.workspace = _browser2.default.inject('blockly-div', { toolbox: document.getElementById('toolbox') });
+            _this3.setState({ injectedBlocks: true });
+          }
+        }, 100);
+      }
+    }
+  }, {
     key: 'updateSensorValues',
     value: function updateSensorValues() {
       this.setState({
@@ -21486,7 +21527,7 @@ var Application = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _this3 = this;
+      var _this4 = this;
 
       var _state3 = this.state,
           time = _state3.time,
@@ -21500,31 +21541,18 @@ var Application = function (_React$Component) {
           showBlocks = _state3.showBlocks,
           running = _state3.running;
 
-      var displayButton = _react2.default.createElement(
-        'button',
-        {
-          onClick: function onClick() {
-            (0, _codapUtils.setAppSize)(750, 800);
-            _this3.setState({ showBlocks: true });
-            // Hack to only inject Blockly once container is visible
-            setTimeout(function () {
-              if (!_this3.state.injectedBlocks) {
-                _this3.workspace = _browser2.default.inject('blockly-div', { toolbox: document.getElementById('toolbox') });
-                _this3.setState({ injectedBlocks: true });
-              }
-            }, 100);
-          }
-        },
-        'Show experiment automation'
-      );
-      var blocklyDisplay = _react2.default.createElement(
-        'div',
-        { className: 'blockly-display' },
-        showBlocks ? null : displayButton
-      );
       return _react2.default.createElement(
         'div',
         { className: 'ecochamber-app' },
+        _react2.default.createElement(
+          'div',
+          { className: 'experiment-ui' },
+          _react2.default.createElement('canvas', { className: 'experiment-canvas' }),
+          _react2.default.createElement(_Experiment2.default, { numPlants: this.state.plantsNumber, numSnails: this.state.snailsNumber, light: this.state.light }),
+          _react2.default.createElement(_DataCollection2.default, { trackedVars: this.state.trackedVars, handleChange: this.handleChange, createDataPoint: this.createDataPoint, light: this.state.light,
+            incSnails: this.incSnails, incPlants: this.incPlants, toggleLight: this.toggleLight, wait: this.wait, reset: this.reset,
+            toggleAutomation: this.toggleAutomation, automationEnabled: this.state.showBlocks })
+        ),
         _react2.default.createElement(_ExperimentHUD2.default, { colInfos: [{
             title: "Sensors",
             stats: [{ label: "O2", value: o2Sensor, unit: "ppm" }, { label: "CO2", value: co2Sensor, unit: "ppm" }, { label: "Light", value: light ? "On" : "Off" }]
@@ -21532,73 +21560,8 @@ var Application = function (_React$Component) {
             title: "Other",
             stats: [{ label: "Time", value: time, unit: "mins" }, { label: "Plant population", value: plantsNumber }, { label: "Snail population", value: snailsNumber }]
           }] }),
-        _react2.default.createElement(
-          'div',
-          { className: 'experiment-ui' },
-          _react2.default.createElement(_Experiment2.default, { numPlants: this.state.plantsNumber, numSnails: this.state.snailsNumber, light: this.state.light }),
-          _react2.default.createElement(_DataCollection2.default, { trackedVars: this.state.trackedVars, handleChange: this.handleChange, createDataPoint: this.createDataPoint })
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'experiment-buttons' },
-          _react2.default.createElement(
-            'button',
-            {
-              onClick: function onClick() {
-                _this3.setState({ plantsNumber: _this3.state.plantsNumber + 1 });
-              }
-            },
-            'Add plant'
-          ),
-          _react2.default.createElement(
-            'button',
-            {
-              onClick: function onClick() {
-                _this3.setState({ snailsNumber: _this3.state.snailsNumber + 1 });
-              }
-            },
-            'Add snail'
-          ),
-          _react2.default.createElement(
-            'button',
-            {
-              onClick: function onClick() {
-                _this3.wait(5);
-              }
-            },
-            'Wait 5 minutes'
-          ),
-          _react2.default.createElement(
-            'button',
-            {
-              onClick: function onClick() {
-                _this3.wait(60);
-              }
-            },
-            'Wait 1 hour'
-          ),
-          _react2.default.createElement(
-            'button',
-            { style: { width: 114 },
-              onClick: function onClick() {
-                _this3.setState({ light: !light });
-              }
-            },
-            'Turn light ',
-            light ? "off" : "on"
-          ),
-          _react2.default.createElement(
-            'button',
-            {
-              onClick: function onClick() {
-                _this3.reset();
-              }
-            },
-            'Reset simulation'
-          ),
-          _react2.default.createElement('br', null),
-          _react2.default.createElement('br', null)
-        ),
+        _react2.default.createElement('br', null),
+        _react2.default.createElement('br', null),
         _react2.default.createElement(
           'div',
           { className: 'automation-env', hidden: !showBlocks },
@@ -21609,7 +21572,7 @@ var Application = function (_React$Component) {
               'button',
               { style: { width: 123 },
                 onClick: function onClick() {
-                  var _this = _this3;
+                  var _this = _this4;
                   _this.setState({ running: RUN_STATE.getNext(_this.state.running) }, function () {
                     var code = _browser2.default.JavaScript.workspaceToCode(_this.workspace);
                     var myInterpreter = new Interpreter(code, _this.initApi.bind(_this));
@@ -21635,7 +21598,7 @@ var Application = function (_React$Component) {
               'button',
               {
                 onClick: function onClick() {
-                  var xml = _browser2.default.Xml.workspaceToDom(_this3.workspace);
+                  var xml = _browser2.default.Xml.workspaceToDom(_this4.workspace);
                   var xml_text = _browser2.default.Xml.domToText(xml);
                   console.clear();
                   console.log(xml_text);
@@ -21649,7 +21612,7 @@ var Application = function (_React$Component) {
                 onClick: function onClick() {
                   var xml_text = prompt("Paste your saved program:");
                   var xml = _browser2.default.Xml.textToDom(xml_text);
-                  _browser2.default.Xml.domToWorkspace(xml, _this3.workspace);
+                  _browser2.default.Xml.domToWorkspace(xml, _this4.workspace);
                 }
               },
               'Load program'
@@ -21658,20 +21621,10 @@ var Application = function (_React$Component) {
               'button',
               {
                 onClick: function onClick() {
-                  _this3.workspace.clear();
+                  _this4.workspace.clear();
                 }
               },
               'Clear program'
-            ),
-            _react2.default.createElement(
-              'button',
-              {
-                onClick: function onClick() {
-                  (0, _codapUtils.setAppSize)(750, 550);
-                  _this3.setState({ showBlocks: false });
-                }
-              },
-              'Hide automation'
             )
           ),
           _react2.default.createElement(
@@ -21681,7 +21634,7 @@ var Application = function (_React$Component) {
               'button',
               {
                 onClick: function onClick() {
-                  (0, _presets.loadPreset)(1, _this3.workspace);
+                  (0, _presets.loadPreset)(1, _this4.workspace);
                 }
               },
               'Example 1'
@@ -21690,7 +21643,7 @@ var Application = function (_React$Component) {
               'button',
               {
                 onClick: function onClick() {
-                  (0, _presets.loadPreset)(2, _this3.workspace);
+                  (0, _presets.loadPreset)(2, _this4.workspace);
                 }
               },
               'Example 2'
@@ -21699,7 +21652,7 @@ var Application = function (_React$Component) {
               'button',
               {
                 onClick: function onClick() {
-                  (0, _presets.loadPreset)(3, _this3.workspace);
+                  (0, _presets.loadPreset)(3, _this4.workspace);
                 }
               },
               'Example 3'
@@ -21708,7 +21661,7 @@ var Application = function (_React$Component) {
               'button',
               {
                 onClick: function onClick() {
-                  (0, _presets.loadPreset)(4, _this3.workspace);
+                  (0, _presets.loadPreset)(4, _this4.workspace);
                 }
               },
               'Example 4'
@@ -21717,15 +21670,14 @@ var Application = function (_React$Component) {
               'button',
               {
                 onClick: function onClick() {
-                  (0, _presets.loadPreset)(5, _this3.workspace);
+                  (0, _presets.loadPreset)(5, _this4.workspace);
                 }
               },
               'Example 5'
             )
           ),
           _react2.default.createElement('div', { id: 'blockly-div', style: { width: 725, height: 600 } })
-        ),
-        (0, _utils.getURLParam)("showAutomation") === "false" ? null : blocklyDisplay
+        )
       );
     }
   }]);
@@ -21933,7 +21885,15 @@ function getLabeledInput(name, label, checked, handleChange) {
 var DataCollection = function DataCollection(_ref) {
   var trackedVars = _ref.trackedVars,
       handleChange = _ref.handleChange,
-      createDataPoint = _ref.createDataPoint;
+      createDataPoint = _ref.createDataPoint,
+      incSnails = _ref.incSnails,
+      incPlants = _ref.incPlants,
+      toggleLight = _ref.toggleLight,
+      reset = _ref.reset,
+      wait = _ref.wait,
+      light = _ref.light,
+      toggleAutomation = _ref.toggleAutomation,
+      automationEnabled = _ref.automationEnabled;
 
   var recordButton = _react2.default.createElement(
     'button',
@@ -21944,21 +21904,127 @@ var DataCollection = function DataCollection(_ref) {
     },
     'Record data point'
   );
+
+  var automationButton = _react2.default.createElement(
+    'button',
+    {
+      onClick: function onClick() {
+        toggleAutomation();
+      }
+    },
+    (automationEnabled ? "Hide" : "Show") + " automation"
+  );
+
   return _react2.default.createElement(
     'div',
     { className: 'data-collection' },
     _react2.default.createElement(
       'div',
-      { className: 'data-collection-title' },
-      'Sensor Data'
+      { className: 'collection-title' },
+      'Step 1: Setup Experiment'
     ),
-    getLabeledInput("time", "Time", trackedVars.time, handleChange),
-    getLabeledInput("o2", "O2", trackedVars.o2, handleChange),
-    getLabeledInput("co2", "CO2", trackedVars.co2, handleChange),
-    getLabeledInput("light", "Light", trackedVars.light, handleChange),
-    getLabeledInput("plantsNumber", "Plant population", trackedVars.plantsNumber, handleChange),
-    getLabeledInput("snailsNumber", "Snail population", trackedVars.snailsNumber, handleChange),
-    (0, _utils.getURLParam)("showAutomation") === "false" ? null : recordButton
+    _react2.default.createElement(
+      'div',
+      { className: 'experiment-buttons' },
+      _react2.default.createElement(
+        'button',
+        {
+          onClick: function onClick() {
+            incPlants();
+          }
+        },
+        'Add plant'
+      ),
+      _react2.default.createElement(
+        'button',
+        {
+          onClick: function onClick() {
+            incSnails();
+          }
+        },
+        'Add snail'
+      ),
+      _react2.default.createElement(
+        'button',
+        { style: { width: 114 },
+          onClick: function onClick() {
+            toggleLight();
+          }
+        },
+        'Turn light ',
+        light ? "off" : "on"
+      )
+    ),
+    _react2.default.createElement(
+      'div',
+      { className: 'collection-title' },
+      'Step 2: Setup Sensors'
+    ),
+    _react2.default.createElement(
+      'div',
+      { className: 'sensors' },
+      _react2.default.createElement(
+        'div',
+        { className: 'sensor-column' },
+        getLabeledInput("o2", "O2", trackedVars.o2, handleChange),
+        getLabeledInput("co2", "CO2", trackedVars.co2, handleChange),
+        getLabeledInput("light", "Light", trackedVars.light, handleChange)
+      ),
+      _react2.default.createElement(
+        'div',
+        { className: 'sensor-column' },
+        getLabeledInput("time", "Time", trackedVars.time, handleChange),
+        getLabeledInput("plantsNumber", "Plant population", trackedVars.plantsNumber, handleChange),
+        getLabeledInput("snailsNumber", "Snail population", trackedVars.snailsNumber, handleChange)
+      )
+    ),
+    _react2.default.createElement(
+      'div',
+      { className: 'collection-title' },
+      'Step 3: Run Experiment'
+    ),
+    _react2.default.createElement(
+      'div',
+      { className: 'experiment-buttons' },
+      _react2.default.createElement(
+        'button',
+        {
+          onClick: function onClick() {
+            wait(5);
+          }
+        },
+        'Wait 5 minutes'
+      ),
+      _react2.default.createElement(
+        'button',
+        {
+          onClick: function onClick() {
+            wait(60);
+          }
+        },
+        'Wait 1 hour'
+      ),
+      (0, _utils.getURLParam)("showAutomation") === "false" ? null : recordButton
+    ),
+    _react2.default.createElement(
+      'div',
+      { className: 'collection-title' },
+      'Step 4: Explore!'
+    ),
+    _react2.default.createElement(
+      'div',
+      { className: 'experiment-buttons' },
+      _react2.default.createElement(
+        'button',
+        {
+          onClick: function onClick() {
+            reset();
+          }
+        },
+        'Reset simulation'
+      ),
+      (0, _utils.getURLParam)("showAutomation") === "false" ? null : automationButton
+    )
   );
 };
 
