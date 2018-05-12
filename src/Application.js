@@ -63,6 +63,12 @@ class Application extends React.Component {
 
     this.handleChange = this.handleChange.bind(this)
     this.createDataPoint = this.createDataPoint.bind(this)
+    this.wait = this.wait.bind(this)
+    this.reset = this.reset.bind(this)
+    this.incSnails = this.incSnails.bind(this)
+    this.incPlants = this.incPlants.bind(this)
+    this.toggleLight = this.toggleLight.bind(this)
+    this.toggleAutomation = this.toggleAutomation.bind(this)
 
     initCodap()
   }
@@ -272,6 +278,36 @@ class Application extends React.Component {
     this.setState({trackedVars})
   }
 
+  incPlants() {
+    this.setState({plantsNumber: this.state.plantsNumber + 1})
+  }
+
+  incSnails() {
+    this.setState({snailsNumber: this.state.snailsNumber + 1})
+  }
+
+  toggleLight() {
+    this.setState({light: !this.state.light})
+  }
+
+  toggleAutomation() {
+    if (this.state.showBlocks) {
+      setAppSize(750, 550)
+      this.setState({showBlocks: false})
+    } else {
+      setAppSize(750, 800)
+      this.setState({showBlocks: true})
+      // Hack to only inject Blockly once container is visible
+      setTimeout(() => {
+        if (!this.state.injectedBlocks) {
+          this.workspace = Blockly.inject('blockly-div',
+            {toolbox: document.getElementById('toolbox')});
+          this.setState({injectedBlocks: true})
+        }
+      }, 100)
+    }
+  }
+
   updateSensorValues() {
     this.setState({
       o2Sensor: Math.round(this.fuzzValue(this.state.o2)),
@@ -287,100 +323,35 @@ class Application extends React.Component {
  
   render() {
     const { time, o2, co2, o2Sensor, co2Sensor, plantsNumber, snailsNumber, light, showBlocks, running } = this.state
-    let displayButton = (
-      <button
-        onClick={() => {
-          setAppSize(750, 800)
-          this.setState({showBlocks: true})
-          // Hack to only inject Blockly once container is visible
-          setTimeout(() => {
-            if (!this.state.injectedBlocks) {
-              this.workspace = Blockly.inject('blockly-div',
-                {toolbox: document.getElementById('toolbox')});
-              this.setState({injectedBlocks: true})
-            }
-          }, 100)
-        }}
-      >
-      Show experiment automation
-      </button>
-    )
-    let blocklyDisplay = (
-      <div className="blockly-display">
-        { showBlocks ? null : displayButton }
-      </div>
-    )
     return (
       <div className="ecochamber-app">
         <div className="experiment-ui">
           <canvas className="experiment-canvas"/>
           <Experiment numPlants={this.state.plantsNumber} numSnails={this.state.snailsNumber} light={this.state.light}/>
-          <DataCollection trackedVars={this.state.trackedVars} handleChange={this.handleChange} createDataPoint={this.createDataPoint} />
+          <DataCollection trackedVars={this.state.trackedVars} handleChange={this.handleChange} createDataPoint={this.createDataPoint} light={this.state.light}
+                          incSnails={this.incSnails} incPlants={this.incPlants} toggleLight={this.toggleLight} wait={this.wait} reset={this.reset}
+                          toggleAutomation={this.toggleAutomation} automationEnabled={this.state.showBlocks}/>
         </div>
-        <div className="experiment-buttons">
-          <button
-            onClick={() => {
-              this.setState({plantsNumber: this.state.plantsNumber + 1})
-            }}
-          >
-          Add plant
-          </button>
-          <button
-            onClick={() => {
-              this.setState({snailsNumber: this.state.snailsNumber + 1})
-            }}
-          >
-          Add snail
-          </button>
-          <button
-            onClick={() => {
-              this.wait(5)
-            }}
-          >
-          Wait 5 minutes
-          </button>
-          <button
-            onClick={() => {
-              this.wait(60)
-            }}
-          >
-          Wait 1 hour
-          </button>
-          <button style={{width: 114}}
-            onClick={() => {
-              this.setState({light: !light})
-            }}
-          >
-          Turn light {light ? "off" : "on"}
-          </button>
-          <button
-            onClick={() => {
-              this.reset()
-            }}
-          >
-          Reset simulation
-          </button>
-          <ExperimentHUD colInfos={[
-            {
-              title: "Sensors",
-              stats: [
-                { label: "O2", value: o2Sensor, unit: "ppm"},
-                { label: "CO2", value: co2Sensor, unit: "ppm"},
-                { label: "Light", value: light ? "On" : "Off"}
-              ]
-            },
-            {
-              title: "Other",
-              stats: [
-                { label: "Time", value: time, unit: "mins"},
-                { label: "Plant population", value: plantsNumber},
-                { label: "Snail population", value: snailsNumber}
-              ]
-            }
-          ]}/>
-          <br/>
-          <br/>
-        </div>
+        <ExperimentHUD colInfos={[
+          {
+            title: "Sensors",
+            stats: [
+              { label: "O2", value: o2Sensor, unit: "ppm"},
+              { label: "CO2", value: co2Sensor, unit: "ppm"},
+              { label: "Light", value: light ? "On" : "Off"}
+            ]
+          },
+          {
+            title: "Other",
+            stats: [
+              { label: "Time", value: time, unit: "mins"},
+              { label: "Plant population", value: plantsNumber},
+              { label: "Snail population", value: snailsNumber}
+            ]
+          }
+        ]}/>
+        <br/>
+        <br/>
         <div className="automation-env" hidden={!showBlocks}>
           <div className="blockly-controls">
             <button style={{width: 123}}
@@ -431,14 +402,6 @@ class Application extends React.Component {
             >
             Clear program
             </button>
-            <button
-              onClick={() => {
-                setAppSize(750, 550)
-                this.setState({showBlocks: false})
-              }}
-            >
-            Hide automation
-            </button>
           </div>
           <div className="blockly-presets">
             <button
@@ -479,7 +442,6 @@ class Application extends React.Component {
           </div>
           <div id="blockly-div" style={{width: 725, height: 600}}></div>
         </div>
-        { getURLParam("showAutomation") === "false" ? null : blocklyDisplay }
       </div>
     );
   }

@@ -1,8 +1,7 @@
 .data-collection {
   border-width: 3px;
   border-style: solid;
-  margin-left: 30px;
-  margin-top: 110px;
+  margin-left: 15px;
   padding: 2px;
 }
 
@@ -23,4 +22,13 @@
 
 .data-button {
   margin-top: 10px;
+}
+
+.sensors {
+  display: flex;
+  margin-bottom: 2px;
+}
+
+.sensor-column {
+  margin-left: 10px;
 }
