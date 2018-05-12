@@ -312,25 +312,8 @@ class Application extends React.Component {
     )
     return (
       <div className="ecochamber-app">
-        <ExperimentHUD colInfos={[
-          {
-            title: "Sensors",
-            stats: [
-              { label: "O2", value: o2Sensor, unit: "ppm"},
-              { label: "CO2", value: co2Sensor, unit: "ppm"},
-              { label: "Light", value: light ? "On" : "Off"}
-            ]
-          },
-          {
-            title: "Other",
-            stats: [
-              { label: "Time", value: time, unit: "mins"},
-              { label: "Plant population", value: plantsNumber},
-              { label: "Snail population", value: snailsNumber}
-            ]
-          }
-        ]}/>
         <div className="experiment-ui">
+          <canvas className="experiment-canvas"/>
           <Experiment numPlants={this.state.plantsNumber} numSnails={this.state.snailsNumber} light={this.state.light}/>
           <DataCollection trackedVars={this.state.trackedVars} handleChange={this.handleChange} createDataPoint={this.createDataPoint} />
         </div>
@@ -377,6 +360,24 @@ class Application extends React.Component {
           >
           Reset simulation
           </button>
+          <ExperimentHUD colInfos={[
+            {
+              title: "Sensors",
+              stats: [
+                { label: "O2", value: o2Sensor, unit: "ppm"},
+                { label: "CO2", value: co2Sensor, unit: "ppm"},
+                { label: "Light", value: light ? "On" : "Off"}
+              ]
+            },
+            {
+              title: "Other",
+              stats: [
+                { label: "Time", value: time, unit: "mins"},
+                { label: "Plant population", value: plantsNumber},
+                { label: "Snail population", value: snailsNumber}
+              ]
+            }
+          ]}/>
           <br/>
           <br/>
         </div>

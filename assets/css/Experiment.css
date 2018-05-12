@@ -8,7 +8,7 @@
 .jar {
   height: 403px;
   width: 236px;
-  margin-left: 200px;
+  left: 200px;
   background-image: url("../jar.jpg");
   background-size: contain;
   background-repeat: no-repeat;
@@ -50,13 +50,13 @@
   background-size: contain;
   background-repeat: no-repeat;
   position: absolute;
-  transform: rotate(-40deg);
-  margin-left: 20px;
+  left: 40px;
+  top: 10px;
+  transform: scale(.85);
 }
 
 .bulb.off {
   background-image: url("../bulb_off.png");
-  margin-left: 18px;
-  margin-top: 2px;
+  left: 37px;
 }
 
