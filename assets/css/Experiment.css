@@ -9,12 +9,16 @@
   height: 403px;
   width: 236px;
   left: 200px;
-  background-image: url("../jar.jpg");
+  background-image: url("../jar_on.png");
   background-size: contain;
   background-repeat: no-repeat;
   display: flex;
   justify-content: center;
   z-index: 7;
+}
+
+.jar.off {
+  background-image: url("../jar_off.png");
 }
 
 .jar-contents {
@@ -43,20 +47,4 @@
   z-index: 6;
 }
 
-.bulb {
-  width: 155px;
-  height: 239px;
-  background-image: url("../bulb_on.png");
-  background-size: contain;
-  background-repeat: no-repeat;
-  position: absolute;
-  left: 40px;
-  top: 10px;
-  transform: scale(.85);
-}
-
-.bulb.off {
-  background-image: url("../bulb_off.png");
-  left: 37px;
-}
 

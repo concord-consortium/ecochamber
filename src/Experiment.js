@@ -20,8 +20,7 @@ function getEvenlySpacedDivs(className, containerWidth, divWidth, numDivs) {
 const Experiment = ({numPlants, numSnails, light}) => {
   return (
     <div className="experiment-container">
-      <div className={"bulb " + (light ? "" : "off")} />
-      <div className="jar">
+      <div className={"jar " + (light ? "" : "off")}>
         <div className="jar-contents">
           {getEvenlySpacedDivs("leaf", 212, 100, numPlants)}
           {getEvenlySpacedDivs("snail", 212, 77, numSnails)}
