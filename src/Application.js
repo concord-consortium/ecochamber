@@ -332,24 +332,9 @@ class Application extends React.Component {
           <Experiment numPlants={this.state.plantsNumber} numSnails={this.state.snailsNumber} light={this.state.light}/>
           <DataCollection trackedVars={this.state.trackedVars} handleChange={this.handleChange} createDataPoint={this.createDataPoint} light={this.state.light}
                           incSnails={this.incSnails} incPlants={this.incPlants} toggleLight={this.toggleLight} wait={this.wait} reset={this.reset}
-                          toggleAutomation={this.toggleAutomation} automationEnabled={this.state.showBlocks}/>
+                          toggleAutomation={this.toggleAutomation} automationEnabled={this.state.showBlocks}
+                          o2={o2Sensor} co2={co2Sensor} time={time} plants={plantsNumber} snails={snailsNumber}/>
         </div>
-        <ExperimentHUD colInfos={[
-          {
-            stats: [
-              { label: "O2", value: o2Sensor, unit: "ppm"},
-              { label: "CO2", value: co2Sensor, unit: "ppm"},
-              { label: "Light", value: light ? "On" : "Off"}
-            ]
-          },
-          {
-            stats: [
-              { label: "Time", value: time, unit: "mins"},
-              { label: "Plant population", value: plantsNumber},
-              { label: "Snail population", value: snailsNumber}
-            ]
-          }
-        ]}/>
         <br/>
         <br/>
         <div className="automation-env" hidden={!showBlocks}>

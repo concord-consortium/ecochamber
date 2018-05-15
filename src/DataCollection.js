@@ -1,4 +1,5 @@
 import React from 'react';
+import ExperimentHUD from './ExperimentHUD';
 import { sendItems } from './codap-utils';
 import { getURLParam } from './utils';
 
@@ -15,7 +16,8 @@ function getLabeledInput(name, label, checked, handleChange) {
 }
 
 const DataCollection = ({trackedVars, handleChange, createDataPoint, incSnails, incPlants,
-                         toggleLight, reset, wait, light, toggleAutomation, automationEnabled}) => {
+                         toggleLight, reset, wait, light, toggleAutomation, automationEnabled,
+                         o2, co2, snails, plants, time}) => {
   let recordButton = (
     <button
       onClick={() => {
@@ -77,22 +79,41 @@ const DataCollection = ({trackedVars, handleChange, createDataPoint, incSnails, 
         </div>
       </div>
       <div className="collection-title">Step 2: Run Experiment</div>
-      <div className="collection-body">
-        <button
-          onClick={() => {
-            wait(5)
-          }}
-        >
-        Wait 5 minutes
-        </button>
-        <button
-          onClick={() => {
-            wait(60)
-          }}
-        >
-        Wait 1 hour
-        </button>
-        { getURLParam("showAutomation") === "false" ? null : recordButton }
+      <div className="collection-body column">
+        <div className="setup-buttons">
+          <button
+            onClick={() => {
+              wait(5)
+            }}
+          >
+          Wait 5 minutes
+          </button>
+          <button
+            onClick={() => {
+              wait(60)
+            }}
+          >
+          Wait 1 hour
+          </button>
+          { getURLParam("showAutomation") === "false" ? null : recordButton }
+        </div>
+        <ExperimentHUD colInfos={[
+          {
+            stats: [
+              { label: "O2", value: o2, unit: "ppm"},
+              { label: "CO2", value: co2, unit: "ppm"},
+              { label: "Time", value: time, unit: "mins"}
+
+            ]
+          },
+          {
+            stats: [
+              { label: "Light", value: light ? "On" : "Off"},
+              { label: "Plants", value: plants},
+              { label: "Snails", value: snails}
+            ]
+          }
+        ]}/>
       </div>
       <div className="collection-title">Step 3: Explore!</div>
       <div className="collection-body bottom">

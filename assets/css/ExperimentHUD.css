@@ -31,4 +31,5 @@ table, td, th {
 
 .value-display .value {
   text-align: right;
+  min-width: 28px;
 }
