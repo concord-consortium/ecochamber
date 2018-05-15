@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 17);
+/******/ 	return __webpack_require__(__webpack_require__.s = 18);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -261,9 +261,9 @@ process.umask = function() { return 0; };
 /* WEBPACK VAR INJECTION */(function(process) {
 
 if (process.env.NODE_ENV === 'production') {
-  module.exports = __webpack_require__(19);
-} else {
   module.exports = __webpack_require__(20);
+} else {
+  module.exports = __webpack_require__(21);
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
@@ -435,7 +435,7 @@ module.exports = emptyObject;
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Blockly = __webpack_require__(31);
+var Blockly = __webpack_require__(32);
 
 Blockly.setLocale = function(locale) {
   Blockly.Msg = Object.assign(locale, Blockly.Msg);
@@ -446,15 +446,15 @@ Blockly.utils.getMessageArray_ = function () {
   return Blockly.Msg
 }
 
-Blockly.setLocale(__webpack_require__(32))
+Blockly.setLocale(__webpack_require__(33))
 
-Blockly.Blocks = Object.assign(Blockly.Blocks, __webpack_require__(33)(Blockly));
+Blockly.Blocks = Object.assign(Blockly.Blocks, __webpack_require__(34)(Blockly));
 
-Blockly.JavaScript = __webpack_require__(34)(Blockly);
-Blockly.Lua = __webpack_require__(35)(Blockly);
-Blockly.Dart = __webpack_require__(36)(Blockly);
-Blockly.PHP = __webpack_require__(37)(Blockly);
-Blockly.Python = __webpack_require__(38)(Blockly);
+Blockly.JavaScript = __webpack_require__(35)(Blockly);
+Blockly.Lua = __webpack_require__(36)(Blockly);
+Blockly.Dart = __webpack_require__(37)(Blockly);
+Blockly.PHP = __webpack_require__(38)(Blockly);
+Blockly.Python = __webpack_require__(39)(Blockly);
 
 module.exports = Blockly;
 
@@ -604,7 +604,7 @@ module.exports = warning;
 if (process.env.NODE_ENV !== 'production') {
   var invariant = __webpack_require__(6);
   var warning = __webpack_require__(7);
-  var ReactPropTypesSecret = __webpack_require__(21);
+  var ReactPropTypesSecret = __webpack_require__(22);
   var loggedTypeFailures = {};
 }
 
@@ -903,7 +903,7 @@ module.exports = shallowEqual;
  * 
  */
 
-var isTextNode = __webpack_require__(24);
+var isTextNode = __webpack_require__(25);
 
 /*eslint-disable no-bitwise */
 
@@ -962,6 +962,91 @@ module.exports = focusNode;
 
 /***/ }),
 /* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+__webpack_require__(43);
+
+var ValueDisplay = function ValueDisplay(_ref) {
+  var name = _ref.name,
+      value = _ref.value;
+
+  return _react2.default.createElement(
+    'tr',
+    { className: 'value-display' },
+    _react2.default.createElement(
+      'td',
+      { className: 'statistic' },
+      name,
+      ':'
+    ),
+    _react2.default.createElement(
+      'td',
+      { className: 'value' },
+      value
+    )
+  );
+};
+
+var ExperimentColumn = function ExperimentColumn(_ref2) {
+  var stats = _ref2.stats;
+
+  var displays = [];
+  stats.forEach(function (stat) {
+    var label = stat.label,
+        value = stat.value,
+        unit = stat.unit;
+
+    if (!isNaN(value)) {
+      value = value.toLocaleString();
+    }
+    displays.push(_react2.default.createElement(ValueDisplay, { key: label, name: label, value: value + (unit ? " " + unit : "") }));
+  });
+  return _react2.default.createElement(
+    'div',
+    { className: 'experiment-column' },
+    _react2.default.createElement(
+      'table',
+      { className: 'experiment-values' },
+      _react2.default.createElement(
+        'tbody',
+        null,
+        displays
+      )
+    )
+  );
+};
+
+var ExperimentHUD = function ExperimentHUD(_ref3) {
+  var colInfos = _ref3.colInfos;
+
+  var cols = [];
+  colInfos.forEach(function (colInfo, index) {
+    cols.push(_react2.default.createElement(ExperimentColumn, { key: index, stats: colInfo.stats }));
+  });
+  return _react2.default.createElement(
+    'div',
+    { className: 'experiment-hud' },
+    cols
+  );
+};
+
+exports.default = ExperimentHUD;
+
+/***/ }),
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1098,7 +1183,7 @@ function guaranteeCaseTable() {
 }
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1119,14 +1204,14 @@ function getURLParam(name) {
 }
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(18);
+module.exports = __webpack_require__(19);
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1136,7 +1221,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactDom = __webpack_require__(22);
+var _reactDom = __webpack_require__(23);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
@@ -1144,7 +1229,7 @@ var _browser = __webpack_require__(5);
 
 var _browser2 = _interopRequireDefault(_browser);
 
-var _application = __webpack_require__(39);
+var _application = __webpack_require__(40);
 
 var _application2 = _interopRequireDefault(_application);
 
@@ -1159,7 +1244,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1187,7 +1272,7 @@ isValidElement:K,version:"16.2.0",__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_F
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2552,7 +2637,7 @@ module.exports = react;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2571,7 +2656,7 @@ module.exports = ReactPropTypesSecret;
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2609,15 +2694,15 @@ if (process.env.NODE_ENV === 'production') {
   // DCE check should happen before ReactDOM bundle executes so that
   // DevTools can report bad minification during injection.
   checkDCE();
-  module.exports = __webpack_require__(23);
+  module.exports = __webpack_require__(24);
 } else {
-  module.exports = __webpack_require__(26);
+  module.exports = __webpack_require__(27);
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2853,7 +2938,7 @@ Z.injectIntoDevTools({findFiberByHostInstance:pb,bundleType:0,version:"16.2.0",r
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2868,7 +2953,7 @@ Z.injectIntoDevTools({findFiberByHostInstance:pb,bundleType:0,version:"16.2.0",r
  * @typechecks
  */
 
-var isNode = __webpack_require__(25);
+var isNode = __webpack_require__(26);
 
 /**
  * @param {*} object The object to check.
@@ -2881,7 +2966,7 @@ function isTextNode(object) {
 module.exports = isTextNode;
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2909,7 +2994,7 @@ function isNode(object) {
 module.exports = isNode;
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2943,8 +3028,8 @@ var containsNode = __webpack_require__(13);
 var focusNode = __webpack_require__(14);
 var emptyObject = __webpack_require__(4);
 var checkPropTypes = __webpack_require__(8);
-var hyphenateStyleName = __webpack_require__(27);
-var camelizeStyleName = __webpack_require__(29);
+var hyphenateStyleName = __webpack_require__(28);
+var camelizeStyleName = __webpack_require__(30);
 
 /**
  * WARNING: DO NOT manually require this module.
@@ -18311,7 +18396,7 @@ module.exports = reactDom;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18326,7 +18411,7 @@ module.exports = reactDom;
 
 
 
-var hyphenate = __webpack_require__(28);
+var hyphenate = __webpack_require__(29);
 
 var msPattern = /^ms-/;
 
@@ -18353,7 +18438,7 @@ function hyphenateStyleName(string) {
 module.exports = hyphenateStyleName;
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18389,7 +18474,7 @@ function hyphenate(string) {
 module.exports = hyphenate;
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18404,7 +18489,7 @@ module.exports = hyphenate;
 
 
 
-var camelize = __webpack_require__(30);
+var camelize = __webpack_require__(31);
 
 var msPattern = /^-ms-/;
 
@@ -18432,7 +18517,7 @@ function camelizeStyleName(string) {
 module.exports = camelizeStyleName;
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18467,7 +18552,7 @@ function camelize(string) {
 module.exports = camelize;
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports) {
 
 
@@ -20078,7 +20163,7 @@ Blockly.isNumber=function(a){return/^\s*-?\d+(\.\d+)?\s*$/.test(a)};goog.global.
       })()
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports) {
 
 var Blockly = {}; Blockly.Msg={};  module.exports = function(){ // This file was automatically generated.  Do not modify.
@@ -20508,7 +20593,7 @@ var Blockly = {}; Blockly.Msg={};  module.exports = function(){ // This file was
 /** @export */ Blockly.Msg.COLOUR_HUE = "20";return Blockly.Msg;}
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports) {
 
 
@@ -20673,7 +20758,7 @@ Blockly.ContextMenu.callbackFactory(this,c);a.push(d)}};Blockly.Extensions.regis
         }
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports) {
 
 module.exports = function(Blockly){// Do not edit this file; automatically generated by build.py.
@@ -20771,7 +20856,7 @@ Blockly.JavaScript.text_replace=function(a){var b=Blockly.JavaScript.valueToCode
 '                 .replace(/\\x08/g,"\\\\x08");',"  return haystack.replace(new RegExp(needle, 'g'), replacement);","}"])+"("+b+", "+c+", "+a+")",Blockly.JavaScript.ORDER_MEMBER]};Blockly.JavaScript.text_reverse=function(a){return[(Blockly.JavaScript.valueToCode(a,"TEXT",Blockly.JavaScript.ORDER_MEMBER)||"''")+".split('').reverse().join('')",Blockly.JavaScript.ORDER_MEMBER]};Blockly.JavaScript.variables={};Blockly.JavaScript.variables_get=function(a){return[Blockly.JavaScript.variableDB_.getName(a.getFieldValue("VAR"),Blockly.Variables.NAME_TYPE),Blockly.JavaScript.ORDER_ATOMIC]};Blockly.JavaScript.variables_set=function(a){var b=Blockly.JavaScript.valueToCode(a,"VALUE",Blockly.JavaScript.ORDER_ASSIGNMENT)||"0";return Blockly.JavaScript.variableDB_.getName(a.getFieldValue("VAR"),Blockly.Variables.NAME_TYPE)+" = "+b+";\n"};return Blockly.JavaScript;}
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports) {
 
 module.exports = function(Blockly){// Do not edit this file; automatically generated by build.py.
@@ -20854,7 +20939,7 @@ Blockly.Lua.text_replace=function(a){var b=Blockly.Lua.valueToCode(a,"TEXT",Bloc
 "        table.insert(buf, string.sub(replacement, j, j))","      end","      i = i + #needle","    else","      table.insert(buf, string.sub(haystack, i, i))","      i = i + 1","    end","  end","  return table.concat(buf)","end"])+"("+b+", "+c+", "+a+")",Blockly.Lua.ORDER_HIGH]};Blockly.Lua.text_reverse=function(a){return["string.reverse("+(Blockly.Lua.valueToCode(a,"TEXT",Blockly.Lua.ORDER_HIGH)||"''")+")",Blockly.Lua.ORDER_HIGH]};Blockly.Lua.variables={};Blockly.Lua.variables_get=function(a){return[Blockly.Lua.variableDB_.getName(a.getFieldValue("VAR"),Blockly.Variables.NAME_TYPE),Blockly.Lua.ORDER_ATOMIC]};Blockly.Lua.variables_set=function(a){var b=Blockly.Lua.valueToCode(a,"VALUE",Blockly.Lua.ORDER_NONE)||"0";return Blockly.Lua.variableDB_.getName(a.getFieldValue("VAR"),Blockly.Variables.NAME_TYPE)+" = "+b+"\n"};return Blockly.Lua;}
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports) {
 
 module.exports = function(Blockly){// Do not edit this file; automatically generated by build.py.
@@ -20954,7 +21039,7 @@ Blockly.Dart.text_count=function(a){var b=Blockly.Dart.valueToCode(a,"TEXT",Bloc
 Blockly.Dart.text_reverse=function(a){return["new String.fromCharCodes("+(Blockly.Dart.valueToCode(a,"TEXT",Blockly.Dart.ORDER_UNARY_POSTFIX)||"''")+".runes.toList().reversed)",Blockly.Dart.ORDER_UNARY_POSTFIX]};Blockly.Dart.variables={};Blockly.Dart.variables_get=function(a){return[Blockly.Dart.variableDB_.getName(a.getFieldValue("VAR"),Blockly.Variables.NAME_TYPE),Blockly.Dart.ORDER_ATOMIC]};Blockly.Dart.variables_set=function(a){var b=Blockly.Dart.valueToCode(a,"VALUE",Blockly.Dart.ORDER_ASSIGNMENT)||"0";return Blockly.Dart.variableDB_.getName(a.getFieldValue("VAR"),Blockly.Variables.NAME_TYPE)+" = "+b+";\n"};return Blockly.Dart;}
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports) {
 
 module.exports = function(Blockly){// Do not edit this file; automatically generated by build.py.
@@ -21045,7 +21130,7 @@ Blockly.PHP.text_count=function(a){var b=Blockly.PHP.valueToCode(a,"TEXT",Blockl
 Blockly.PHP.text_replace=function(a){var b=Blockly.PHP.valueToCode(a,"TEXT",Blockly.PHP.ORDER_MEMBER)||"''",c=Blockly.PHP.valueToCode(a,"FROM",Blockly.PHP.ORDER_NONE)||"''";a=Blockly.PHP.valueToCode(a,"TO",Blockly.PHP.ORDER_NONE)||"''";return["str_replace("+c+", "+a+", "+b+")",Blockly.PHP.ORDER_FUNCTION_CALL]};Blockly.PHP.text_reverse=function(a){return["strrev("+(Blockly.PHP.valueToCode(a,"TEXT",Blockly.PHP.ORDER_MEMBER)||"''")+")",Blockly.PHP.ORDER_FUNCTION_CALL]};Blockly.PHP.variables={};Blockly.PHP.variables_get=function(a){return[Blockly.PHP.variableDB_.getName(a.getFieldValue("VAR"),Blockly.Variables.NAME_TYPE),Blockly.PHP.ORDER_ATOMIC]};Blockly.PHP.variables_set=function(a){var b=Blockly.PHP.valueToCode(a,"VALUE",Blockly.PHP.ORDER_ASSIGNMENT)||"0";return Blockly.PHP.variableDB_.getName(a.getFieldValue("VAR"),Blockly.Variables.NAME_TYPE)+" = "+b+";\n"};return Blockly.PHP;}
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports) {
 
 module.exports = function(Blockly){// Do not edit this file; automatically generated by build.py.
@@ -21129,7 +21214,7 @@ Blockly.Python.text_prompt=Blockly.Python.text_prompt_ext;Blockly.Python.text_co
 Blockly.Python.text_replace=function(a){var b=Blockly.Python.valueToCode(a,"TEXT",Blockly.Python.ORDER_MEMBER)||"''",c=Blockly.Python.valueToCode(a,"FROM",Blockly.Python.ORDER_NONE)||"''";a=Blockly.Python.valueToCode(a,"TO",Blockly.Python.ORDER_NONE)||"''";return[b+".replace("+c+", "+a+")",Blockly.Python.ORDER_MEMBER]};Blockly.Python.text_reverse=function(a){return[(Blockly.Python.valueToCode(a,"TEXT",Blockly.Python.ORDER_MEMBER)||"''")+"[::-1]",Blockly.Python.ORDER_MEMBER]};Blockly.Python.variables={};Blockly.Python.variables_get=function(a){return[Blockly.Python.variableDB_.getName(a.getFieldValue("VAR"),Blockly.Variables.NAME_TYPE),Blockly.Python.ORDER_ATOMIC]};Blockly.Python.variables_set=function(a){var b=Blockly.Python.valueToCode(a,"VALUE",Blockly.Python.ORDER_NONE)||"0";return Blockly.Python.variableDB_.getName(a.getFieldValue("VAR"),Blockly.Variables.NAME_TYPE)+" = "+b+"\n"};return Blockly.Python;}
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21149,11 +21234,11 @@ var _browser = __webpack_require__(5);
 
 var _browser2 = _interopRequireDefault(_browser);
 
-var _Experiment = __webpack_require__(40);
+var _Experiment = __webpack_require__(41);
 
 var _Experiment2 = _interopRequireDefault(_Experiment);
 
-var _ExperimentHUD = __webpack_require__(42);
+var _ExperimentHUD = __webpack_require__(15);
 
 var _ExperimentHUD2 = _interopRequireDefault(_ExperimentHUD);
 
@@ -21161,11 +21246,11 @@ var _DataCollection = __webpack_require__(44);
 
 var _DataCollection2 = _interopRequireDefault(_DataCollection);
 
-var _codapUtils = __webpack_require__(15);
+var _codapUtils = __webpack_require__(16);
 
 var _presets = __webpack_require__(46);
 
-var _utils = __webpack_require__(16);
+var _utils = __webpack_require__(17);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21356,17 +21441,19 @@ var Application = function (_React$Component) {
               numberKey = organismInfo.numberKey;
 
 
-          var numDead = 0;
-          // This gives organisms a 0% chance of death at atmospheric oxygen (20%),
-          // and a .1% chance of death every minute at deadly levels (6%)
-          var percentO2 = newState.o2 / 10000;
-          var deathChance = (-.7 * percentO2 + 14) / 10000;
-          for (var j = 0; j < newState[numberKey]; j++) {
-            if (Math.random() < deathChance) {
-              numDead++;
+          if ((0, _utils.getURLParam)("orgDeath") !== "false") {
+            var numDead = 0;
+            // This gives organisms a 0% chance of death at atmospheric oxygen (20%),
+            // and a .1% chance of death every minute at deadly levels (6%)
+            var percentO2 = newState.o2 / 10000;
+            var deathChance = (-.7 * percentO2 + 14) / 10000;
+            for (var j = 0; j < newState[numberKey]; j++) {
+              if (Math.random() < deathChance) {
+                numDead++;
+              }
             }
+            newState[numberKey] -= numDead;
           }
-          newState[numberKey] -= numDead;
 
           if (newState[numberKey] === 0) {
             return;
@@ -21551,15 +21638,9 @@ var Application = function (_React$Component) {
           _react2.default.createElement(_Experiment2.default, { numPlants: this.state.plantsNumber, numSnails: this.state.snailsNumber, light: this.state.light }),
           _react2.default.createElement(_DataCollection2.default, { trackedVars: this.state.trackedVars, handleChange: this.handleChange, createDataPoint: this.createDataPoint, light: this.state.light,
             incSnails: this.incSnails, incPlants: this.incPlants, toggleLight: this.toggleLight, wait: this.wait, reset: this.reset,
-            toggleAutomation: this.toggleAutomation, automationEnabled: this.state.showBlocks })
+            toggleAutomation: this.toggleAutomation, automationEnabled: this.state.showBlocks,
+            o2: o2Sensor, co2: co2Sensor, time: time, plants: plantsNumber, snails: snailsNumber })
         ),
-        _react2.default.createElement(_ExperimentHUD2.default, { colInfos: [{
-            title: "Sensors",
-            stats: [{ label: "O2", value: o2Sensor, unit: "ppm" }, { label: "CO2", value: co2Sensor, unit: "ppm" }, { label: "Light", value: light ? "On" : "Off" }]
-          }, {
-            title: "Other",
-            stats: [{ label: "Time", value: time, unit: "mins" }, { label: "Plant population", value: plantsNumber }, { label: "Snail population", value: snailsNumber }]
-          }] }),
         _react2.default.createElement('br', null),
         _react2.default.createElement('br', null),
         _react2.default.createElement(
@@ -21688,7 +21769,7 @@ var Application = function (_React$Component) {
 exports.default = Application;
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21704,7 +21785,7 @@ var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(41);
+__webpack_require__(42);
 
 function getEvenlySpacedDivs(className, containerWidth, divWidth, numDivs) {
   if (numDivs === 1) {
@@ -21727,10 +21808,9 @@ var Experiment = function Experiment(_ref) {
   return _react2.default.createElement(
     'div',
     { className: 'experiment-container' },
-    _react2.default.createElement('div', { className: "bulb " + (light ? "" : "off") }),
     _react2.default.createElement(
       'div',
-      { className: 'jar' },
+      { className: "jar " + (light ? "" : "off") },
       _react2.default.createElement(
         'div',
         { className: 'jar-contents' },
@@ -21744,101 +21824,10 @@ var Experiment = function Experiment(_ref) {
 exports.default = Experiment;
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 42 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _react = __webpack_require__(1);
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-__webpack_require__(43);
-
-var ValueDisplay = function ValueDisplay(_ref) {
-  var name = _ref.name,
-      value = _ref.value;
-
-  return _react2.default.createElement(
-    'tr',
-    { className: 'value-display' },
-    _react2.default.createElement(
-      'td',
-      { className: 'statistic' },
-      name,
-      ':'
-    ),
-    _react2.default.createElement(
-      'td',
-      { className: 'value' },
-      value
-    )
-  );
-};
-
-var ExperimentColumn = function ExperimentColumn(_ref2) {
-  var stats = _ref2.stats,
-      title = _ref2.title;
-
-  var displays = [];
-  stats.forEach(function (stat) {
-    var label = stat.label,
-        value = stat.value,
-        unit = stat.unit;
-
-    if (!isNaN(value)) {
-      value = value.toLocaleString();
-    }
-    displays.push(_react2.default.createElement(ValueDisplay, { key: label, name: label, value: value + (unit ? " " + unit : "") }));
-  });
-  return _react2.default.createElement(
-    'div',
-    { className: 'experiment-column' },
-    _react2.default.createElement(
-      'div',
-      { className: 'experiment-column-title' },
-      title
-    ),
-    _react2.default.createElement(
-      'table',
-      { className: 'experiment-values' },
-      _react2.default.createElement(
-        'tbody',
-        null,
-        displays
-      )
-    )
-  );
-};
-
-var ExperimentHUD = function ExperimentHUD(_ref3) {
-  var colInfos = _ref3.colInfos;
-
-  var cols = [];
-  colInfos.forEach(function (colInfo, index) {
-    cols.push(_react2.default.createElement(ExperimentColumn, { key: index, stats: colInfo.stats, title: colInfo.title }));
-  });
-  return _react2.default.createElement(
-    'div',
-    { className: 'experiment-hud' },
-    cols
-  );
-};
-
-exports.default = ExperimentHUD;
 
 /***/ }),
 /* 43 */
@@ -21861,9 +21850,13 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _codapUtils = __webpack_require__(15);
+var _ExperimentHUD = __webpack_require__(15);
 
-var _utils = __webpack_require__(16);
+var _ExperimentHUD2 = _interopRequireDefault(_ExperimentHUD);
+
+var _codapUtils = __webpack_require__(16);
+
+var _utils = __webpack_require__(17);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21893,11 +21886,16 @@ var DataCollection = function DataCollection(_ref) {
       wait = _ref.wait,
       light = _ref.light,
       toggleAutomation = _ref.toggleAutomation,
-      automationEnabled = _ref.automationEnabled;
+      automationEnabled = _ref.automationEnabled,
+      o2 = _ref.o2,
+      co2 = _ref.co2,
+      snails = _ref.snails,
+      plants = _ref.plants,
+      time = _ref.time;
 
   var recordButton = _react2.default.createElement(
     'button',
-    { className: 'data-button',
+    {
       onClick: function onClick() {
         (0, _codapUtils.sendItems)(createDataPoint());
       }
@@ -21921,99 +21919,107 @@ var DataCollection = function DataCollection(_ref) {
     _react2.default.createElement(
       'div',
       { className: 'collection-title' },
-      'Step 1: Setup Experiment'
+      'Step 1: Setup Experiment & Sensors'
     ),
     _react2.default.createElement(
       'div',
-      { className: 'experiment-buttons' },
+      { className: 'collection-body column' },
       _react2.default.createElement(
-        'button',
-        {
-          onClick: function onClick() {
-            incPlants();
-          }
-        },
-        'Add plant'
+        'div',
+        { className: 'setup-buttons' },
+        _react2.default.createElement(
+          'button',
+          {
+            onClick: function onClick() {
+              incPlants();
+            }
+          },
+          'Add plant'
+        ),
+        _react2.default.createElement(
+          'button',
+          {
+            onClick: function onClick() {
+              incSnails();
+            }
+          },
+          'Add snail'
+        ),
+        _react2.default.createElement(
+          'button',
+          { style: { width: 114 },
+            onClick: function onClick() {
+              toggleLight();
+            }
+          },
+          'Turn light ',
+          light ? "off" : "on"
+        )
       ),
       _react2.default.createElement(
-        'button',
-        {
-          onClick: function onClick() {
-            incSnails();
-          }
-        },
-        'Add snail'
-      ),
-      _react2.default.createElement(
-        'button',
-        { style: { width: 114 },
-          onClick: function onClick() {
-            toggleLight();
-          }
-        },
-        'Turn light ',
-        light ? "off" : "on"
+        'div',
+        { className: 'sensors' },
+        _react2.default.createElement(
+          'div',
+          { className: 'sensor-column' },
+          getLabeledInput("o2", "O2", trackedVars.o2, handleChange),
+          getLabeledInput("co2", "CO2", trackedVars.co2, handleChange),
+          getLabeledInput("light", "Light", trackedVars.light, handleChange)
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'sensor-column' },
+          getLabeledInput("time", "Time", trackedVars.time, handleChange),
+          getLabeledInput("plantsNumber", "Plant population", trackedVars.plantsNumber, handleChange),
+          getLabeledInput("snailsNumber", "Snail population", trackedVars.snailsNumber, handleChange)
+        )
       )
     ),
     _react2.default.createElement(
       'div',
       { className: 'collection-title' },
-      'Step 2: Setup Sensors'
+      'Step 2: Run Experiment'
     ),
     _react2.default.createElement(
       'div',
-      { className: 'sensors' },
+      { className: 'collection-body column' },
       _react2.default.createElement(
         'div',
-        { className: 'sensor-column' },
-        getLabeledInput("o2", "O2", trackedVars.o2, handleChange),
-        getLabeledInput("co2", "CO2", trackedVars.co2, handleChange),
-        getLabeledInput("light", "Light", trackedVars.light, handleChange)
+        { className: 'setup-buttons' },
+        _react2.default.createElement(
+          'button',
+          {
+            onClick: function onClick() {
+              wait(5);
+            }
+          },
+          'Wait 5 minutes'
+        ),
+        _react2.default.createElement(
+          'button',
+          {
+            onClick: function onClick() {
+              wait(60);
+            }
+          },
+          'Wait 1 hour'
+        ),
+        (0, _utils.getURLParam)("showAutomation") === "false" ? null : recordButton
       ),
-      _react2.default.createElement(
-        'div',
-        { className: 'sensor-column' },
-        getLabeledInput("time", "Time", trackedVars.time, handleChange),
-        getLabeledInput("plantsNumber", "Plant population", trackedVars.plantsNumber, handleChange),
-        getLabeledInput("snailsNumber", "Snail population", trackedVars.snailsNumber, handleChange)
-      )
+      _react2.default.createElement(_ExperimentHUD2.default, { colInfos: [{
+          stats: [{ label: "O2", value: o2, unit: "ppm" }, { label: "CO2", value: co2, unit: "ppm" }, { label: "Time", value: time, unit: "mins" }]
+        }, {
+          stats: [{ label: "Light", value: light ? "On" : "Off" }, { label: "Plants", value: plants }, { label: "Snails", value: snails }]
+        }] })
     ),
     _react2.default.createElement(
       'div',
       { className: 'collection-title' },
-      'Step 3: Run Experiment'
+      'Step 3: Explore!'
     ),
     _react2.default.createElement(
       'div',
-      { className: 'experiment-buttons' },
-      _react2.default.createElement(
-        'button',
-        {
-          onClick: function onClick() {
-            wait(5);
-          }
-        },
-        'Wait 5 minutes'
-      ),
-      _react2.default.createElement(
-        'button',
-        {
-          onClick: function onClick() {
-            wait(60);
-          }
-        },
-        'Wait 1 hour'
-      ),
-      (0, _utils.getURLParam)("showAutomation") === "false" ? null : recordButton
-    ),
-    _react2.default.createElement(
-      'div',
-      { className: 'collection-title' },
-      'Step 4: Explore!'
-    ),
-    _react2.default.createElement(
-      'div',
-      { className: 'experiment-buttons' },
+      { className: 'collection-body bottom' },
       _react2.default.createElement(
         'button',
         {
