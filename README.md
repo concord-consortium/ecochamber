@@ -16,6 +16,7 @@ Here are URL parameters you can pass to modify the app's behavior:
 * `noise=true`: adds or subtracts up to `sqrt(value)` at random from all gas measurements.
 * `noiseMultiplier=5`: multiplies the amount of possible sensor noise in conjuction with the `noise` parameter.
 * `rushMode=false`: disables the ability for users to speed up automated experiments.
+* `orgDeath=false`: disables the death of organisms due to decreased oxygen levels.
 
 e.g. https://concord-consortium.github.io/ecochamber/?rushMode=false&noise=true
 
