@@ -334,7 +334,6 @@ class Application extends React.Component {
         </div>
         <ExperimentHUD colInfos={[
           {
-            title: "Sensors",
             stats: [
               { label: "O2", value: o2Sensor, unit: "ppm"},
               { label: "CO2", value: co2Sensor, unit: "ppm"},
@@ -342,7 +341,6 @@ class Application extends React.Component {
             ]
           },
           {
-            title: "Other",
             stats: [
               { label: "Time", value: time, unit: "mins"},
               { label: "Plant population", value: plantsNumber},

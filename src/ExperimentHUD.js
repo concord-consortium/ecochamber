@@ -11,7 +11,7 @@ const ValueDisplay = ({name, value}) => {
   );
 }
 
-const ExperimentColumn = ({stats, title}) => {
+const ExperimentColumn = ({stats}) => {
   let displays = []
   stats.forEach(stat => {
     let { label, value, unit } = stat
@@ -22,9 +22,6 @@ const ExperimentColumn = ({stats, title}) => {
   })
   return (
     <div className="experiment-column">
-      <div className="experiment-column-title"> 
-        {title}
-      </div>
       <table className="experiment-values">
         <tbody>
           {displays}
@@ -37,7 +34,7 @@ const ExperimentColumn = ({stats, title}) => {
 const ExperimentHUD = ({colInfos}) => {
   let cols = []
   colInfos.forEach((colInfo, index) => {
-    cols.push(<ExperimentColumn key={index} stats={colInfo.stats} title={colInfo.title}/>)
+    cols.push(<ExperimentColumn key={index} stats={colInfo.stats}/>)
   })
   return (
     <div className="experiment-hud">

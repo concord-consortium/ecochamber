@@ -1,15 +1,12 @@
 .data-collection {
-  border-width: 3px;
-  border-style: solid;
   margin-left: 15px;
   padding: 2px;
 }
 
-.data-collection-title {
-  font-size: 19px;
-  text-align: center;
+.collection-title {
   text-decoration: underline;
   margin-bottom: 5px;
+  font-weight: bold;
 }
 
 .data-box {
@@ -20,13 +17,28 @@
   margin-left: 5px;
 }
 
-.data-button {
-  margin-top: 10px;
+.collection-body {
+  display: flex;
+  justify-content: space-evenly;
+  margin-bottom: 10px;
+}
+
+.collection-body.bottom {
+  margin-bottom: 0;
+}
+
+.collection-body.column {
+  flex-direction: column;
+}
+
+.setup-buttons {
+  display: inherit;
+  justify-content: inherit;
 }
 
 .sensors {
-  display: flex;
-  margin-bottom: 2px;
+  justify-content: inherit;
+  display: inherit;
 }
 
 .sensor-column {
